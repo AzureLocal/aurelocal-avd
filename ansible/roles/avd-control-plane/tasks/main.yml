@@ -1,0 +1,112 @@
+---
+# roles/avd-control-plane/tasks/main.yml
+# Deploys the AVD control plane using the azure.azcollection Ansible modules.
+
+- name: Create resource group
+  azure.azcollection.azure_rm_resourcegroup:
+    name: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    tags:
+      environment: "{{ avd_environment_tag }}"
+      owner: "{{ avd_owner_tag }}"
+      deployed_by: "ansible"
+
+- name: Deploy Log Analytics Workspace
+  azure.azcollection.azure_rm_loganalyticsworkspace:
+    name: "{{ avd_log_analytics_workspace_name }}"
+    resource_group: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    sku: "PerGB2018"
+    retention_in_days: "{{ avd_log_analytics_retention_days }}"
+    tags:
+      environment: "{{ avd_environment_tag }}"
+      owner: "{{ avd_owner_tag }}"
+
+- name: Deploy Key Vault
+  azure.azcollection.azure_rm_keyvault:
+    vault_name: "{{ avd_key_vault_name }}"
+    resource_group: "{{ azure_resource_group }}"
+    location: "{{ azure_location }}"
+    vault_tenant: "{{ azure_tenant_id | default(omit) }}"
+    sku:
+      family: "A"
+      name: "standard"
+    enabled_for_template_deployment: true
+    enable_rbac_authorization: true
+    tags:
+      environment: "{{ avd_environment_tag }}"
+      owner: "{{ avd_owner_tag }}"
+
+- name: Create AVD host pool
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: hostPools
+    resource_name: "{{ avd_host_pool_name }}"
+    api_version: "2023-09-05"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        hostPoolType: "{{ avd_host_pool_type }}"
+        loadBalancerType: "{{ avd_load_balancer_type }}"
+        preferredAppGroupType: "Desktop"
+        maxSessionLimit: "{{ avd_max_session_limit }}"
+        startVMOnConnect: true
+        registrationInfo:
+          expirationTime: "{{ '%Y-%m-%dT%H:%M:%SZ' | strftime(ansible_date_time.epoch | int + 86400) }}"
+          registrationTokenOperation: "Update"
+
+- name: Get host pool registration token
+  azure.azcollection.azure_rm_resource_info:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: hostPools
+    resource_name: "{{ avd_host_pool_name }}"
+    api_version: "2023-09-05"
+    subresource:
+      - type: retrieveRegistrationToken
+        api_version: "2023-09-05"
+  register: host_pool_token_result
+  no_log: true
+
+- name: Store registration token in Key Vault
+  azure.azcollection.azure_rm_keyvaultsecret:
+    vault_uri: "https://{{ avd_key_vault_name }}.vault.azure.net"
+    secret_name: "avd-registration-token"
+    secret_value: "{{ host_pool_token_result.response[0].properties.registrationInfo.token }}"
+  no_log: true
+
+- name: Create AVD application group
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: applicationGroups
+    resource_name: "{{ avd_app_group_name }}"
+    api_version: "2023-09-05"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        applicationGroupType: "Desktop"
+        hostPoolArmPath: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/hostPools/{{ avd_host_pool_name }}"
+
+- name: Create AVD workspace
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: workspaces
+    resource_name: "{{ avd_workspace_name }}"
+    api_version: "2023-09-05"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        applicationGroupReferences:
+          - "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/applicationGroups/{{ avd_app_group_name }}"

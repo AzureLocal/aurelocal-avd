@@ -1,0 +1,10 @@
+---
+# roles/avd-control-plane/defaults/main.yml
+# Default values – override in inventory, group_vars, or with -e on the command line.
+
+avd_environment_tag: "production"
+avd_owner_tag: "platform-team"
+avd_host_pool_type: "Pooled"
+avd_load_balancer_type: "BreadthFirst"
+avd_max_session_limit: 10
+avd_log_analytics_retention_days: 30

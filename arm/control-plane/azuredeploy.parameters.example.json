@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location":                    { "value": "eastus" },
+    "resourceGroupName":           { "value": "rg-avd-prod" },
+    "hostPoolName":                { "value": "hp-azurelocal-pool01" },
+    "hostPoolType":                { "value": "Pooled" },
+    "loadBalancerType":            { "value": "BreadthFirst" },
+    "maxSessionLimit":             { "value": 10 },
+    "appGroupName":                { "value": "ag-avd-desktops" },
+    "workspaceName":               { "value": "ws-avd-prod" },
+    "keyVaultName":                { "value": "kv-avd-prod-001" },
+    "logAnalyticsWorkspaceName":   { "value": "law-avd-prod" },
+    "environmentTag":              { "value": "production" },
+    "ownerTag":                    { "value": "platform-team" }
+  }
+}

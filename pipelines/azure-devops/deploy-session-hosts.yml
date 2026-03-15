@@ -1,0 +1,108 @@
+trigger: none   # Manual trigger only
+
+parameters:
+  - name: resourceGroupName
+    displayName: Resource Group Name
+    type: string
+    default: rg-avd-prod
+  - name: vmCount
+    displayName: Number of Session Hosts
+    type: number
+    default: 2
+
+variables:
+  - group: avd-secrets
+  - name: bicepFile
+    value: bicep/session-hosts/main.bicep
+  - name: bicepParams
+    value: bicep/session-hosts/main.bicepparam
+
+stages:
+  - stage: Validate
+    displayName: Validate Bicep
+    jobs:
+      - job: Validate
+        displayName: Validate and What-If
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: Install Bicep CLI
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: az bicep install
+
+          - task: AzureCLI@2
+            displayName: Bicep Build (lint)
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: az bicep build --file $(bicepFile)
+
+          - task: AzureCLI@2
+            displayName: What-If Deployment
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az deployment group what-if \
+                  --resource-group "${{ parameters.resourceGroupName }}" \
+                  --template-file $(bicepFile) \
+                  --parameters $(bicepParams) \
+                  --parameters vmCount=${{ parameters.vmCount }}
+
+  - stage: Deploy
+    displayName: Deploy Session Hosts
+    dependsOn: Validate
+    condition: succeeded()
+    jobs:
+      - deployment: DeploySessionHosts
+        displayName: Deploy Session Hosts to Azure Local
+        pool:
+          vmImage: ubuntu-latest
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: AzureCLI@2
+                  displayName: Install Bicep CLI
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: az bicep install
+
+                - task: AzureCLI@2
+                  displayName: Deploy Session Hosts
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az deployment group create \
+                        --name "avd-session-hosts-$(Build.BuildId)" \
+                        --resource-group "${{ parameters.resourceGroupName }}" \
+                        --template-file $(bicepFile) \
+                        --parameters $(bicepParams) \
+                        --parameters vmCount=${{ parameters.vmCount }}
+
+                - task: AzureCLI@2
+                  displayName: Verify session host status
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      echo "Waiting 120s for AVD agent registration..."
+                      sleep 120
+                      echo "Check session host status in Azure Portal:"
+                      echo "  AVD > Host Pools > Session Hosts"

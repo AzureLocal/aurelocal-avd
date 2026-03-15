@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location":        { "value": "eastus" },
+    "customLocationId": {
+      "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+    },
+    "vmNamePrefix":    { "value": "avd-sh" },
+    "vmCount":         { "value": 2 },
+    "vmSize":          { "value": "Standard_D4s_v3" },
+    "imageId": {
+      "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/galleryImages/win11-multisession-23h2"
+    },
+    "vnetId": {
+      "value": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/virtualNetworks/vnet-azurelocal-01"
+    },
+    "subnetName":      { "value": "default" },
+    "registrationToken": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avd-prod/providers/Microsoft.KeyVault/vaults/kv-avd-prod-001"
+        },
+        "secretName": "avd-registration-token"
+      }
+    },
+    "domainFqdn":      { "value": "contoso.local" },
+    "domainJoinUser":  { "value": "svc-domainjoin@contoso.local" },
+    "domainJoinPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avd-prod/providers/Microsoft.KeyVault/vaults/kv-avd-prod-001"
+        },
+        "secretName": "domain-join-password"
+      }
+    },
+    "ouPath":          { "value": "OU=AVD,OU=Computers,DC=contoso,DC=local" },
+    "environmentTag":  { "value": "production" },
+    "ownerTag":        { "value": "platform-team" }
+  }
+}

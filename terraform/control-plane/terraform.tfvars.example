@@ -1,0 +1,15 @@
+# Copy to terraform.tfvars and fill in your values.
+# DO NOT commit terraform.tfvars (it is .gitignore'd).
+
+location                     = "eastus"
+resource_group_name          = "rg-avd-prod"
+host_pool_name               = "hp-azurelocal-pool01"
+host_pool_type               = "Pooled"
+load_balancer_type           = "BreadthFirst"
+max_session_limit            = 10
+app_group_name               = "ag-avd-desktops"
+workspace_name               = "ws-avd-prod"
+key_vault_name               = "kv-avd-prod-001"
+log_analytics_workspace_name = "law-avd-prod"
+environment_tag              = "production"
+owner_tag                    = "platform-team"

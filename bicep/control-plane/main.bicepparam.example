@@ -1,0 +1,14 @@
+using 'main.bicep'
+
+param location                  = 'eastus'
+param resourceGroupName         = 'rg-avd-prod'
+param hostPoolName              = 'hp-azurelocal-pool01'
+param hostPoolType              = 'Pooled'
+param loadBalancerType          = 'BreadthFirst'
+param maxSessionLimit           = 10
+param appGroupName              = 'ag-avd-desktops'
+param workspaceName             = 'ws-avd-prod'
+param keyVaultName              = 'kv-avd-prod-001'
+param logAnalyticsWorkspaceName = 'law-avd-prod'
+param environmentTag            = 'production'
+param ownerTag                  = 'platform-team'

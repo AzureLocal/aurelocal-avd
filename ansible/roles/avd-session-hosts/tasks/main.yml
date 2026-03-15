@@ -1,0 +1,112 @@
+---
+# roles/avd-session-hosts/tasks/main.yml
+# Deploys AVD session-host VMs on Azure Local and registers them with the host pool.
+
+- name: Retrieve registration token from Key Vault
+  azure.azcollection.azure_rm_keyvaultsecret_info:
+    vault_uri: "https://{{ avd_key_vault_name }}.vault.azure.net"
+    name: "avd-registration-token"
+  register: reg_token_result
+  no_log: true
+
+- name: Retrieve domain-join password from Key Vault
+  azure.azcollection.azure_rm_keyvaultsecret_info:
+    vault_uri: "https://{{ avd_key_vault_name }}.vault.azure.net"
+    name: "domain-join-password"
+  register: dj_password_result
+  no_log: true
+
+- name: Build list of VM names
+  set_fact:
+    avd_vm_names: "{{ avd_vm_names | default([]) + [avd_vm_name_prefix + '-' + '%02d' | format(item)] }}"
+  loop: "{{ range(1, avd_vm_count + 1) | list }}"
+
+- name: Create network interface for each session host
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: AzureStackHCI
+    resource_type: networkInterfaces
+    resource_name: "{{ item }}-nic"
+    api_version: "2023-09-01-preview"
+    body:
+      location: "{{ azure_location }}"
+      extendedLocation:
+        name: "{{ avd_custom_location_id }}"
+        type: "CustomLocation"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        ipConfigurations:
+          - name: "ipconfig1"
+            properties:
+              subnet:
+                id: "{{ avd_vnet_id }}/subnets/{{ avd_subnet_name }}"
+  loop: "{{ avd_vm_names }}"
+
+- name: Create HybridCompute machine (Arc VM) for each session host
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: HybridCompute
+    resource_type: machines
+    resource_name: "{{ item }}"
+    api_version: "2023-10-03-preview"
+    body:
+      location: "{{ azure_location }}"
+      extendedLocation:
+        name: "{{ avd_custom_location_id }}"
+        type: "CustomLocation"
+      kind: "HCI"
+      identity:
+        type: "SystemAssigned"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+  loop: "{{ avd_vm_names }}"
+
+- name: Install domain-join extension on each session host
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: HybridCompute
+    resource_type: machines/extensions
+    resource_name: "{{ item }}/JsonADDomainExtension"
+    api_version: "2023-10-03-preview"
+    body:
+      location: "{{ azure_location }}"
+      properties:
+        publisher: "Microsoft.Compute"
+        type: "JsonADDomainExtension"
+        typeHandlerVersion: "1.3"
+        autoUpgradeMinorVersion: true
+        settings:
+          domainToJoin: "{{ avd_domain_fqdn }}"
+          ouPath: "{{ avd_ou_path }}"
+          user: "{{ avd_domain_join_user }}"
+          restart: "true"
+          options: "3"
+        protectedSettings:
+          password: "{{ dj_password_result.secrets[0].secret_value }}"
+  loop: "{{ avd_vm_names }}"
+  no_log: true
+
+- name: Install AVD Agent (DSC extension) on each session host
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: HybridCompute
+    resource_type: machines/extensions
+    resource_name: "{{ item }}/AVDAgent"
+    api_version: "2023-10-03-preview"
+    body:
+      location: "{{ azure_location }}"
+      properties:
+        publisher: "Microsoft.Powershell"
+        type: "DSC"
+        typeHandlerVersion: "2.83"
+        autoUpgradeMinorVersion: true
+        settings:
+          modulesUrl: "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02714.342.zip"
+          configurationFunction: "Configuration.ps1\\AddSessionHost"
+          properties:
+            registrationInfoToken: "{{ reg_token_result.secrets[0].secret_value }}"
+  loop: "{{ avd_vm_names }}"
+  no_log: true

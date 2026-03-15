@@ -1,0 +1,18 @@
+using 'main.bicep'
+
+param customLocationId   = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01'
+param location           = 'eastus'
+param vmNamePrefix       = 'avd-sh'
+param vmCount            = 2
+param vmSize             = 'Standard_D4s_v3'
+param imageId            = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/galleryImages/win11-multisession-23h2'
+param vnetId             = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/virtualNetworks/vnet-azurelocal-01'
+param subnetName         = 'default'
+// Reference secrets from Key Vault – never hard-code tokens or passwords
+param registrationToken  = getSecret('00000000-0000-0000-0000-000000000000', 'rg-avd-prod', 'kv-avd-prod-001', 'avd-registration-token')
+param domainFqdn         = 'contoso.local'
+param domainJoinUser     = 'svc-domainjoin@contoso.local'
+param domainJoinPassword = getSecret('00000000-0000-0000-0000-000000000000', 'rg-avd-prod', 'kv-avd-prod-001', 'domain-join-password')
+param ouPath             = 'OU=AVD,OU=Computers,DC=contoso,DC=local'
+param environmentTag     = 'production'
+param ownerTag           = 'platform-team'

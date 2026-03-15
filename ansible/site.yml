@@ -1,0 +1,21 @@
+---
+# site.yml – Master playbook for AVD on Azure Local
+# Run with:  ansible-playbook site.yml -i inventory.example.yml
+
+- name: Deploy AVD Control Plane
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - control-plane
+  roles:
+    - avd-control-plane
+
+- name: Deploy AVD Session Hosts on Azure Local
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - session-hosts
+  roles:
+    - avd-session-hosts

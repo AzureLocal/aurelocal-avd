@@ -1,0 +1,119 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - bicep/control-plane/**
+
+pr: none
+
+parameters:
+  - name: location
+    displayName: Azure Region
+    type: string
+    default: eastus
+  - name: resourceGroupName
+    displayName: Resource Group Name
+    type: string
+    default: rg-avd-prod
+
+variables:
+  - group: avd-secrets
+  - name: bicepFile
+    value: bicep/control-plane/main.bicep
+  - name: bicepParams
+    value: bicep/control-plane/main.bicepparam
+
+stages:
+  - stage: Validate
+    displayName: Validate Bicep
+    jobs:
+      - job: Validate
+        displayName: Validate and What-If
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: Install Bicep CLI
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: az bicep install
+
+          - task: AzureCLI@2
+            displayName: Bicep Build (lint)
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: az bicep build --file $(bicepFile)
+
+          - task: AzureCLI@2
+            displayName: What-If Deployment
+            inputs:
+              azureSubscription: $(AZURE_SERVICE_CONNECTION)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az deployment sub what-if \
+                  --location "${{ parameters.location }}" \
+                  --template-file $(bicepFile) \
+                  --parameters $(bicepParams)
+
+  - stage: Deploy
+    displayName: Deploy Control Plane
+    dependsOn: Validate
+    condition: succeeded()
+    jobs:
+      - deployment: DeployControlPlane
+        displayName: Deploy to Azure
+        pool:
+          vmImage: ubuntu-latest
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - task: AzureCLI@2
+                  displayName: Install Bicep CLI
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: az bicep install
+
+                - task: AzureCLI@2
+                  displayName: Deploy AVD Control Plane
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az deployment sub create \
+                        --name "avd-control-plane-$(Build.BuildId)" \
+                        --location "${{ parameters.location }}" \
+                        --template-file $(bicepFile) \
+                        --parameters $(bicepParams)
+
+                - task: AzureCLI@2
+                  displayName: Store domain-join password in Key Vault
+                  inputs:
+                    azureSubscription: $(AZURE_SERVICE_CONNECTION)
+                    scriptType: bash
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      KV_ID=$(az deployment sub show \
+                        --name "avd-control-plane-$(Build.BuildId)" \
+                        --query "properties.outputs.keyVaultId.value" -o tsv)
+                      KV_NAME=$(echo "${KV_ID}" | awk -F'/' '{print $NF}')
+                      az keyvault secret set \
+                        --vault-name "${KV_NAME}" \
+                        --name "domain-join-password" \
+                        --value "$(DOMAIN_JOIN_PASSWORD)" \
+                        --output none
