@@ -17,7 +17,7 @@ Conventions for Infrastructure-as-Code (IaC) templates and deployment solutions 
 
 | Convention | Standard |
 |------------|----------|
-| Location | `infrastructure/bicep/` |
+| Location | `src/bicep/` |
 | Entry point | `main.bicep` |
 | Parameters | `main.bicepparam` (example: `main.bicepparam.example`) |
 | Modules | `modules/` subdirectory |
@@ -49,7 +49,7 @@ output id string = sa.id
 
 | Convention | Standard |
 |------------|----------|
-| Location | `infrastructure/terraform/` |
+| Location | `src/terraform/` |
 | Entry point | `main.tf` |
 | Variables | `variables.tf` + `terraform.tfvars.example` |
 | Outputs | `outputs.tf` |
@@ -60,19 +60,15 @@ output id string = sa.id
 ### File Organization
 
 ```
-infrastructure/terraform/
-├── main.tf                     # Provider config + module calls
+src/terraform/
+├── versions.tf                  # Provider config + version constraints
 ├── variables.tf                # Input variable declarations
 ├── outputs.tf                  # Output values
 ├── locals.tf                   # Computed locals
-├── resource-group.tf           # Resource group resources
-├── avd.tf                      # AVD-specific resources
+├── control-plane.tf            # AVD control plane resources
 ├── session-hosts.tf            # Session host resources
-├── keyvault.tf                 # Key Vault integration
 ├── terraform.tfvars.example    # Example variable values
-├── README.md
-└── templates/
-    └── cloud-init.yml.tftpl    # Template files
+└── README.md
 ```
 
 ### Naming
@@ -87,7 +83,7 @@ infrastructure/terraform/
 
 | Convention | Standard |
 |------------|----------|
-| Location | `infrastructure/arm/` |
+| Location | `src/arm/` |
 | Template | `azuredeploy.json` |
 | Parameters | `azuredeploy.parameters.example.json` |
 | Naming | `camelCase` for parameters |
@@ -98,7 +94,7 @@ infrastructure/terraform/
 
 | Convention | Standard |
 |------------|----------|
-| Location | `configure/ansible/` |
+| Location | `src/ansible/` |
 | Playbooks | `playbooks/` subdirectory |
 | Inventory | `inventory/` subdirectory |
 | Roles | `roles/` subdirectory |

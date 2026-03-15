@@ -2,7 +2,7 @@
 
 All deployment parameters consolidated from every tool's parameter file.
 
-See [`config/README.md`](../../config/README.md) for the full reference table including types, defaults, and which phases consume each variable.
+See `config/variables.example.yml` for the full reference including types, defaults, and which phases consume each variable.
 
 !!! warning "Secrets"
     Never store passwords, tokens, or certificates in parameter files. Use Azure Key Vault references instead.
@@ -48,7 +48,7 @@ See [`config/README.md`](../../config/README.md) for the full reference table in
 
 | Variable | Type | Default |
 |----------|------|---------|
-| `domain_fqdn` | string | `contoso.local` |
+| `domain_fqdn` | string | `iic.local` |
 | `domain_join_user` | string | — |
 | `ou_path` | string | — |
 

@@ -99,8 +99,8 @@ For any example domains, users, or resources in scripts, use **Infinite Improbab
 
 - Playbooks use YAML with 2-space indentation
 - Variable names use `snake_case`
-- Roles go in `configure/ansible/roles/`
-- Inventory goes in `configure/ansible/inventory/`
+- Roles go in `src/ansible/roles/`
+- Inventory goes in `src/ansible/inventory/`
 - Use `ansible-vault` for any secrets that must be stored locally
 
 ---

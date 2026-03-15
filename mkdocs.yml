@@ -28,9 +28,12 @@ nav:
   - Home: index.md
   - Architecture: architecture.md
   - Getting Started: getting-started.md
+  - Guides:
+      - AVD Deployment Guide: guides/avd-deployment-guide.md
   - Scenarios: scenarios.md
   - Reference:
       - Variables: reference/variables.md
+  - Roadmap: roadmap.md
   - Contributing: contributing.md
 
 markdown_extensions:

@@ -1,0 +1,42 @@
+---
+# inventory.example.yml
+# Copy to inventory.yml and update with your values.
+# For Azure dynamic inventory, see:
+# https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html
+
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+  vars:
+    # Azure subscription
+    azure_subscription_id: "00000000-0000-0000-0000-000000000000"
+    azure_resource_group: "rg-avd-prod"
+    azure_location: "eastus"
+
+    # AVD control plane
+    avd_host_pool_name: "hp-azurelocal-pool01"
+    avd_host_pool_type: "Pooled"
+    avd_load_balancer_type: "BreadthFirst"
+    avd_max_session_limit: 10
+    avd_app_group_name: "ag-avd-desktops"
+    avd_workspace_name: "ws-avd-prod"
+    avd_key_vault_name: "kv-avd-prod-001"
+    avd_log_analytics_workspace_name: "law-avd-prod"
+
+    # AVD session hosts
+    avd_custom_location_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+    avd_vm_name_prefix: "avd-sh"
+    avd_vm_count: 2
+    avd_vm_size: "Standard_D4s_v3"
+    avd_image_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/galleryImages/win11-multisession-23h2"
+    avd_vnet_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/virtualNetworks/vnet-azurelocal-01"
+    avd_subnet_name: "default"
+    avd_domain_fqdn: "iic.local"
+    avd_domain_join_user: "svc-domainjoin@iic.local"
+    avd_ou_path: "OU=AVD,OU=Computers,DC=iic,DC=local"
+
+    # Secrets – use ansible-vault or environment variables; do not store plaintext here
+    # avd_domain_join_password: !vault |
+    #   $ANSIBLE_VAULT;1.1;AES256
+    #   ...

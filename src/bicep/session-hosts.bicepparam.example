@@ -1,0 +1,81 @@
+// =============================================================================
+// AVD Session Host on Azure Local — Example Parameters File
+// =============================================================================
+// EXAMPLE ONLY — Do NOT use this file directly for deployments.
+//
+// src/bicep/Deploy-AVDSessionHosts.ps1 builds ALL parameters at runtime from:
+//   1. config/variables.yml       (central variable reference)
+//   2. Key Vault                  (credentials via keyvault:// URIs)
+//   3. Fresh AVD registration token (generated per deployment, 4-hour TTL)
+//
+// This file documents the expected parameter shape for reference and Bicep
+// tooling (intellisense, linting). Replace all <PLACEHOLDER> values if using
+// this file directly. NEVER commit real secrets or subscription IDs.
+// =============================================================================
+
+using './session-hosts.bicep'
+
+// ---------------------------------------------------------------------------
+// Resource Group
+// ---------------------------------------------------------------------------
+
+param resourceGroupName = '<RESOURCE_GROUP_NAME>'
+
+// ---------------------------------------------------------------------------
+// VM Sizing & Count
+// ---------------------------------------------------------------------------
+
+param sessionHostCount = 1
+param vmNamingPrefix   = '<VM_NAMING_PREFIX>'
+param vmStartIndex     = 1
+param location         = '<AZURE_REGION>'
+param vmProcessors     = 4
+param vmMemoryMB       = 16384
+
+// ---------------------------------------------------------------------------
+// Azure Local Infrastructure (cross-subscription)
+//   Full ARM resource IDs — resolved from config/variables.yml at deploy time.
+// ---------------------------------------------------------------------------
+
+param customLocationId = '<CUSTOM_LOCATION_RESOURCE_ID>'
+param logicalNetworkId = '<LOGICAL_NETWORK_RESOURCE_ID>'
+param galleryImageId   = '<GALLERY_IMAGE_RESOURCE_ID>'
+param storagePathId    = '<STORAGE_PATH_RESOURCE_ID>'
+
+// ---------------------------------------------------------------------------
+// OS Credentials — resolved from Key Vault at deploy time
+// ---------------------------------------------------------------------------
+
+param adminUsername    = '<ADMIN_USERNAME>'
+param adminPassword    = '<RESOLVED_FROM_KEYVAULT>'
+
+// ---------------------------------------------------------------------------
+// Domain Join (JsonADDomainExtension)
+// ---------------------------------------------------------------------------
+
+param domainFqdn         = '<DOMAIN_FQDN>'
+param domainJoinUser     = '<DOMAIN>\\<USERNAME>'
+param domainJoinPassword = '<RESOLVED_FROM_KEYVAULT>'
+param domainJoinOUPath   = ''
+
+// ---------------------------------------------------------------------------
+// AVD Registration — token generated fresh by deploy script (4-hour TTL)
+// ---------------------------------------------------------------------------
+
+param avdRegistrationToken = '<GENERATED_AT_DEPLOY_TIME>'
+
+// ---------------------------------------------------------------------------
+// AVD Agent URLs (defaults are current fwlinks)
+// ---------------------------------------------------------------------------
+
+param avdAgentUrl      = 'https://go.microsoft.com/fwlink/?linkid=2310011'
+param avdBootloaderUrl = 'https://go.microsoft.com/fwlink/?linkid=2311028'
+
+// ---------------------------------------------------------------------------
+// Entra ID Authentication (Hybrid Join + SSO)
+// ---------------------------------------------------------------------------
+
+param enableEntraIdAuth      = true
+param enrollInIntune         = false
+param entraUserLoginGroupId  = '<ENTRA_USER_LOGIN_GROUP_OBJECT_ID>'
+param entraAdminLoginGroupId = '<ENTRA_ADMIN_LOGIN_GROUP_OBJECT_ID>'

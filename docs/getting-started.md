@@ -53,19 +53,19 @@ Pick your preferred tool:
 ### Option A – Bicep
 
 ```bash
-cd infrastructure/bicep/control-plane
-cp main.bicepparam.example main.bicepparam
-# Edit main.bicepparam with your values
+cd src/bicep
+cp control-plane.bicepparam.example control-plane.bicepparam
+# Edit control-plane.bicepparam with your values
 az deployment sub create \
   --location eastus \
-  --template-file main.bicep \
-  --parameters main.bicepparam
+  --template-file control-plane.bicep \
+  --parameters control-plane.bicepparam
 ```
 
 ### Option B – PowerShell
 
 ```powershell
-cd infrastructure/powershell/control-plane
+cd src/powershell
 cp parameters.example.ps1 parameters.ps1
 # Edit parameters.ps1 with your values
 .\New-AVDControlPlane.ps1 -ParametersFile .\parameters.ps1
@@ -74,16 +74,17 @@ cp parameters.example.ps1 parameters.ps1
 ### Option C – Azure CLI
 
 ```bash
-cd infrastructure/azure-cli/control-plane
-cp parameters.example.sh parameters.sh
-# Edit parameters.sh with your values
+cd scripts
+cp parameters.example.env parameters.env
+# Edit parameters.env with your values
+source parameters.env
 bash deploy-avd-control-plane.sh
 ```
 
 ### Option D – Terraform
 
 ```bash
-cd infrastructure/terraform/control-plane
+cd src/terraform
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
 terraform init
@@ -129,30 +130,28 @@ Session hosts are Arc-enabled VMs deployed on your Azure Local cluster.
 ### Option A – Bicep
 
 ```bash
-cd infrastructure/bicep/session-hosts
-cp main.bicepparam.example main.bicepparam
-# Edit main.bicepparam (set customLocationId, hostPoolRegistrationToken, etc.)
+cd src/bicep
+cp session-hosts.bicepparam.example session-hosts.bicepparam
+# Edit session-hosts.bicepparam (set customLocationId, hostPoolRegistrationToken, etc.)
 az deployment group create \
   --resource-group <rg> \
-  --template-file main.bicep \
-  --parameters main.bicepparam
+  --template-file session-hosts.bicep \
+  --parameters session-hosts.bicepparam
 ```
 
 ### Option B – PowerShell
 
 ```powershell
-cd infrastructure/powershell/session-hosts
-cp parameters.example.ps1 parameters.ps1
-# Edit parameters.ps1
+cd src/powershell
+# parameters.ps1 should already exist from control-plane step
 .\New-AVDSessionHosts.ps1 -ParametersFile .\parameters.ps1
 ```
 
 ### Option C – Terraform
 
 ```bash
-cd infrastructure/terraform/session-hosts
-cp terraform.tfvars.example terraform.tfvars
-terraform init
+cd src/terraform
+# terraform.tfvars should already exist from control-plane step
 terraform plan
 terraform apply
 ```
@@ -193,5 +192,5 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\FSLogix\Profiles" `
 ## Next Steps
 
 - Review [deployment scenarios](./scenarios.md) for more configurations.
-- Set up [CI/CD pipelines](../pipelines/README.md) for automated deployments.
+- Set up CI/CD pipelines using the examples in `examples/pipelines/` for automated deployments.
 - Review the [architecture overview](./architecture.md) to understand the full solution.

@@ -2,20 +2,6 @@
 
 Infrastructure-as-code and automation for deploying **AVD** with session hosts running on **Azure Local** clusters.
 
-## Deployment Workflow
-
-```
-config/  →  infrastructure/  →  deploy/  →  configure/  →  tests/
-```
-
-| Phase | Directory | What happens |
-|-------|-----------|-------------|
-| **0** | `config/` | Fill in your variables (`variables.yml`) |
-| **1** | `infrastructure/` | Provision AVD control plane + session hosts (pick a tool) |
-| **2** | `deploy/` | Workload-specific deployment scripts |
-| **3** | `configure/` | Post-deployment configuration (Ansible) |
-| **4** | `tests/` | Validate the deployment |
-
 ## Quick Start
 
 1. Clone the repo and copy the variable template:
@@ -31,12 +17,12 @@ config/  →  infrastructure/  →  deploy/  →  configure/  →  tests/
 
 | Tool | Directory | Best for |
 |------|-----------|----------|
-| Bicep | `infrastructure/bicep/` | Recommended — native ARM, type-safe |
-| ARM | `infrastructure/arm/` | Direct ARM JSON templates |
-| Terraform | `infrastructure/terraform/` | Multi-cloud / existing TF estate |
-| PowerShell | `infrastructure/powershell/` | Interactive / ad-hoc |
-| Azure CLI | `infrastructure/azure-cli/` | Bash-based scripting |
-| Ansible | `configure/ansible/` | Post-deploy OS/app config |
+| Bicep | `src/bicep/` | Recommended — native ARM, type-safe |
+| ARM | `src/arm/` | Direct ARM JSON templates |
+| Terraform | `src/terraform/` | Multi-cloud / existing TF estate |
+| PowerShell | `src/powershell/` | Interactive / ad-hoc |
+| Azure CLI | `scripts/` | Bash-based scripting |
+| Ansible | `src/ansible/` | Post-deploy OS/app config |
 
 ## Related
 

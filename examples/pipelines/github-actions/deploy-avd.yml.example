@@ -1,0 +1,89 @@
+# Example: Deploy AVD via GitHub Actions
+#
+# Copy this file to .github/workflows/ and configure the required secrets:
+#   AZURE_CLIENT_ID, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+#
+# This is a sample pipeline — adjust paths, parameters, and environments as needed.
+
+name: Deploy AVD (Example)
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'What to deploy'
+        required: true
+        type: choice
+        options:
+          - control-plane
+          - session-hosts
+          - both
+        default: 'both'
+      location:
+        description: 'Azure region'
+        required: true
+        default: 'eastus'
+      resource_group_name:
+        description: 'Resource group name'
+        required: true
+        default: 'rg-avd-prod'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-control-plane:
+    name: Deploy Control Plane
+    if: ${{ github.event.inputs.deploy_target == 'control-plane' || github.event.inputs.deploy_target == 'both' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Bicep CLI
+        run: az bicep install
+
+      - name: Deploy Control Plane
+        run: |
+          az deployment sub create \
+            --name "avd-control-plane-$(date +%Y%m%d%H%M%S)" \
+            --location ${{ github.event.inputs.location }} \
+            --template-file src/bicep/control-plane.bicep \
+            --parameters src/bicep/control-plane.bicepparam
+
+  deploy-session-hosts:
+    name: Deploy Session Hosts
+    if: ${{ github.event.inputs.deploy_target == 'session-hosts' || github.event.inputs.deploy_target == 'both' }}
+    runs-on: ubuntu-latest
+    needs: deploy-control-plane
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install Bicep CLI
+        run: az bicep install
+
+      - name: Deploy Session Hosts
+        run: |
+          az deployment group create \
+            --name "avd-session-hosts-$(date +%Y%m%d%H%M%S)" \
+            --resource-group ${{ github.event.inputs.resource_group_name }} \
+            --template-file src/bicep/session-hosts.bicep \
+            --parameters src/bicep/session-hosts.bicepparam

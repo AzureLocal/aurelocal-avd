@@ -41,7 +41,7 @@ All changes go through a Pull Request targeting `dev`, which is then merged to `
 - Use approved PowerShell verbs (`New-`, `Set-`, `Remove-`, `Test-`).
 - Include comment-based help (`.SYNOPSIS`, `.DESCRIPTION`, `.PARAMETER`, `.EXAMPLE`).
 - Use `Write-Host` with `-ForegroundColor` for status messages; use `Write-Verbose` for debug detail.
-- Support a `parameters.ps1` file pattern (see `parameters.example.ps1` in each tool folder under `infrastructure/`).
+- Support a `parameters.ps1` file pattern (see `parameters.example.ps1` in `src/powershell/`).
 
 ### Azure CLI / Bash
 
@@ -53,7 +53,7 @@ All changes go through a Pull Request targeting `dev`, which is then merged to `
 ### Bicep
 
 - Use `targetScope = 'subscription'` for control-plane templates (resource group creation) and `targetScope = 'resourceGroup'` for session-host templates.
-- Break resources into modules under the `modules/` subdirectory.
+- Break resources into modules or separate `.bicep` resource files.
 - Include `@description()` decorators on all parameters.
 - Provide a `*.bicepparam.example` file for every `main.bicep`.
 - Prefer `existing` resource references over hard-coded resource IDs where possible.

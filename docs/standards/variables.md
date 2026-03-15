@@ -73,10 +73,10 @@ The deploy scripts read the central `config/variables.yml` directly. Legacy conf
 | Tool | File | Location |
 |------|------|----------|
 | PowerShell | `variables.yml` | `config/` |
-| Bicep | `main.bicepparam` | `infrastructure/bicep/` |
-| Terraform | `terraform.tfvars` | `infrastructure/terraform/` |
-| ARM | `azuredeploy.parameters.json` | `infrastructure/arm/` |
-| Ansible | `inventory.yml` | `configure/ansible/inventory/` |
-| Azure CLI | `.env` | `infrastructure/azure-cli/` |
+| Bicep | `*.bicepparam` | `src/bicep/` |
+| Terraform | `terraform.tfvars` | `src/terraform/` |
+| ARM | `*.parameters.json` | `src/arm/` |
+| Ansible | `hosts.yml` | `src/ansible/inventory/` |
+| Azure CLI | `parameters.env` | `scripts/` |
 
 All tool-specific parameter files should derive their values from the central `config/variables.yml`.

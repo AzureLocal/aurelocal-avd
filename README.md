@@ -4,46 +4,26 @@ Infrastructure-as-code and automation for deploying **Azure Virtual Desktop (AVD
 
 ---
 
-## Deployment Workflow
-
-```
-config/  →  infrastructure/  →  deploy/  →  configure/  →  tests/
-```
-
-| Phase | Directory | Description |
-|-------|-----------|-------------|
-| **0** | `config/` | Central variable definitions |
-| **1** | `infrastructure/` | Provision AVD control plane + session hosts |
-| **2** | `deploy/` | Workload deployment scripts |
-| **3** | `configure/` | Post-deployment configuration (Ansible) |
-| **4** | `tests/` | Validate the deployment |
-
----
-
 ## Repository Structure
 
 ```
 azurelocal-avd/
 ├── config/                  # Central variable reference (variables.example.yml)
-├── infrastructure/          # IaC templates — one folder per tool
+├── src/                     # IaC templates — one folder per tool
 │   ├── bicep/               #   Bicep (recommended)
 │   ├── arm/                 #   ARM JSON
 │   ├── terraform/           #   Terraform
 │   ├── powershell/          #   PowerShell scripts
-│   └── azure-cli/           #   Azure CLI / Bash scripts
-├── deploy/                  # Workload deployment scripts
-├── configure/               # Post-deploy configuration
 │   └── ansible/             #   Ansible playbooks and roles
+├── scripts/                 # Azure CLI / Bash utility scripts
+├── examples/                # Pipeline examples and walkthroughs
+│   └── pipelines/
+│       ├── azure-devops/
+│       └── github-actions/
 ├── tests/                   # Validation scripts
-├── scripts/                 # Standalone utilities
-├── examples/                # End-to-end walkthroughs
 ├── docs/                    # Documentation (MkDocs source)
-├── pipelines/               # Azure DevOps pipeline definitions
-│   └── azure-devops/
 └── .github/workflows/       # GitHub Actions workflows
 ```
-
-Each tool folder under `infrastructure/` contains `control-plane/` and `session-hosts/` subdirectories.
 
 ---
 
@@ -64,12 +44,12 @@ See [Getting Started](./docs/getting-started.md) for full instructions.
 
 | Tool | Location | Best For |
 |------|----------|----------|
-| Bicep | [`infrastructure/bicep/`](./infrastructure/bicep/) | Recommended — native ARM, type-safe |
-| ARM | [`infrastructure/arm/`](./infrastructure/arm/) | Direct ARM JSON templates |
-| Terraform | [`infrastructure/terraform/`](./infrastructure/terraform/) | Multi-cloud / existing TF estate |
-| PowerShell | [`infrastructure/powershell/`](./infrastructure/powershell/) | Interactive / ad-hoc |
-| Azure CLI | [`infrastructure/azure-cli/`](./infrastructure/azure-cli/) | Bash-based scripting |
-| Ansible | [`configure/ansible/`](./configure/ansible/) | Post-deploy OS/app config |
+| Bicep | [`src/bicep/`](./src/bicep/) | Recommended — native ARM, type-safe |
+| ARM | [`src/arm/`](./src/arm/) | Direct ARM JSON templates |
+| Terraform | [`src/terraform/`](./src/terraform/) | Multi-cloud / existing TF estate |
+| PowerShell | [`src/powershell/`](./src/powershell/) | Interactive / ad-hoc |
+| Azure CLI | [`scripts/`](./scripts/) | Bash-based scripting |
+| Ansible | [`src/ansible/`](./src/ansible/) | Post-deploy OS/app config |
 
 ---
 

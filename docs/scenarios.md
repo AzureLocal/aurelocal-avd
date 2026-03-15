@@ -19,7 +19,7 @@ This document describes the primary deployment scenarios supported by this repos
 3. Domain-join VMs and register them with the host pool.
 4. Configure FSLogix on session hosts pointing to the SOFS share.
 
-**Tool examples**: `infrastructure/bicep/control-plane/` + `infrastructure/bicep/session-hosts/`
+**Tool examples**: `src/bicep/control-plane.bicep` + `src/bicep/session-hosts.bicep`
 
 ---
 
@@ -38,7 +38,7 @@ This document describes the primary deployment scenarios supported by this repos
 3. Domain-join VMs and register them with the host pool.
 4. Optionally assign users to specific VMs via Azure portal or automation.
 
-**Tool examples**: `infrastructure/powershell/control-plane/` + `infrastructure/powershell/session-hosts/`
+**Tool examples**: `src/powershell/New-AVDControlPlane.ps1` + `src/powershell/New-AVDSessionHosts.ps1`
 
 ---
 
@@ -58,7 +58,7 @@ This document describes the primary deployment scenarios supported by this repos
 4. Both sets of hosts register to the same host pool using the registration token.
 5. Configure FSLogix cloud cache or Azure Files for profile portability.
 
-**Tool examples**: `infrastructure/terraform/control-plane/` + `infrastructure/terraform/session-hosts/`
+**Tool examples**: `src/terraform/control-plane.tf` + `src/terraform/session-hosts.tf`
 
 ---
 
@@ -71,7 +71,7 @@ This document describes the primary deployment scenarios supported by this repos
 2. **SOFS + FSLogix share** – Deploy using the [companion repository](https://github.com/AzureLocal/azurelocal-sofs-fslogix).
 3. **AVD control plane** – Deploy host pool, app group, workspace using any tool in this repo.
 4. **AVD session hosts** – Deploy VMs on Azure Local and register with the host pool.
-5. **CI/CD pipeline** – Wire up ongoing session-host lifecycle management using the pipeline examples in `.github/workflows/` and `pipelines/azure-devops/`.
+5. **CI/CD pipeline** – Wire up ongoing session-host lifecycle management using `.github/workflows/` and the pipeline examples in `examples/pipelines/`.
 
 ---
 

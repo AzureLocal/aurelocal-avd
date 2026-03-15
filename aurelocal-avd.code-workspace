@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"avd/": true
+		},
+		"editor.formatOnSave": true,
+		"editor.tabSize": 2,
+		"files.trimTrailingWhitespace": true,
+		"files.insertFinalNewline": true,
+		"yaml.schemas": {
+			"https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-azuretools.vscode-bicep",
+			"hashicorp.terraform",
+			"redhat.vscode-yaml",
+			"ms-vscode.powershell",
+			"esbenp.prettier-vscode",
+			"DavidAnson.vscode-markdownlint"
+		]
+	}
+}
