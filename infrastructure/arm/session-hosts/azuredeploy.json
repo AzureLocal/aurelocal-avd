@@ -1,0 +1,158 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "type": "String",
+      "metadata": { "description": "Name of the session host VM and Arc machine." }
+    },
+    "nicName": {
+      "type": "String",
+      "metadata": { "description": "Name of the network interface." }
+    },
+    "location": {
+      "type": "String",
+      "metadata": { "description": "Azure region - must match the Azure Local cluster region." }
+    },
+    "customLocationId": {
+      "type": "String",
+      "metadata": { "description": "Full resource ID of the Azure Local custom location. Can be in a different subscription." }
+    },
+    "logicalNetworkId": {
+      "type": "String",
+      "metadata": { "description": "Full resource ID of the Azure Local logical network (VLAN)." }
+    },
+    "imageId": {
+      "type": "String",
+      "metadata": { "description": "Full resource ID of the Azure Local marketplace gallery image." }
+    },
+    "storagePathId": {
+      "type": "String",
+      "metadata": { "description": "Full resource ID of the Azure Local storage path (VM config store)." }
+    },
+    "adminUsername": {
+      "type": "String",
+      "metadata": { "description": "Local administrator username for the VM." }
+    },
+    "adminPassword": {
+      "type": "SecureString",
+      "metadata": { "description": "Local administrator password for the VM." }
+    },
+    "memorymb": {
+      "type": "Int",
+      "defaultValue": 16384,
+      "metadata": { "description": "VM memory in MB." }
+    },
+    "processors": {
+      "type": "Int",
+      "defaultValue": 4,
+      "metadata": { "description": "Number of vCPUs." }
+    },
+    "commandToExecute": {
+      "type": "SecureString",
+      "metadata": { "description": "Full CustomScriptExtension command. Must include domain join and AVD agent install with registration token. See parameters file for example." }
+    }
+  },
+  "resources": [
+    {
+      "comments": "Arc machine - registers the VM with Azure Arc. No extendedLocation required.",
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2023-06-20-preview",
+      "name": "[parameters('vmName')]",
+      "location": "[parameters('location')]",
+      "kind": "HCI",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": []
+    },
+    {
+      "comments": "NIC on the Azure Local logical network. extendedLocation can reference a different subscription via full resource ID.",
+      "type": "Microsoft.AzureStackHCI/networkInterfaces",
+      "apiVersion": "2025-09-01-preview",
+      "name": "[parameters('nicName')]",
+      "location": "[parameters('location')]",
+      "extendedLocation": {
+        "type": "CustomLocation",
+        "name": "[parameters('customLocationId')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[parameters('nicName')]",
+            "properties": {
+              "subnet": {
+                "id": "[parameters('logicalNetworkId')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "comments": "VM instance scoped to the Arc machine. ARM resolves cross-subscription extendedLocation references.",
+      "type": "Microsoft.AzureStackHCI/VirtualMachineInstances",
+      "apiVersion": "2025-09-01-preview",
+      "name": "default",
+      "extendedLocation": {
+        "type": "CustomLocation",
+        "name": "[parameters('customLocationId')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.HybridCompute/machines', parameters('vmName'))]",
+        "[resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('nicName'))]"
+      ],
+      "properties": {
+        "osProfile": {
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "computerName": "[parameters('vmName')]",
+          "windowsConfiguration": {
+            "provisionVMAgent": true,
+            "provisionVMConfigAgent": true
+          }
+        },
+        "hardwareProfile": {
+          "vmSize": "Default",
+          "processors": "[parameters('processors')]",
+          "memoryMB": "[parameters('memorymb')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "id": "[parameters('imageId')]"
+          },
+          "vmConfigStoragePathId": "[parameters('storagePathId')]"
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('nicName'))]"
+            }
+          ]
+        }
+      },
+      "scope": "[concat('Microsoft.HybridCompute/machines/', parameters('vmName'))]"
+    },
+    {
+      "comments": "Domain join + AVD agent install via CustomScriptExtension. ARM waits here until Arc agent connects and extension completes. Only one CustomScriptExtension allowed per machine - both operations combined.",
+      "type": "Microsoft.HybridCompute/machines/extensions",
+      "apiVersion": "2023-06-20-preview",
+      "name": "[concat(parameters('vmName'), '/AVDSessionHostSetup')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.HybridCompute/machines', parameters('vmName'))]",
+        "[extensionResourceId(resourceId('Microsoft.HybridCompute/machines', parameters('vmName')), 'Microsoft.AzureStackHCI/VirtualMachineInstances', 'default')]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.10",
+        "autoUpgradeMinorVersion": true,
+        "settings": {},
+        "protectedSettings": {
+          "commandToExecute": "[parameters('commandToExecute')]"
+        }
+      }
+    }
+  ]
+}

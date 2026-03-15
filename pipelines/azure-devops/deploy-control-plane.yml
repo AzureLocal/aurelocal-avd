@@ -4,7 +4,7 @@ trigger:
       - main
   paths:
     include:
-      - bicep/control-plane/**
+      - infrastructure/bicep/control-plane/**
 
 pr: none
 
@@ -21,9 +21,9 @@ parameters:
 variables:
   - group: avd-secrets
   - name: bicepFile
-    value: bicep/control-plane/main.bicep
+    value: infrastructure/bicep/control-plane/main.bicep
   - name: bicepParams
-    value: bicep/control-plane/main.bicepparam
+    value: infrastructure/bicep/control-plane/main.bicepparam
 
 stages:
   - stage: Validate

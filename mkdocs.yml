@@ -1,0 +1,46 @@
+site_name: Azure Virtual Desktop on Azure Local
+site_description: IaC and automation for deploying AVD on Azure Local
+repo_url: https://github.com/AzureLocal/aurelocal-avd
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+    - content.code.annotate
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Getting Started: getting-started.md
+  - Scenarios: scenarios.md
+  - Reference:
+      - Variables: reference/variables.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true

@@ -41,7 +41,7 @@ All changes go through a Pull Request targeting `dev`, which is then merged to `
 - Use approved PowerShell verbs (`New-`, `Set-`, `Remove-`, `Test-`).
 - Include comment-based help (`.SYNOPSIS`, `.DESCRIPTION`, `.PARAMETER`, `.EXAMPLE`).
 - Use `Write-Host` with `-ForegroundColor` for status messages; use `Write-Verbose` for debug detail.
-- Support a `parameters.ps1` file pattern (see `parameters.example.ps1` in each folder).
+- Support a `parameters.ps1` file pattern (see `parameters.example.ps1` in each tool folder under `infrastructure/`).
 
 ### Azure CLI / Bash
 

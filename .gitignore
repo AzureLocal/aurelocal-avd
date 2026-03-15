@@ -38,3 +38,16 @@ __pycache__/
 
 # Ansible
 *.retry
+
+# Logs
+logs/*.log
+logs/*.txt
+
+# Config (user-specific values)
+config/variables.yml
+
+# MkDocs build output
+site/
+
+# Source working folder (integrated into repo structure — not tracked directly)
+avd/

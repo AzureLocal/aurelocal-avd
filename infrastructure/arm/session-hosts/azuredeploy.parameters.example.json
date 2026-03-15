@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "_comment": [
+    "EXAMPLE ONLY — Do NOT use this file directly.",
+    "deploy/Deploy-AVDSessionHosts-ARM.ps1 builds all parameters at runtime from:",
+    "  1. config/variables.yml       (central variable reference)",
+    "  2. Key Vault                  (credentials resolved via keyvault:// URIs)",
+    "  3. Fresh AVD registration token (generated per deployment, 4-hour TTL)",
+    "This file documents the expected parameter shape for manual/ad-hoc use.",
+    "Replace all <PLACEHOLDER> values before use. NEVER commit real secrets."
+  ],
+  "parameters": {
+    "vmName":           { "value": "<VM_NAME>" },
+    "nicName":          { "value": "<VM_NAME>-nic" },
+    "location":         { "value": "<AZURE_REGION>" },
+    "customLocationId": { "value": "/subscriptions/<AZL_SUB_ID>/resourceGroups/<AZL_RG>/providers/Microsoft.ExtendedLocation/customLocations/<CUSTOM_LOCATION>" },
+    "logicalNetworkId": { "value": "/subscriptions/<AZL_SUB_ID>/resourceGroups/<AZL_RG>/providers/Microsoft.AzureStackHCI/logicalNetworks/<LNET_NAME>" },
+    "imageId":          { "value": "/subscriptions/<AZL_SUB_ID>/resourceGroups/<AZL_RG>/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/<IMAGE_NAME>" },
+    "storagePathId":    { "value": "/subscriptions/<AZL_SUB_ID>/resourceGroups/<AZL_RG>/providers/Microsoft.AzureStackHCI/storageContainers/<STORAGE_PATH>" },
+    "adminUsername":    { "value": "<ADMIN_USERNAME>" },
+    "adminPassword":    { "value": "<RESOLVED_FROM_KEYVAULT>" },
+    "memorymb":         { "value": 16384 },
+    "processors":       { "value": 4 },
+    "commandToExecute": { "value": "<BUILT_BY_DEPLOY_SCRIPT — domain join + AVD agent install + registration token>" }
+  }
+}

@@ -13,9 +13,9 @@ parameters:
 variables:
   - group: avd-secrets
   - name: bicepFile
-    value: bicep/session-hosts/main.bicep
+    value: infrastructure/bicep/session-hosts/main.bicep
   - name: bicepParams
-    value: bicep/session-hosts/main.bicepparam
+    value: infrastructure/bicep/session-hosts/main.bicepparam
 
 stages:
   - stage: Validate

@@ -53,7 +53,7 @@ Pick your preferred tool:
 ### Option A – Bicep
 
 ```bash
-cd bicep/control-plane
+cd infrastructure/bicep/control-plane
 cp main.bicepparam.example main.bicepparam
 # Edit main.bicepparam with your values
 az deployment sub create \
@@ -65,7 +65,7 @@ az deployment sub create \
 ### Option B – PowerShell
 
 ```powershell
-cd powershell/control-plane
+cd infrastructure/powershell/control-plane
 cp parameters.example.ps1 parameters.ps1
 # Edit parameters.ps1 with your values
 .\New-AVDControlPlane.ps1 -ParametersFile .\parameters.ps1
@@ -74,7 +74,7 @@ cp parameters.example.ps1 parameters.ps1
 ### Option C – Azure CLI
 
 ```bash
-cd azure-cli/control-plane
+cd infrastructure/azure-cli/control-plane
 cp parameters.example.sh parameters.sh
 # Edit parameters.sh with your values
 bash deploy-avd-control-plane.sh
@@ -83,7 +83,7 @@ bash deploy-avd-control-plane.sh
 ### Option D – Terraform
 
 ```bash
-cd terraform/control-plane
+cd infrastructure/terraform/control-plane
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
 terraform init
@@ -129,7 +129,7 @@ Session hosts are Arc-enabled VMs deployed on your Azure Local cluster.
 ### Option A – Bicep
 
 ```bash
-cd bicep/session-hosts
+cd infrastructure/bicep/session-hosts
 cp main.bicepparam.example main.bicepparam
 # Edit main.bicepparam (set customLocationId, hostPoolRegistrationToken, etc.)
 az deployment group create \
@@ -141,7 +141,7 @@ az deployment group create \
 ### Option B – PowerShell
 
 ```powershell
-cd powershell/session-hosts
+cd infrastructure/powershell/session-hosts
 cp parameters.example.ps1 parameters.ps1
 # Edit parameters.ps1
 .\New-AVDSessionHosts.ps1 -ParametersFile .\parameters.ps1
@@ -150,7 +150,7 @@ cp parameters.example.ps1 parameters.ps1
 ### Option C – Terraform
 
 ```bash
-cd terraform/session-hosts
+cd infrastructure/terraform/session-hosts
 cp terraform.tfvars.example terraform.tfvars
 terraform init
 terraform plan

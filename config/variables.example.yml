@@ -1,0 +1,105 @@
+# =============================================================================
+# Central Variable Reference — azurelocal-avd
+# =============================================================================
+# Copy this file to variables.yml and fill in your values.
+# DO NOT commit variables.yml — it is .gitignore'd.
+#
+# All secrets use keyvault:// URIs — resolved at deploy time via Key Vault.
+# Never store passwords, keys, or tokens as plain text in this file.
+#
+# Workflow: config → infrastructure → deploy → configure → tests
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Subscription & Global
+# -----------------------------------------------------------------------------
+subscription:
+  # AVD subscription — host pool, app group, workspace, and session host VMs deploy here
+  avd_subscription_id: "00000000-0000-0000-0000-000000000000"
+  # Azure Local subscription — cluster, custom location, logical networks, images
+  azure_local_subscription_id: "00000000-0000-0000-0000-000000000000"
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  location: "eastus"
+
+# -----------------------------------------------------------------------------
+# Security — Key Vault
+# -----------------------------------------------------------------------------
+security:
+  key_vault_name: "kv-iic-platform"           # Platform Key Vault for all secret resolution
+  key_vault_resource_group: "rg-iic-mgmt-eus-01"
+
+# -----------------------------------------------------------------------------
+# Control Plane (infrastructure/ → deploy/)
+# -----------------------------------------------------------------------------
+control_plane:
+  resource_group: "rg-iic-avd-hp-eus-01"     # Resource group for host pool + app group + workspace
+  host_pool_name: "hp-iic-avd-pool01"
+  host_pool_type: "Pooled"                    # Pooled | Personal
+  load_balancer_type: "BreadthFirst"          # BreadthFirst | DepthFirst (ignored for Personal)
+  max_session_limit: 16                       # Max concurrent sessions per host (Pooled only)
+  preferred_app_group_type: "Desktop"         # Desktop | RailApplications | None
+  personal_assignment_type: "Automatic"       # Automatic | Direct (Personal only)
+  start_vm_on_connect: false                  # Requires Desktop Virtualization Power On Contributor RBAC
+  validation_environment: false               # Receives service updates before production
+  custom_rdp_properties: ""                   # Semicolon-delimited RDP properties
+  host_pool_friendly_name: ""
+  host_pool_description: ""
+  app_group_name: "vdag-iic-avd-eus-01"
+  app_group_type: "Desktop"                   # Desktop | RemoteApp
+  app_group_friendly_name: ""
+  workspace_name: "vdws-iic-avd-eus-01"
+  workspace_friendly_name: ""
+
+# -----------------------------------------------------------------------------
+# Session Hosts (infrastructure/ → deploy/)
+# -----------------------------------------------------------------------------
+session_hosts:
+  resource_group: "rg-iic-avd-sh-eus-01"     # Resource group for session host VMs (can differ from control plane)
+  session_host_count: 2
+  vm_naming_prefix: "vm-iicavd"               # VMs named {prefix}-001, {prefix}-002, etc.
+  vm_start_index: 1
+  vm_processors: 4                            # vCPUs per session host
+  vm_memory_mb: 16384                         # Memory in MB per session host
+  vm_admin_username: "avd_admin"
+  vm_admin_password: "keyvault://kv-iic-platform/avd-local-admin-password"
+  session_host_os: "Windows-11-Enterprise-Multi-Session"
+
+  # Azure Local infrastructure references (full ARM resource IDs)
+  custom_location_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+  logical_network_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/logicalNetworks/lnet-compute-01"
+  gallery_image_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/img-win11-avd-m365"
+  storage_path_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/storageContainers/sp-vmstore-01"
+
+# -----------------------------------------------------------------------------
+# Domain Join
+# -----------------------------------------------------------------------------
+domain:
+  domain_fqdn: "iic.local"
+  domain_join_username: "svc.domainjoin"      # FQDN-qualified at deploy time: {domain_fqdn}\{username}
+  domain_join_password: "keyvault://kv-iic-platform/domain-join-password"
+  domain_join_ou_path: ""                     # Empty = default Computers container
+
+# -----------------------------------------------------------------------------
+# Entra ID Authentication (optional — Hybrid Join + SSO)
+# -----------------------------------------------------------------------------
+entra_id:
+  enable_entra_id_auth: false                 # Installs AADLoginForWindows extension + RDP SSO
+  enroll_in_intune: false                     # Register session hosts in Intune MDM
+  entra_user_login_group_id: ""               # Object ID of Entra group for VM User Login RBAC
+  entra_admin_login_group_id: ""              # Object ID of Entra group for VM Administrator Login RBAC
+
+# -----------------------------------------------------------------------------
+# Tags
+# -----------------------------------------------------------------------------
+tags:
+  Environment: "Production"
+  Project: "AVD on Azure Local"
+  ManagedBy: "Infrastructure as Code"
+  Owner: "Platform Team"
+  CostCenter: "IT-Infrastructure"
+
+# -----------------------------------------------------------------------------
+# Ansible (configure/)
+# -----------------------------------------------------------------------------
+ansible:
+  ansible_connection: "local"
