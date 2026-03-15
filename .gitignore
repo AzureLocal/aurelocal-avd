@@ -1,0 +1,40 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+.terraform.lock.hcl
+terraform.tfvars
+
+# Bicep
+*.bicepparam
+
+# PowerShell
+*.ps1.bak
+
+# Secrets / credentials
+*.env
+*.key
+*.pem
+*.pfx
+credentials.json
+secrets.json
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+
+# Ansible
+*.retry

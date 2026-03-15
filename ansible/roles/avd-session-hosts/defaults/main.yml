@@ -1,0 +1,10 @@
+---
+# roles/avd-session-hosts/defaults/main.yml
+
+avd_vm_count: 2
+avd_vm_name_prefix: "avd-sh"
+avd_vm_size: "Standard_D4s_v3"
+avd_subnet_name: "default"
+avd_ou_path: ""
+avd_environment_tag: "production"
+avd_owner_tag: "platform-team"

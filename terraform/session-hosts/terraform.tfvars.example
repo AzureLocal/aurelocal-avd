@@ -1,0 +1,25 @@
+# Copy to terraform.tfvars and fill in your values.
+# DO NOT commit terraform.tfvars (it is .gitignore'd).
+
+resource_group_name = "rg-avd-prod"
+location            = "eastus"
+
+custom_location_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+
+vm_name_prefix = "avd-sh"
+vm_count       = 2
+vm_size        = "Standard_D4s_v3"
+
+image_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/galleryImages/win11-multisession-23h2"
+
+vnet_id     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/virtualNetworks/vnet-azurelocal-01"
+subnet_name = "default"
+
+key_vault_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avd-prod/providers/Microsoft.KeyVault/vaults/kv-avd-prod-001"
+
+domain_fqdn      = "contoso.local"
+domain_join_user = "svc-domainjoin@contoso.local"
+ou_path          = "OU=AVD,OU=Computers,DC=contoso,DC=local"
+
+environment_tag = "production"
+owner_tag       = "platform-team"

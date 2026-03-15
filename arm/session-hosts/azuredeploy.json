@@ -1,0 +1,177 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys AVD session-host VMs on an Azure Local cluster."
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": { "description": "Azure region." }
+    },
+    "customLocationId": {
+      "type": "string",
+      "metadata": { "description": "Resource ID of the Arc Custom Location." }
+    },
+    "vmNamePrefix": {
+      "type": "string",
+      "defaultValue": "avd-sh",
+      "metadata": { "description": "VM name prefix." }
+    },
+    "vmCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": { "description": "Number of session-host VMs." }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D4s_v3"
+    },
+    "imageId": {
+      "type": "string",
+      "metadata": { "description": "Resource ID of the Azure Local gallery image." }
+    },
+    "vnetId": {
+      "type": "string",
+      "metadata": { "description": "Resource ID of the Azure Local virtual network." }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "default"
+    },
+    "registrationToken": {
+      "type": "securestring",
+      "metadata": { "description": "AVD host-pool registration token. Use a Key Vault reference." }
+    },
+    "domainFqdn": {
+      "type": "string",
+      "metadata": { "description": "Domain FQDN to join." }
+    },
+    "domainJoinUser": {
+      "type": "string",
+      "metadata": { "description": "Domain-join service account UPN." }
+    },
+    "domainJoinPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Domain-join password. Use a Key Vault reference." }
+    },
+    "ouPath": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": { "description": "OU path for computer accounts." }
+    },
+    "environmentTag": {
+      "type": "string",
+      "defaultValue": "production"
+    },
+    "ownerTag": {
+      "type": "string",
+      "defaultValue": "platform-team"
+    }
+  },
+  "variables": {
+    "tags": {
+      "environment": "[parameters('environmentTag')]",
+      "owner": "[parameters('ownerTag')]",
+      "deployedBy": "arm"
+    }
+  },
+  "resources": [
+    {
+      "copy": {
+        "name": "nicLoop",
+        "count": "[parameters('vmCount')]"
+      },
+      "type": "Microsoft.AzureStackHCI/networkInterfaces",
+      "apiVersion": "2023-09-01-preview",
+      "name": "[concat(parameters('vmNamePrefix'), '-', padLeft(copyIndex(1), 2, '0'), '-nic')]",
+      "location": "[parameters('location')]",
+      "extendedLocation": {
+        "name": "[parameters('customLocationId')]",
+        "type": "CustomLocation"
+      },
+      "tags": "[variables('tags')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[concat(parameters('vnetId'), '/subnets/', parameters('subnetName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "copy": {
+        "name": "machineLoop",
+        "count": "[parameters('vmCount')]"
+      },
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2023-10-03-preview",
+      "name": "[concat(parameters('vmNamePrefix'), '-', padLeft(copyIndex(1), 2, '0'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "extendedLocation": {
+        "name": "[parameters('customLocationId')]",
+        "type": "CustomLocation"
+      },
+      "kind": "HCI",
+      "identity": { "type": "SystemAssigned" },
+      "dependsOn": ["nicLoop"]
+    },
+    {
+      "copy": {
+        "name": "domainJoinLoop",
+        "count": "[parameters('vmCount')]"
+      },
+      "type": "Microsoft.HybridCompute/machines/extensions",
+      "apiVersion": "2023-10-03-preview",
+      "name": "[concat(parameters('vmNamePrefix'), '-', padLeft(copyIndex(1), 2, '0'), '/JsonADDomainExtension')]",
+      "location": "[parameters('location')]",
+      "dependsOn": ["machineLoop"],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "domainToJoin": "[parameters('domainFqdn')]",
+          "ouPath": "[parameters('ouPath')]",
+          "user": "[parameters('domainJoinUser')]",
+          "restart": "true",
+          "options": "3"
+        },
+        "protectedSettings": {
+          "password": "[parameters('domainJoinPassword')]"
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "avdAgentLoop",
+        "count": "[parameters('vmCount')]"
+      },
+      "type": "Microsoft.HybridCompute/machines/extensions",
+      "apiVersion": "2023-10-03-preview",
+      "name": "[concat(parameters('vmNamePrefix'), '-', padLeft(copyIndex(1), 2, '0'), '/AVDAgent')]",
+      "location": "[parameters('location')]",
+      "dependsOn": ["domainJoinLoop"],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.83",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02714.342.zip",
+          "configurationFunction": "Configuration.ps1\\AddSessionHost",
+          "properties": {
+            "registrationInfoToken": "[parameters('registrationToken')]"
+          }
+        }
+      }
+    }
+  ]
+}
