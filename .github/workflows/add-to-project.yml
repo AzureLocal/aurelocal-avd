@@ -42,17 +42,17 @@ jobs:
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
           OPTION_ID=""
           if echo "$LABELS" | grep -q '"solution/sofs"'; then
-            OPTION_ID="1695a3e2"
+            OPTION_ID="a33c6c71"
           elif echo "$LABELS" | grep -q '"solution/avd"'; then
-            OPTION_ID="1d1bf6c0"
+            OPTION_ID="502138a1"
           elif echo "$LABELS" | grep -q '"solution/loadtools"'; then
-            OPTION_ID="bb2d53f9"
+            OPTION_ID="822e566b"
           elif echo "$LABELS" | grep -q '"solution/vmconvert"'; then
-            OPTION_ID="942759d7"
+            OPTION_ID="4c6202b4"
           elif echo "$LABELS" | grep -q '"solution/docs-site"'; then
-            OPTION_ID="75fa7361"
+            OPTION_ID="21b55444"
           elif echo "$LABELS" | grep -q '"solution/workspace"'; then
-            OPTION_ID="d60c979e"
+            OPTION_ID="4cec6642"
           fi
           if [ -n "$OPTION_ID" ]; then
             gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" \
