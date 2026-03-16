@@ -68,6 +68,17 @@ plugins:
 
 extra:
   social:
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/countrycloudboy
+      name: CountryCloudBoy on X
     - icon: fontawesome/brands/github
-      link: https://github.com/AzureLocal
+      link: https://github.com/AzureLocal/aurelocal-avd
+      name: GitHub Repository
+    - icon: fontawesome/solid/globe
+      link: https://azurelocal.cloud
+      name: Azure Local Community
   homepage: https://azurelocal.cloud
+
+copyright: >-
+  Copyright &copy; 2025 Azure Local. Designed and maintained by
+  <a href="https://www.hybridsolutions.cloud">Hybrid Cloud Solutions</a>.
