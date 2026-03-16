@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Azure Local Documentation
+    url: https://azurelocal.cloud
+    about: Visit the main Azure Local documentation site

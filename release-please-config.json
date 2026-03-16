@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "packages": {
+    ".": {
+      "changelog-path": "CHANGELOG.md",
+      "include-component-in-tag": false,
+      "categories": [
+        { "title": "Features", "labels": ["feat"] },
+        { "title": "Bug Fixes", "labels": ["fix"] },
+        { "title": "Documentation", "labels": ["docs"] },
+        { "title": "Infrastructure", "labels": ["infra"] },
+        { "title": "Miscellaneous", "labels": ["chore", "ci", "refactor", "style", "test"] }
+      ]
+    }
+  }
+}
