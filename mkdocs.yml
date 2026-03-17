@@ -40,6 +40,16 @@ nav:
   - Scenarios: scenarios.md
   - Reference:
       - Variables: reference/variables.md
+  - Standards:
+      - Overview: standards/index.md
+      - Documentation: standards/documentation.md
+      - Scripting: standards/scripting.md
+      - Variables: standards/variables.md
+      - Naming Conventions: standards/naming.md
+      - Solutions: standards/solutions.md
+      - Infrastructure: standards/infrastructure.md
+      - Automation: standards/automation.md
+      - Examples & IIC: standards/examples.md
   - Roadmap: roadmap.md
   - Contributing: contributing.md
 

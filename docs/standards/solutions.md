@@ -1,6 +1,69 @@
 # Solution Development Standards
 
-!!! info "Moved to Central Standards"
-    IaC and solution development standards are now maintained org-wide at the central documentation site.
+> **Canonical reference:** [Solution Development Standard (full)](https://azurelocal.cloud/standards/solutions/solution-development-standard)  
+> **Applies to:** All AzureLocal solution repositories  
+> **Last Updated:** 2026-03-17
 
-**Canonical reference:** [Solution Development Standard](https://azurelocal.cloud/standards/solutions/solution-development-standard)
+---
+
+## IaC Tool Support
+
+Each tool must declare which deployment phases it supports:
+
+| Tool | Azure Resources | Domain Join | Guest Config | Session Hosts |
+|------|:---:|:---:|:---:|:---:|
+| **Terraform** | ✅ | ✅ | Delegates | ✅ |
+| **Bicep** | ✅ | ✅ | Delegates | ✅ |
+| **ARM** | ✅ | ✅ | Delegates | ✅ |
+| **PowerShell** | ✅ | ✅ | ✅ | ✅ |
+| **Ansible** | ✅ | ✅ | ✅ | ✅ |
+
+!!! warning "Delegates"
+    "Delegates" means the tool provisions Azure resources but does not configure the guest OS. A separate tool (PowerShell or Ansible) handles guest configuration.
+
+---
+
+## Parameter File Derivation
+
+All tool-specific parameter files MUST be derivable from `config/variables.yml`:
+
+| Tool | Parameter File | Derivation |
+|------|---------------|------------|
+| Terraform | `src/terraform/terraform.tfvars` | Map YAML sections to HCL variables |
+| Bicep | `src/bicep/main.bicepparam` | Map YAML sections to Bicep parameters |
+| ARM | `src/arm/azuredeploy.parameters.json` | Map YAML sections to ARM parameter schema |
+| PowerShell | *(reads config directly)* | `ConvertFrom-Yaml` from config file |
+| Ansible | `src/ansible/inventory/hosts.yml` | Map YAML sections to `group_vars` |
+
+The central config is the **single source of truth**. Tool-specific files are convenience copies that should be regenerable.
+
+---
+
+## Conditional Resource Support
+
+| Tool | Mechanism | Example |
+|------|-----------|--------|
+| **Terraform** | `count` / `for_each` | `count = var.host_pool_type == "Pooled" ? 1 : 0` |
+| **Bicep** | `if` condition | `resource pool '...' = if (hostPoolType == 'Pooled') { ... }` |
+| **ARM** | `condition` property | `"condition": "[equals(parameters('hostPoolType'), 'Pooled')]"` |
+| **PowerShell** | `switch` / `if` | `if ($config.control_plane.host_pool_type -eq 'Pooled') { ... }` |
+| **Ansible** | `when:` clause | `when: host_pool_type == 'Pooled'` |
+
+All tools must produce **identical infrastructure** when given the same configuration values.
+
+---
+
+## Multi-Tool Parity
+
+- Every supported tool must cover the same set of resources
+- Tool-specific parameter files are derived from `config/variables.yml`
+- CI tests validate that each tool's output matches the expected state
+- New resources added to one tool must be added to all supported tools
+
+---
+
+## Related Standards
+
+- [Infrastructure Standards](https://azurelocal.cloud/standards/infrastructure/)
+- [Variable Reference](../reference/variables.md)
+- [Scripting Standards](scripting.md)
