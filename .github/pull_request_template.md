@@ -26,3 +26,11 @@ Closes #<!-- issue number -->
 - [ ] I have added an entry to `CHANGELOG.md` under `[Unreleased]`
 - [ ] My code follows the project's style guidelines in `CONTRIBUTING.md`
 - [ ] My commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
+
+## Standards Compliance
+
+- [ ] Follows [repo structure standard](https://azurelocal.cloud/standards/repo-structure) (required files present)
+- [ ] Follows [naming conventions](https://azurelocal.cloud/standards/documentation/naming-conventions) (files, variables, resources)
+- [ ] Uses [IIC fictional company](https://azurelocal.cloud/standards/fictional-company-policy) in all examples (never Contoso)
+- [ ] Config changes validated against JSON Schema (if applicable)
+- [ ] No hardcoded IPs, names, secrets, or environment-specific values in committed code
