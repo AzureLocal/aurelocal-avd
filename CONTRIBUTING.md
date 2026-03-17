@@ -78,6 +78,17 @@ Examples:
 - Test against a real Azure Local environment before submitting
 - Describe your test environment and results in the PR
 
+## Standards
+
+This project follows the **org-wide AzureLocal standards** documented at [azurelocal.cloud/standards](https://azurelocal.cloud/standards/). Key references:
+
+- [Repository Structure](https://azurelocal.cloud/standards/repo-structure) — Required files, directories, labels, branch naming
+- [Scripting Standards](https://azurelocal.cloud/standards/scripting/scripting-standards) — PowerShell conventions
+- [Solution Development](https://azurelocal.cloud/standards/solutions/solution-development-standard) — IaC conventions
+- [Documentation Standards](https://azurelocal.cloud/standards/documentation/documentation-standards) — Writing and formatting
+- [Variable Management](https://azurelocal.cloud/docs/implementation/04-variable-management-standard) — Config file patterns
+- [Fictional Company Policy](https://azurelocal.cloud/standards/fictional-company-policy) — Use IIC, never Contoso
+
 ## Code of Conduct
 
 Be respectful and constructive. Keep discussions on-topic and collaborative.
