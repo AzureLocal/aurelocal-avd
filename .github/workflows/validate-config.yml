@@ -1,0 +1,60 @@
+# =============================================================================
+# validate-config.yml — Validate config/variables.example.yml against schema
+# =============================================================================
+# Triggered on PRs and pushes that touch config/ or this workflow.
+# Validates YAML syntax and JSON Schema compliance.
+# =============================================================================
+
+name: Validate Configuration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'config/**'
+      - '.github/workflows/validate-config.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'config/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema
+
+      - name: Validate variables.example.yml against schema
+        run: |
+          python3 -c "
+          import yaml, json, sys
+          from jsonschema import validate, ValidationError
+
+          with open('config/variables.example.yml') as f:
+              data = yaml.safe_load(f)
+
+          with open('config/schema/variables.schema.json') as f:
+              schema = json.load(f)
+
+          try:
+              validate(instance=data, schema=schema)
+              print('✅ config/variables.example.yml passes schema validation')
+          except ValidationError as e:
+              print(f'❌ Schema validation failed: {e.message}')
+              print(f'   Path: {\" > \".join(str(p) for p in e.absolute_path)}')
+              sys.exit(1)
+          "
