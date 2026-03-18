@@ -1,0 +1,226 @@
+<mxfile host="draw.io" modified="2026-03-18T00:00:00.000Z" agent="GitHub Copilot" version="24.0.0" type="device">
+  <diagram id="avd-solution-arch" name="AVD on Azure Local — Solution Architecture">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ════════════════ TITLE ════════════════ -->
+        <mxCell id="title" value="&lt;b&gt;AVD on Azure Local — End-to-End Solution Architecture&lt;/b&gt;" style="text;html=1;fontSize=20;fontColor=#333333;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="400" y="10" width="800" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════ USER / CLIENT ZONE ════════════════ -->
+        <mxCell id="zone-users" value="&lt;b&gt;End Users&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="20" y="70" width="200" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="user-rdp" value="&lt;b&gt;Windows Desktop&lt;/b&gt;&lt;br&gt;Remote Desktop Client&lt;br&gt;(MSRDC / AVD Client)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="110" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="user-web" value="&lt;b&gt;Web Browser&lt;/b&gt;&lt;br&gt;https://client.wvd.microsoft.com&lt;br&gt;HTML5 RDP Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="185" width="170" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="user-thin" value="&lt;b&gt;Thin Clients&lt;/b&gt;&lt;br&gt;IGEL / HP / Dell&lt;br&gt;AVD Client or Chromium" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4CAF50;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="35" y="260" width="170" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════ AZURE CONTROL PLANE ════════════════ -->
+        <mxCell id="zone-azure" value="&lt;b&gt;Azure Cloud — AVD Control Plane&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="70" width="500" height="400" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure AD / Entra ID -->
+        <mxCell id="entra" value="&lt;b&gt;Microsoft Entra ID&lt;/b&gt;&lt;br&gt;Authentication &amp; SSO&lt;br&gt;Conditional Access&lt;br&gt;MFA Enforcement" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#005A9E;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="110" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- AVD Broker -->
+        <mxCell id="broker" value="&lt;b&gt;AVD Broker Service&lt;/b&gt;&lt;br&gt;Session orchestration&lt;br&gt;Connection brokering&lt;br&gt;Load balancing decisions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#005A9E;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="510" y="110" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Host Pool -->
+        <mxCell id="hostpool" value="&lt;b&gt;Host Pool&lt;/b&gt;&lt;br&gt;hp-pool01&lt;br&gt;Type: Pooled | Personal&lt;br&gt;LB: BreadthFirst | DepthFirst&lt;br&gt;Max Sessions: 10-16 per host" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="210" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Workspace -->
+        <mxCell id="workspace" value="&lt;b&gt;AVD Workspace&lt;/b&gt;&lt;br&gt;ws-avd-prod&lt;br&gt;User-facing feed URL&lt;br&gt;Published app groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="540" y="210" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- App Group -->
+        <mxCell id="appgroup" value="&lt;b&gt;Application Group&lt;/b&gt;&lt;br&gt;ag-pool01-desktop&lt;br&gt;Type: Desktop | RemoteApp&lt;br&gt;Assigned to Entra groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="320" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Scaling Plan -->
+        <mxCell id="scalingplan" value="&lt;b&gt;Scaling Plan&lt;/b&gt;&lt;br&gt;Ramp-Up → Peak → Ramp-Down → Off-Peak&lt;br&gt;Auto start/stop session hosts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="540" y="320" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Key Vault -->
+        <mxCell id="keyvault" value="&lt;b&gt;Azure Key Vault&lt;/b&gt;&lt;br&gt;kv-avd-prod&lt;br&gt;Domain join credentials&lt;br&gt;Local admin password&lt;br&gt;keyvault:// URI resolution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="300" y="410" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- LAW -->
+        <mxCell id="law" value="&lt;b&gt;Log Analytics Workspace&lt;/b&gt;&lt;br&gt;law-avd-prod&lt;br&gt;AVD Insights + KQL&lt;br&gt;Diagnostic settings" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="520" y="410" width="180" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════ AZURE LOCAL CLUSTER ════════════════ -->
+        <mxCell id="zone-azlocal" value="&lt;b&gt;Azure Local Cluster — On-Premises Data Plane&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#F57F17;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="840" y="70" width="720" height="530" as="geometry"/>
+        </mxCell>
+
+        <!-- Custom Location -->
+        <mxCell id="customloc" value="&lt;b&gt;Custom Location&lt;/b&gt;&lt;br&gt;Azure Arc resource provider&lt;br&gt;Maps Azure resources to local HW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8F00;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="870" y="110" width="250" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Logical Network -->
+        <mxCell id="logicalnet" value="&lt;b&gt;Logical Network&lt;/b&gt;&lt;br&gt;AzureStackHCI/logicalNetworks&lt;br&gt;VLAN, IP pool, DNS, Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8F00;strokeColor=#E65100;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="110" width="250" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Host Container -->
+        <mxCell id="sh-container" value="&lt;b&gt;Session Hosts (Arc-enabled VMs)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=11;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="185" width="660" height="180" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Host 1 -->
+        <mxCell id="sh1" value="&lt;b&gt;sh-pool01-001&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="890" y="215" width="190" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Host 2 -->
+        <mxCell id="sh2" value="&lt;b&gt;sh-pool01-002&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="215" width="190" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Host N -->
+        <mxCell id="sh-n" value="&lt;b&gt;sh-pool01-00N&lt;/b&gt;&lt;br&gt;...repeats per&lt;br&gt;session_host_count" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;strokeDashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="240" width="160" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- FSLogix Container -->
+        <mxCell id="fslogix-zone" value="&lt;b&gt;FSLogix Profile Storage&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="870" y="390" width="340" height="190" as="geometry"/>
+        </mxCell>
+        <mxCell id="fs-primary" value="&lt;b&gt;Primary File Server&lt;/b&gt;&lt;br&gt;\\\\fs-01.domain.local\\FSLogix&lt;br&gt;SMB 3.x share&lt;br&gt;NTFS permissions configured&lt;br&gt;VHDx per user (30 GB default)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="885" y="420" width="220" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="fs-secondary" value="&lt;b&gt;Secondary (Cloud Cache)&lt;/b&gt;&lt;br&gt;Optional DR replica&lt;br&gt;\\\\fs-02.domain.local\\FSLogix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;strokeDashPattern=8 8;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="885" y="510" width="220" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- AD Domain Controller -->
+        <mxCell id="dc" value="&lt;b&gt;AD Domain Controller&lt;/b&gt;&lt;br&gt;Active Directory DS&lt;br&gt;DNS Server&lt;br&gt;OU: AVD\\Computers&lt;br&gt;GPO: FSLogix, session limits" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="400" width="200" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- NSG -->
+        <mxCell id="nsg" value="&lt;b&gt;NSG: hp-pool01-nsg&lt;/b&gt;&lt;br&gt;Allow WVD (443)&lt;br&gt;Allow AzureMonitor (443)&lt;br&gt;Allow AzureAD (443)&lt;br&gt;Allow KMS (1688)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="510" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════ IaC PIPELINE ════════════════ -->
+        <mxCell id="zone-iac" value="&lt;b&gt;IaC Deployment Pipeline — 5 Tools&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="280" y="510" width="500" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="iac-ps" value="&lt;b&gt;PowerShell&lt;/b&gt;&lt;br&gt;Az.DesktopVirtualization&lt;br&gt;9 scripts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="295" y="545" width="85" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="iac-tf" value="&lt;b&gt;Terraform&lt;/b&gt;&lt;br&gt;azurerm + azapi&lt;br&gt;10 .tf files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="390" y="545" width="85" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="iac-bicep" value="&lt;b&gt;Bicep&lt;/b&gt;&lt;br&gt;Subscription scope&lt;br&gt;7 .bicep files" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="485" y="545" width="85" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="iac-arm" value="&lt;b&gt;ARM&lt;/b&gt;&lt;br&gt;Generated from Bicep&lt;br&gt;JSON templates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="580" y="545" width="85" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="iac-ansible" value="&lt;b&gt;Ansible&lt;/b&gt;&lt;br&gt;azure.azcollection&lt;br&gt;7 roles" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="675" y="545" width="85" height="60" as="geometry"/>
+        </mxCell>
+        <!-- Config -->
+        <mxCell id="config" value="&lt;b&gt;config/variables.yml&lt;/b&gt;&lt;br&gt;Central YAML config&lt;br&gt;JSON Schema validated&lt;br&gt;keyvault:// URI secrets" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="330" y="625" width="200" height="60" as="geometry"/>
+        </mxCell>
+        <!-- CI/CD -->
+        <mxCell id="cicd" value="&lt;b&gt;GitHub Actions CI/CD&lt;/b&gt;&lt;br&gt;ci-terraform | ci-bicep&lt;br&gt;ci-powershell | ci-ansible&lt;br&gt;ci-config-schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="560" y="625" width="190" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ════════════════ CONNECTIONS ════════════════ -->
+        <!-- Users → Entra -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4CAF50;strokeWidth=2;" edge="1" parent="1" source="user-rdp" target="entra">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1-label" value="HTTPS/443" style="edgeLabel;html=1;fontSize=8;fontColor=#666;" vertex="1" connectable="0" parent="e1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Users → Broker -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4CAF50;strokeWidth=2;" edge="1" parent="1" source="user-web" target="broker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Broker → Host Pool -->
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1" source="broker" target="hostpool">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Host Pool → App Group -->
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=1;" edge="1" parent="1" source="hostpool" target="appgroup">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Workspace → App Group -->
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=1;" edge="1" parent="1" source="workspace" target="appgroup">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Scaling → Host Pool -->
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="scalingplan" target="hostpool">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Host Pool → Session Hosts (reverse proxy / RDP shortpath) -->
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F57F17;strokeWidth=3;" edge="1" parent="1" source="hostpool" target="sh-container">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e7-label" value="RDP Shortpath / Reverse Connect" style="edgeLabel;html=1;fontSize=8;fontColor=#666;" vertex="1" connectable="0" parent="e7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Session Hosts → FSLogix -->
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=2;" edge="1" parent="1" source="sh1" target="fs-primary">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8-label" value="SMB 3.x" style="edgeLabel;html=1;fontSize=8;fontColor=#666;" vertex="1" connectable="0" parent="e8">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Session Hosts → DC -->
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=1;" edge="1" parent="1" source="sh2" target="dc">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9-label" value="LDAP / Kerberos" style="edgeLabel;html=1;fontSize=8;fontColor=#666;" vertex="1" connectable="0" parent="e9">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Host Pool → LAW (diagnostics) -->
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="hostpool" target="law">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e10-label" value="Diagnostic Settings" style="edgeLabel;html=1;fontSize=8;fontColor=#666;" vertex="1" connectable="0" parent="e10">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Config feeds IaC tools -->
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;" edge="1" parent="1" source="config" target="iac-tf">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- IaC deploys to Azure -->
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;strokeDashPattern=8 4;" edge="1" parent="1" source="iac-tf" target="hostpool">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12-label" value="Deploys" style="edgeLabel;html=1;fontSize=8;fontColor=#7B1FA2;" vertex="1" connectable="0" parent="e12">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

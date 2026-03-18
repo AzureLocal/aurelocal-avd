@@ -2,6 +2,12 @@
 
 Identity configuration determines how users authenticate to AVD session hosts and what RBAC roles are needed.
 
+![Identity Strategies Comparison](../assets/diagrams/avd-identity.png)
+
+> *Open the [draw.io source](../assets/diagrams/avd-identity.drawio) for an editable version.*
+
+The diagram above compares the three identity strategies side-by-side — **AD-Only**, **Entra Join**, and **Hybrid Join** — showing the authentication flow, required VM extensions, RBAC role assignments, and the pros/cons of each approach.
+
 ## Identity Strategies
 
 ### AD-Only (`ad_only`)

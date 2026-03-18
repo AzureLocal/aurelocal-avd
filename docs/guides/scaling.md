@@ -2,6 +2,12 @@
 
 AVD scaling plans automatically manage session host availability based on time-of-day schedules, reducing costs during off-peak hours.
 
+![Scaling Plan Phases & Logic](../assets/diagrams/avd-scaling.png)
+
+> *Open the [draw.io source](../assets/diagrams/avd-scaling.drawio) for an editable version.*
+
+The diagram shows the four schedule phases across a 24-hour timeline — **Ramp-Up** (7:00–9:00), **Peak** (9:00–17:00), **Ramp-Down** (17:00–19:00), and **Off-Peak** (19:00–7:00) — with each phase's load-balancing algorithm, detailed scaling logic steps, and host state visualization. The bottom section shows how each IaC tool (Terraform, Bicep, ARM, PowerShell, Ansible) deploys the scaling plan resource.
+
 !!! note
     Scaling plans are only supported for **Pooled** host pools. Personal host pools use direct assignment and don't support autoscaling.
 

@@ -2,6 +2,12 @@
 
 Network configuration for AVD on Azure Local includes NSG rules for required outbound traffic and optional private endpoints.
 
+![AVD Networking — NSG Rules, Private Endpoints & DNS](../assets/diagrams/avd-networking.png)
+
+> *Open the [draw.io source](../assets/diagrams/avd-networking.drawio) for an editable version.*
+
+The diagram shows the full network topology: the Azure Local VNet with a **Session Host Subnet** (10.0.1.0/24) protected by an NSG with 4 outbound rules (mapped to Azure service tags), a **Private Endpoint Subnet** (10.0.2.0/24) hosting private endpoints for the Host Pool (`connection` sub-resource) and Workspace (`feed` sub-resource), the **Private DNS Zone** (`privatelink.wvd.microsoft.com`) with auto-created A records, and the Azure service endpoints they connect to. The bottom section shows how each IaC tool deploys these networking components.
+
 ## Required Outbound Rules
 
 AVD session hosts need outbound access to these Azure service tags:

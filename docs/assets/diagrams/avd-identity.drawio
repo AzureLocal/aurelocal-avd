@@ -1,0 +1,106 @@
+<mxfile host="draw.io" modified="2026-03-18T00:00:00.000Z" agent="GitHub Copilot" version="24.0.0" type="device">
+  <diagram id="avd-identity" name="AVD Identity &amp; RBAC — 3 Strategy Comparison">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b&gt;AVD Identity &amp; RBAC — Authentication Strategies&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="700" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ USERS ══════ -->
+        <mxCell id="user" value="&lt;b&gt;End User&lt;/b&gt;&lt;br&gt;AVD Client / Web" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="570" y="60" width="200" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ STRATEGY 1: AD-ONLY ══════ -->
+        <mxCell id="s1-zone" value="&lt;b&gt;Strategy 1: AD-Only&lt;/b&gt;&lt;br&gt;&lt;i&gt;identity.strategy: ad_only&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="20" y="130" width="400" height="370" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-flow" value="&lt;b&gt;Authentication Flow&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. User enters AD credentials in RD client&lt;br&gt;2. AVD Broker validates via AD FS / ADAL&lt;br&gt;3. Broker assigns session host&lt;br&gt;4. Session host authenticates user via&lt;br&gt;   Kerberos against Domain Controller&lt;br&gt;5. Domain join via JsonADDomainExtension&lt;br&gt;&lt;br&gt;&lt;b&gt;No SSO&lt;/b&gt; — user may be prompted twice" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="35" y="170" width="370" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s1-dc" value="&lt;b&gt;Domain Controller&lt;/b&gt;&lt;br&gt;On-premises AD DS&lt;br&gt;DNS, Kerberos, LDAP&lt;br&gt;OU: OU=AVD,OU=Computers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="35" y="310" width="170" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-ext" value="&lt;b&gt;Extensions on Session Host&lt;/b&gt;&lt;br&gt;├─ JsonADDomainExtension&lt;br&gt;│   (domain join + OU placement)&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;│   (registers with host pool)&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="220" y="300" width="185" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-rbac" value="&lt;b&gt;RBAC Required&lt;/b&gt;&lt;br&gt;├─ Desktop Virtualization User&lt;br&gt;│   → on Application Group&lt;br&gt;└─ (No VM Login roles needed)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="35" y="400" width="370" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="s1-note" value="&lt;b&gt;Pros:&lt;/b&gt; Simple, familiar, works with legacy apps&lt;br&gt;&lt;b&gt;Cons:&lt;/b&gt; No SSO, no Conditional Access, requires DC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=9;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="35" y="465" width="370" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ STRATEGY 2: ENTRA JOIN ══════ -->
+        <mxCell id="s2-zone" value="&lt;b&gt;Strategy 2: Entra Join&lt;/b&gt;&lt;br&gt;&lt;i&gt;identity.strategy: entra_join&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="450" y="130" width="430" height="370" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-flow" value="&lt;b&gt;Authentication Flow&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. User authenticates to Microsoft Entra ID&lt;br&gt;2. MFA + Conditional Access evaluated&lt;br&gt;3. AVD Broker issues session token&lt;br&gt;4. Session host validates via Entra ID&lt;br&gt;5. AADLoginForWindows extension enables SSO&lt;br&gt;6. PRT (Primary Refresh Token) for cloud apps&lt;br&gt;&lt;br&gt;&lt;b&gt;Full SSO&lt;/b&gt; — single sign-on to desktop + M365" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="465" y="170" width="400" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s2-entra" value="&lt;b&gt;Microsoft Entra ID&lt;/b&gt;&lt;br&gt;Cloud-only identity&lt;br&gt;MFA, Cond. Access&lt;br&gt;No on-prem DC needed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#005A9E;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="465" y="310" width="170" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-ext" value="&lt;b&gt;Extensions on Session Host&lt;/b&gt;&lt;br&gt;├─ &lt;b&gt;AADLoginForWindows&lt;/b&gt;&lt;br&gt;│   (Entra ID join + SSO)&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;└─ Azure Monitor Agent&lt;br&gt;&lt;br&gt;&lt;i&gt;No domain join extension&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="655" y="300" width="210" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-rbac" value="&lt;b&gt;RBAC Required&lt;/b&gt;&lt;br&gt;├─ Desktop Virtualization User → App Group&lt;br&gt;├─ &lt;b&gt;Virtual Machine User Login&lt;/b&gt; → Resource Group&lt;br&gt;└─ Virtual Machine Administrator Login → RG (admins)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="465" y="405" width="400" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2-note" value="&lt;b&gt;Pros:&lt;/b&gt; SSO, Cond. Access, MFA, no DC needed, modern&lt;br&gt;&lt;b&gt;Cons:&lt;/b&gt; No NTLM/Kerberos for legacy on-prem apps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=9;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="465" y="465" width="400" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ STRATEGY 3: HYBRID JOIN ══════ -->
+        <mxCell id="s3-zone" value="&lt;b&gt;Strategy 3: Hybrid Join (Recommended)&lt;/b&gt;&lt;br&gt;&lt;i&gt;identity.strategy: hybrid_join&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="920" y="130" width="430" height="370" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3-flow" value="&lt;b&gt;Authentication Flow&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. User authenticates to Entra ID (MFA/CA)&lt;br&gt;2. AVD Broker assigns session via host pool&lt;br&gt;3. Session host is AD-joined + Entra-registered&lt;br&gt;4. Kerberos ticket from DC for on-prem resources&lt;br&gt;5. PRT from Entra ID for cloud resources&lt;br&gt;6. Azure AD Connect syncs identities&lt;br&gt;&lt;br&gt;&lt;b&gt;Full SSO + on-prem access&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="935" y="170" width="400" height="120" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3-dc" value="&lt;b&gt;AD Domain Controller&lt;/b&gt;&lt;br&gt;Kerberos for on-prem" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="935" y="310" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3-entra" value="&lt;b&gt;Entra ID&lt;/b&gt;&lt;br&gt;MFA + Cond. Access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=#4A148C;fontColor=#FFFFFF;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="310" width="130" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3-connect" value="&lt;b&gt;Azure AD Connect&lt;/b&gt;&lt;br&gt;Sync" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1225" y="310" width="110" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3-ext" value="&lt;b&gt;Extensions on Session Host&lt;/b&gt;&lt;br&gt;├─ JsonADDomainExtension (domain join)&lt;br&gt;├─ &lt;b&gt;AADLoginForWindows&lt;/b&gt; (Entra hybrid)&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="935" y="370" width="400" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="s3-rbac" value="&lt;b&gt;RBAC Required&lt;/b&gt;&lt;br&gt;├─ Desktop Virtualization User → App Group&lt;br&gt;├─ Virtual Machine User Login → Resource Group&lt;br&gt;└─ Virtual Machine Administrator Login → RG (admins)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="935" y="440" width="400" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell id="e-sync" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="s3-dc" target="s3-connect">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e-sync2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="s3-connect" target="s3-entra">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e-user1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" parent="1" source="user" target="s1-flow">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e-user2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" parent="1" source="user" target="s2-flow">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e-user3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" parent="1" source="user" target="s3-flow">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

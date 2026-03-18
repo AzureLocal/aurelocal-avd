@@ -2,6 +2,12 @@
 
 FSLogix profile containers store user profiles in VHDx files on SMB shares, dramatically improving logon times and profile reliability for AVD session hosts.
 
+![FSLogix Architecture & Topologies](../assets/diagrams/avd-fslogix.png)
+
+> *Open the [draw.io source](../assets/diagrams/avd-fslogix.drawio) for an editable version.*
+
+The diagram compares all three supported topologies side-by-side: **Single Share** (one VHDx per user), **Split** (separate Profile + Office Data containers), and **Cloud Cache** (local cache with async replication to primary/secondary providers). It also shows the Session Host registry configuration paths (`HKLM\SOFTWARE\FSLogix\Profiles`) and the required NTFS permission model (share-level and folder-level ACLs).
+
 ## Topology Options
 
 ### Single Share

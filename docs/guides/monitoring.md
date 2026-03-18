@@ -4,19 +4,15 @@ AVD monitoring uses Azure Monitor, Log Analytics, and AVD Insights to provide vi
 
 ## Architecture
 
-```
-Session Hosts (Azure Local)
-    ├── Performance Counters → Log Analytics
-    ├── Event Logs → Log Analytics
-    └── Azure Monitor Agent → Metrics
-                                    ↓
-Host Pool / Workspace / App Group
-    └── Diagnostic Settings → Log Analytics
-                                    ↓
-                        AVD Insights Workbook
-                        Metric Alert Rules
-                        KQL Queries
-```
+![AVD Monitoring Architecture](../assets/diagrams/avd-monitoring.png)
+
+> *Open the [draw.io source](../assets/diagrams/avd-monitoring.drawio) for an editable version.*
+
+The diagram shows the full monitoring data flow:
+
+- **Telemetry Sources** — Session hosts emit performance counters (CPU, memory, disk, network), Windows Event Logs, and AVD Agent health via Azure Monitor Agent. Host Pool, Workspace, and App Group resources send diagnostic settings (Connection, Error, Checkpoint, Management, HostRegistration, AgentHealthStatus logs).
+- **Log Analytics Workspace** — All telemetry lands in five core tables: `WVDConnections`, `WVDErrors`, `WVDAgentHealthStatus`, `Perf`/`InsightsMetrics`, and `WVDCheckpoints`. The KQL engine powers all downstream queries.
+- **Monitoring Consumers** — AVD Insights Workbook provides built-in dashboards. Metric Alert Rules fire on thresholds (e.g., CPU > 85%, active sessions > 90% capacity, connection failures > 5/15min). Custom KQL dashboards and Defender for Cloud extend visibility.
 
 ## Configuration
 

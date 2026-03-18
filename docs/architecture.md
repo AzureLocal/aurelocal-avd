@@ -13,6 +13,12 @@ The AVD architecture has two distinct planes:
 
 ## High-Level Architecture
 
+![AVD Solution Architecture](assets/diagrams/avd-solution-architecture.png)
+
+> *Open the [draw.io source](assets/diagrams/avd-solution-architecture.drawio) in draw.io for an editable version.*
+
+The diagram above shows the full end-to-end architecture — End Users connect via HTTPS/RDP Shortpath through the Azure AVD Broker to Session Hosts running on the Azure Local cluster. Supporting services include Entra ID, Key Vault, Log Analytics, FSLogix SMB storage, and the full IaC deployment pipeline.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                            AZURE (Cloud)                            │
