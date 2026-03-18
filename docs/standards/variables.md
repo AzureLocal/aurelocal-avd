@@ -1,7 +1,7 @@
 # Variable Standards
 
-> **Full reference:** [Variable Reference](../reference/variables.md)  
-> **Central standard:** [Variable Management Standard](https://azurelocal.cloud/docs/implementation/04-variable-management-standard)  
+> **Canonical reference:** [Variable Management Standard](https://azurelocal.cloud/standards/variable-management/)  
+> **Full variable catalog:** [Variable Reference](../reference/variables.md)  
 > **Last Updated:** 2026-03-17
 
 ---
