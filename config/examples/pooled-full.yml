@@ -1,0 +1,169 @@
+# =============================================================================
+# Example: Pooled Host Pool — Full Configuration
+# =============================================================================
+# Multi-session Pooled AVD deployment with FSLogix, scaling, monitoring, and
+# Entra ID hybrid join. Copy to config/variables.yml and update values.
+# =============================================================================
+
+subscription:
+  avd_subscription_id: "00cd4357-ed45-4efb-bee0-10c467ff994b"
+  azure_local_subscription_id: "2caa0b8a-a1d6-4f0c-8c03-861787b8315c"
+  tenant_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  location: "eastus"
+
+deployment:
+  mode: "greenfield"
+  naming_convention: "iic"
+
+security:
+  key_vault_name: "kv-iic-platform"
+  key_vault_resource_group: "rg-iic-mgmt-eus-01"
+
+control_plane:
+  resource_group: "rg-iic-avd-hp-eus-01"
+  host_pool_name: "hp-iic-avd-pool01"
+  host_pool_type: "Pooled"
+  load_balancer_type: "BreadthFirst"
+  max_session_limit: 16
+  preferred_app_group_type: "Desktop"
+  personal_assignment_type: "Automatic"
+  start_vm_on_connect: true
+  validation_environment: false
+  custom_rdp_properties: "audiocapturemode:i:1;redirectclipboard:i:1"
+  host_pool_friendly_name: "Azure Local Pooled Desktops"
+  host_pool_description: "Multi-session pooled desktop pool on Azure Local"
+  app_group_name: "vdag-iic-avd-eus-01"
+  app_group_type: "Desktop"
+  app_group_friendly_name: "Azure Local Desktops"
+  workspace_name: "vdws-iic-avd-eus-01"
+  workspace_friendly_name: "Azure Local - Desktop Workspace"
+
+session_hosts:
+  resource_group: "rg-iic-avd-sh-eus-01"
+  session_host_count: 4
+  vm_naming_prefix: "vm-iicavd"
+  vm_start_index: 1
+  vm_processors: 8
+  vm_memory_mb: 32768
+  vm_admin_username: "avd_admin"
+  vm_admin_password: "keyvault://kv-iic-platform/avd-local-admin-password"
+  session_host_os: "Windows-11-Enterprise-Multi-Session"
+  custom_location_id: "/subscriptions/2caa0b8a-a1d6-4f0c-8c03-861787b8315c/resourceGroups/rg-c01-azl-eus-01/providers/Microsoft.ExtendedLocation/customLocations/tplabs-clus01-ral-cl"
+  logical_network_id: "/subscriptions/2caa0b8a-a1d6-4f0c-8c03-861787b8315c/resourceGroups/rg-c01-azl-eus-01/providers/Microsoft.AzureStackHCI/logicalNetworks/lnet-tplabs-tenant2-719"
+  gallery_image_id: "/subscriptions/2caa0b8a-a1d6-4f0c-8c03-861787b8315c/resourceGroups/rg-c01-azl-eus-01/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/img-tplabs-win11-25h2-avd-m365-g2-v1"
+  storage_path_id: "/subscriptions/2caa0b8a-a1d6-4f0c-8c03-861787b8315c/resourceGroups/rg-c01-azl-eus-01/providers/Microsoft.AzureStackHCI/storageContainers/sp-tplabs-clus01-m3-vmstore-prd-01"
+
+domain:
+  domain_fqdn: "iic.local"
+  domain_join_username: "svc.domainjoin"
+  domain_join_password: "keyvault://kv-iic-platform/domain-join-password"
+  domain_join_ou_path: "OU=AVD,OU=Computers,DC=iic,DC=local"
+
+identity:
+  strategy: "hybrid_join"
+  entra_id:
+    enable_entra_id_auth: true
+    enroll_in_intune: false
+    entra_user_login_group_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    entra_admin_login_group_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+  rbac:
+    desktop_virtualization_user_group_id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    desktop_virtualization_admin_group_id: ""
+    power_on_contributor_group_id: ""
+
+fslogix:
+  enabled: true
+  share_topology: "single"
+  single_share:
+    vhd_path: "\\\\sofs-01.iic.local\\profiles$"
+  split_shares:
+    profile_vhd_path: ""
+    office_vhd_path: ""
+  cloud_cache:
+    connections: []
+  profile_container:
+    size_in_mb: 30000
+    vhd_type: "VHDX"
+    flip_flop_enabled: true
+    delete_on_logoff: false
+    is_dynamic: true
+    locked_retry_count: 12
+    locked_retry_interval: 5
+
+scaling:
+  enabled: true
+  time_zone: "Eastern Standard Time"
+  schedules:
+    - name: "Weekday"
+      days_of_week: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      ramp_up:
+        start_time: "07:00"
+        load_balancer_type: "BreadthFirst"
+        minimum_host_percent: 20
+        capacity_threshold_percent: 60
+      peak:
+        start_time: "09:00"
+        load_balancer_type: "BreadthFirst"
+      ramp_down:
+        start_time: "17:00"
+        load_balancer_type: "DepthFirst"
+        minimum_host_percent: 10
+        capacity_threshold_percent: 90
+        force_logoff: true
+        wait_time_minutes: 30
+        notification_message: "Your session will end in 30 minutes. Please save your work."
+      off_peak:
+        start_time: "20:00"
+        load_balancer_type: "DepthFirst"
+
+monitoring:
+  log_analytics:
+    workspace_name: "law-iic-avd-eus-01"
+    resource_group: "rg-iic-mgmt-eus-01"
+    retention_days: 30
+  diagnostics:
+    enable_host_pool_diagnostics: true
+    enable_workspace_diagnostics: true
+    log_categories:
+      - "Checkpoint"
+      - "Error"
+      - "Management"
+      - "Connection"
+      - "HostRegistration"
+      - "AgentHealthStatus"
+  defender:
+    enable_defender_for_cloud: true
+  alerts:
+    enable_alerts: true
+    action_group_id: "/subscriptions/00cd4357-ed45-4efb-bee0-10c467ff994b/resourceGroups/rg-iic-mgmt-eus-01/providers/Microsoft.Insights/actionGroups/ag-iic-avd-alerts"
+
+image:
+  source: "gallery"
+  marketplace:
+    publisher: "MicrosoftWindowsDesktop"
+    offer: "windows-11"
+    sku: "win11-23h2-avd"
+  gallery:
+    gallery_image_id: "/subscriptions/2caa0b8a-a1d6-4f0c-8c03-861787b8315c/resourceGroups/rg-c01-azl-eus-01/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/img-tplabs-win11-25h2-avd-m365-g2-v1"
+  customization:
+    install_m365_apps: true
+    install_teams_new: true
+    install_onedrive: true
+    additional_scripts: []
+
+networking:
+  private_endpoints:
+    enabled: false
+    subnet_id: ""
+  nsg:
+    apply_default_avd_rules: true
+
+tags:
+  Environment: "Production"
+  Project: "AVD on Azure Local"
+  ManagedBy: "Infrastructure as Code"
+  Owner: "Platform Team"
+  CostCenter: "IT-Infrastructure"
+
+ansible:
+  ansible_connection: "local"

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/AzureLocal/aurelocal-avd/config/schema/variables.schema.json",
+  "$id": "https://github.com/AzureLocal/azurelocal-avd/config/schema/variables.schema.json",
   "title": "AVD on Azure Local Variables",
   "description": "Schema for config/variables.example.yml — validates required sections and key structure.",
   "type": "object",
@@ -14,6 +14,13 @@
         "azure_local_subscription_id": { "type": "string" },
         "tenant_id": { "type": "string" },
         "location": { "type": "string" }
+      }
+    },
+    "deployment": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["greenfield", "brownfield"] },
+        "naming_convention": { "type": "string" }
       }
     },
     "security": {
@@ -76,13 +83,217 @@
         "domain_join_ou_path": { "type": "string" }
       }
     },
-    "entra_id": {
+    "identity": {
       "type": "object",
       "properties": {
-        "enable_entra_id_auth": { "type": "boolean" },
-        "enroll_in_intune": { "type": "boolean" },
-        "entra_user_login_group_id": { "type": "string" },
-        "entra_admin_login_group_id": { "type": "string" }
+        "strategy": { "type": "string", "enum": ["hybrid_join", "entra_join", "ad_only"] },
+        "entra_id": {
+          "type": "object",
+          "properties": {
+            "enable_entra_id_auth": { "type": "boolean" },
+            "enroll_in_intune": { "type": "boolean" },
+            "entra_user_login_group_id": { "type": "string" },
+            "entra_admin_login_group_id": { "type": "string" }
+          }
+        },
+        "rbac": {
+          "type": "object",
+          "properties": {
+            "desktop_virtualization_user_group_id": { "type": "string" },
+            "desktop_virtualization_admin_group_id": { "type": "string" },
+            "power_on_contributor_group_id": { "type": "string" }
+          }
+        }
+      }
+    },
+    "fslogix": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "share_topology": { "type": "string", "enum": ["single", "split", "cloud_cache"] },
+        "single_share": {
+          "type": "object",
+          "properties": {
+            "vhd_path": { "type": "string" }
+          }
+        },
+        "split_shares": {
+          "type": "object",
+          "properties": {
+            "profile_vhd_path": { "type": "string" },
+            "office_vhd_path": { "type": "string" }
+          }
+        },
+        "cloud_cache": {
+          "type": "object",
+          "properties": {
+            "connections": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "profile_container": {
+          "type": "object",
+          "properties": {
+            "size_in_mb": { "type": "integer", "minimum": 256 },
+            "vhd_type": { "type": "string", "enum": ["VHD", "VHDX"] },
+            "flip_flop_enabled": { "type": "boolean" },
+            "delete_on_logoff": { "type": "boolean" },
+            "is_dynamic": { "type": "boolean" },
+            "locked_retry_count": { "type": "integer", "minimum": 0 },
+            "locked_retry_interval": { "type": "integer", "minimum": 1 }
+          }
+        }
+      },
+      "if": {
+        "properties": { "share_topology": { "const": "split" } }
+      },
+      "then": {
+        "required": ["split_shares"]
+      }
+    },
+    "scaling": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "time_zone": { "type": "string" },
+        "schedules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "days_of_week"],
+            "properties": {
+              "name": { "type": "string" },
+              "days_of_week": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] }
+              },
+              "ramp_up": {
+                "type": "object",
+                "properties": {
+                  "start_time": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+                  "load_balancer_type": { "type": "string", "enum": ["BreadthFirst", "DepthFirst"] },
+                  "minimum_host_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "capacity_threshold_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
+                }
+              },
+              "peak": {
+                "type": "object",
+                "properties": {
+                  "start_time": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+                  "load_balancer_type": { "type": "string", "enum": ["BreadthFirst", "DepthFirst"] }
+                }
+              },
+              "ramp_down": {
+                "type": "object",
+                "properties": {
+                  "start_time": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+                  "load_balancer_type": { "type": "string", "enum": ["BreadthFirst", "DepthFirst"] },
+                  "minimum_host_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "capacity_threshold_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+                  "force_logoff": { "type": "boolean" },
+                  "wait_time_minutes": { "type": "integer", "minimum": 0 },
+                  "notification_message": { "type": "string" }
+                }
+              },
+              "off_peak": {
+                "type": "object",
+                "properties": {
+                  "start_time": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+                  "load_balancer_type": { "type": "string", "enum": ["BreadthFirst", "DepthFirst"] }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "monitoring": {
+      "type": "object",
+      "properties": {
+        "log_analytics": {
+          "type": "object",
+          "properties": {
+            "workspace_name": { "type": "string" },
+            "resource_group": { "type": "string" },
+            "retention_days": { "type": "integer", "minimum": 7, "maximum": 730 }
+          }
+        },
+        "diagnostics": {
+          "type": "object",
+          "properties": {
+            "enable_host_pool_diagnostics": { "type": "boolean" },
+            "enable_workspace_diagnostics": { "type": "boolean" },
+            "log_categories": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "defender": {
+          "type": "object",
+          "properties": {
+            "enable_defender_for_cloud": { "type": "boolean" }
+          }
+        },
+        "alerts": {
+          "type": "object",
+          "properties": {
+            "enable_alerts": { "type": "boolean" },
+            "action_group_id": { "type": "string" }
+          }
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "source": { "type": "string", "enum": ["marketplace", "gallery", "custom"] },
+        "marketplace": {
+          "type": "object",
+          "properties": {
+            "publisher": { "type": "string" },
+            "offer": { "type": "string" },
+            "sku": { "type": "string" }
+          }
+        },
+        "gallery": {
+          "type": "object",
+          "properties": {
+            "gallery_image_id": { "type": "string" }
+          }
+        },
+        "customization": {
+          "type": "object",
+          "properties": {
+            "install_m365_apps": { "type": "boolean" },
+            "install_teams_new": { "type": "boolean" },
+            "install_onedrive": { "type": "boolean" },
+            "additional_scripts": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "networking": {
+      "type": "object",
+      "properties": {
+        "private_endpoints": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "subnet_id": { "type": "string" }
+          }
+        },
+        "nsg": {
+          "type": "object",
+          "properties": {
+            "apply_default_avd_rules": { "type": "boolean" }
+          }
+        }
       }
     },
     "tags": {
@@ -96,5 +307,39 @@
       }
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "control_plane": {
+            "properties": { "host_pool_type": { "const": "Personal" } }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "fslogix": {
+            "properties": { "enabled": { "const": false } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "identity": {
+            "properties": { "strategy": { "const": "entra_join" } }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "domain": {
+            "required": []
+          }
+        }
+      }
+    }
+  ]
 }

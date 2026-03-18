@@ -1,0 +1,60 @@
+---
+# roles/avd-scaling/tasks/main.yml
+# Creates an AVD scaling plan for Pooled host pools.
+
+- name: Skip scaling for Personal host pools
+  ansible.builtin.debug:
+    msg: "Scaling plans are only supported for Pooled host pools. Skipping."
+  when: (avd_host_pool_type | default("Pooled")) == "Personal"
+
+- name: Build scaling schedule objects
+  ansible.builtin.set_fact:
+    scaling_schedules: "{{ avd_scaling_schedules | default([]) | map('combine', {}) | list }}"
+  when:
+    - avd_scaling_enabled | default(false)
+    - (avd_host_pool_type | default("Pooled")) == "Pooled"
+
+- name: Create AVD scaling plan
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: scalingPlans
+    resource_name: "{{ avd_host_pool_name }}-scaling"
+    api_version: "2023-09-05"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        timeZone: "{{ avd_scaling_time_zone | default('Eastern Standard Time') }}"
+        friendlyName: "{{ avd_host_pool_name }} Scaling Plan"
+        hostPoolType: "Pooled"
+        hostPoolReferences:
+          - hostPoolArmPath: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/hostPools/{{ avd_host_pool_name }}"
+            scalingPlanEnabled: true
+        schedules: >-
+          {{
+            avd_scaling_schedules | default([{
+              'name': 'weekday-schedule',
+              'daysOfWeek': ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+              'rampUpStartTime': {'hour': 7, 'minute': 0},
+              'rampUpLoadBalancingAlgorithm': 'BreadthFirst',
+              'rampUpMinimumHostsPct': 25,
+              'rampUpCapacityThresholdPct': 60,
+              'peakStartTime': {'hour': 9, 'minute': 0},
+              'peakLoadBalancingAlgorithm': 'BreadthFirst',
+              'rampDownStartTime': {'hour': 17, 'minute': 0},
+              'rampDownLoadBalancingAlgorithm': 'DepthFirst',
+              'rampDownMinimumHostsPct': 10,
+              'rampDownCapacityThresholdPct': 90,
+              'rampDownForceLogoffUsers': false,
+              'rampDownWaitTimeMinutes': 30,
+              'rampDownNotificationMessage': 'Your session will be logged off in 30 minutes.',
+              'offPeakStartTime': {'hour': 19, 'minute': 0},
+              'offPeakLoadBalancingAlgorithm': 'DepthFirst'
+            }])
+          }}
+  when:
+    - avd_scaling_enabled | default(false)
+    - (avd_host_pool_type | default("Pooled")) == "Pooled"

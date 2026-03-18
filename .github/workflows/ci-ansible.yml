@@ -1,0 +1,45 @@
+name: CI — Ansible Lint
+
+on:
+  pull_request:
+    paths:
+      - "src/ansible/**"
+  push:
+    branches: [main]
+    paths:
+      - "src/ansible/**"
+
+permissions:
+  contents: read
+
+jobs:
+  ansible-lint:
+    name: Ansible Lint & Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install ansible-core ansible-lint yamllint
+
+      - name: YAML Lint
+        run: |
+          yamllint -d relaxed src/ansible/
+
+      - name: Ansible Syntax Check
+        run: |
+          ansible-playbook src/ansible/playbooks/site.yml --syntax-check
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "false"
+
+      - name: Ansible Lint
+        run: |
+          ansible-lint src/ansible/

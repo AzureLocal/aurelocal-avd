@@ -1,0 +1,65 @@
+name: CI — Config Schema Validation
+
+on:
+  pull_request:
+    paths:
+      - "config/**"
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+
+permissions:
+  contents: read
+
+jobs:
+  schema-validate:
+    name: Validate Config Against Schema
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install jsonschema pyyaml
+
+      - name: Validate Example Configs
+        run: |
+          python -c "
+          import json, yaml, sys
+          from jsonschema import validate, ValidationError
+          from pathlib import Path
+
+          schema_path = Path('config/schema/variables.schema.json')
+          schema = json.loads(schema_path.read_text())
+
+          examples = list(Path('config/examples').glob('*.yml'))
+          if not examples:
+              print('No example configs found, skipping.')
+              sys.exit(0)
+
+          errors = 0
+          for f in examples:
+              print(f'Validating {f}...')
+              try:
+                  data = yaml.safe_load(f.read_text())
+                  validate(instance=data, schema=schema)
+                  print(f'  OK')
+              except ValidationError as e:
+                  print(f'  FAIL: {e.message}')
+                  errors += 1
+              except Exception as e:
+                  print(f'  ERROR: {e}')
+                  errors += 1
+
+          if errors:
+              sys.exit(1)
+          print(f'All {len(examples)} config(s) valid.')
+          "

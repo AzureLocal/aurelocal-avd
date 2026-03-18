@@ -50,3 +50,21 @@ output "session_host_names" {
   description = "Names of the deployed session-host VMs."
   value       = local.vm_names
 }
+
+# =============================================================================
+# Outputs — Scaling
+# =============================================================================
+
+output "scaling_plan_id" {
+  description = "Resource ID of the scaling plan (if enabled)."
+  value       = var.scaling_enabled && var.host_pool_type == "Pooled" ? azurerm_virtual_desktop_scaling_plan.avd[0].id : null
+}
+
+# =============================================================================
+# Outputs — Networking
+# =============================================================================
+
+output "nsg_id" {
+  description = "Resource ID of the NSG (if enabled)."
+  value       = var.nsg_enabled ? azurerm_network_security_group.avd[0].id : null
+}

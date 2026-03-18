@@ -11,6 +11,15 @@
   roles:
     - avd-control-plane
 
+- name: Configure AVD Networking
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - networking
+  roles:
+    - avd-networking
+
 - name: Deploy AVD Session Hosts on Azure Local
   hosts: localhost
   connection: local
@@ -19,3 +28,39 @@
     - session-hosts
   roles:
     - avd-session-hosts
+
+- name: Configure Identity & RBAC
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - identity
+  roles:
+    - avd-identity
+
+- name: Configure FSLogix Profile Containers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - fslogix
+  roles:
+    - avd-fslogix
+
+- name: Deploy AVD Scaling Plan
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - scaling
+  roles:
+    - avd-scaling
+
+- name: Configure AVD Monitoring & Diagnostics
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - monitoring
+  roles:
+    - avd-monitoring

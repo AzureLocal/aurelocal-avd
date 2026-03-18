@@ -22,6 +22,13 @@ subscription:
   location: "eastus"
 
 # -----------------------------------------------------------------------------
+# Deployment Mode
+# -----------------------------------------------------------------------------
+deployment:
+  mode: "greenfield"                          # greenfield | brownfield (brownfield skips RG creation)
+  naming_convention: "iic"                    # Used as infix in resource names: {type}-{naming}-{workload}-{region}-{instance}
+
+# -----------------------------------------------------------------------------
 # Security — Key Vault
 # -----------------------------------------------------------------------------
 security:
@@ -80,13 +87,135 @@ domain:
   domain_join_ou_path: ""                     # Empty = default Computers container
 
 # -----------------------------------------------------------------------------
-# Entra ID Authentication (optional — Hybrid Join + SSO)
+# Identity & Entra ID Authentication
 # -----------------------------------------------------------------------------
-entra_id:
-  enable_entra_id_auth: false                 # Installs AADLoginForWindows extension + RDP SSO
-  enroll_in_intune: false                     # Register session hosts in Intune MDM
-  entra_user_login_group_id: ""               # Object ID of Entra group for VM User Login RBAC
-  entra_admin_login_group_id: ""              # Object ID of Entra group for VM Administrator Login RBAC
+identity:
+  strategy: "hybrid_join"                     # hybrid_join | entra_join | ad_only
+  entra_id:
+    enable_entra_id_auth: false               # Installs AADLoginForWindows extension + RDP SSO
+    enroll_in_intune: false                   # Register session hosts in Intune MDM
+    entra_user_login_group_id: ""             # Object ID of Entra group for VM User Login RBAC
+    entra_admin_login_group_id: ""            # Object ID of Entra group for VM Administrator Login RBAC
+  rbac:
+    desktop_virtualization_user_group_id: ""   # Object ID of group for Desktop Virtualization User role
+    desktop_virtualization_admin_group_id: ""  # Object ID of group for Desktop Virtualization Contributor role
+    power_on_contributor_group_id: ""          # Object ID of group for Desktop Virtualization Power On Contributor
+
+# -----------------------------------------------------------------------------
+# FSLogix Profile Management
+# -----------------------------------------------------------------------------
+fslogix:
+  enabled: false                              # Enable FSLogix profile container configuration
+  share_topology: "single"                    # single | split | cloud_cache
+
+  # Single share — one VHDx per user on a single SMB path
+  single_share:
+    vhd_path: "\\\\sofs-01.iic.local\\profiles$"
+
+  # Split topology — separate shares for profile and Office containers
+  split_shares:
+    profile_vhd_path: "\\\\sofs-01.iic.local\\profiles$"
+    office_vhd_path: "\\\\sofs-01.iic.local\\odfc$"
+
+  # Cloud Cache — multi-site replication with ordered provider list
+  cloud_cache:
+    connections:
+      - "type=smb,connectionString=\\\\sofs-01.iic.local\\profiles$"
+      # - "type=smb,connectionString=\\\\sofs-02.iic.local\\profiles$"
+
+  profile_container:
+    size_in_mb: 30000                         # Max VHDx size per user (default 30 GB)
+    vhd_type: "VHDX"                          # VHD | VHDX
+    flip_flop_enabled: false                  # Newer profile container naming (recommended for new deployments)
+    delete_on_logoff: false                   # Delete local VHDx cache on logoff
+    is_dynamic: true                          # Dynamic vs fixed-size VHDx
+    locked_retry_count: 12                    # Retry attempts when VHDx is locked
+    locked_retry_interval: 5                  # Seconds between retry attempts
+
+# -----------------------------------------------------------------------------
+# Scaling Plan (Pooled host pools only)
+# -----------------------------------------------------------------------------
+scaling:
+  enabled: false                              # Enable AVD scaling plan
+  time_zone: "Eastern Standard Time"
+  schedules:
+    - name: "Weekday"
+      days_of_week:
+        - "Monday"
+        - "Tuesday"
+        - "Wednesday"
+        - "Thursday"
+        - "Friday"
+      ramp_up:
+        start_time: "07:00"
+        load_balancer_type: "BreadthFirst"
+        minimum_host_percent: 20
+        capacity_threshold_percent: 60
+      peak:
+        start_time: "09:00"
+        load_balancer_type: "BreadthFirst"
+      ramp_down:
+        start_time: "17:00"
+        load_balancer_type: "DepthFirst"
+        minimum_host_percent: 10
+        capacity_threshold_percent: 90
+        force_logoff: true
+        wait_time_minutes: 30
+        notification_message: "Your session will end in 30 minutes. Please save your work."
+      off_peak:
+        start_time: "20:00"
+        load_balancer_type: "DepthFirst"
+
+# -----------------------------------------------------------------------------
+# Monitoring & Diagnostics
+# -----------------------------------------------------------------------------
+monitoring:
+  log_analytics:
+    workspace_name: "law-iic-avd-eus-01"
+    resource_group: "rg-iic-mgmt-eus-01"      # Can use existing LAW in a shared management RG
+    retention_days: 30
+  diagnostics:
+    enable_host_pool_diagnostics: true
+    enable_workspace_diagnostics: true
+    log_categories:                            # AVD diagnostic categories to enable
+      - "Checkpoint"
+      - "Error"
+      - "Management"
+      - "Connection"
+      - "HostRegistration"
+      - "AgentHealthStatus"
+  defender:
+    enable_defender_for_cloud: false           # Enable Microsoft Defender for Cloud on session hosts
+  alerts:
+    enable_alerts: false
+    action_group_id: ""                        # Resource ID of the action group for alert notifications
+
+# -----------------------------------------------------------------------------
+# Image Management
+# -----------------------------------------------------------------------------
+image:
+  source: "marketplace"                        # marketplace | gallery | custom
+  marketplace:
+    publisher: "MicrosoftWindowsDesktop"
+    offer: "windows-11"
+    sku: "win11-23h2-avd"
+  gallery:
+    gallery_image_id: ""                       # Full ARM resource ID of the Azure Compute Gallery image
+  customization:
+    install_m365_apps: false                   # Install Microsoft 365 Apps via Chocolatey/Winget
+    install_teams_new: false                   # Install New Microsoft Teams
+    install_onedrive: false                    # Install OneDrive per-machine
+    additional_scripts: []                     # List of PowerShell script URLs to execute during image build
+
+# -----------------------------------------------------------------------------
+# Networking
+# -----------------------------------------------------------------------------
+networking:
+  private_endpoints:
+    enabled: false                             # Deploy private endpoints for AVD feed and gateway
+    subnet_id: ""                              # Subnet for private endpoints
+  nsg:
+    apply_default_avd_rules: true              # Apply standard AVD NSG rules (RDP, HTTPS outbound)
 
 # -----------------------------------------------------------------------------
 # Tags

@@ -31,6 +31,37 @@ domain_fqdn      = "iic.local"
 domain_join_user = "svc-domainjoin@iic.local"
 ou_path          = "OU=AVD,OU=Computers,DC=iic,DC=local"
 
+# ── Identity & RBAC ──────────────────────────────────────────────────────────
+
+identity_strategy  = "hybrid_join"
+avd_user_group_id  = "00000000-0000-0000-0000-000000000000"
+avd_admin_group_id = "00000000-0000-0000-0000-000000000000"
+
+# ── FSLogix ───────────────────────────────────────────────────────────────────
+
+fslogix_enabled        = true
+fslogix_share_topology = "single"
+fslogix_single_vhd_path = "\\\\fs-01.iic.local\\FSLogix\\Profiles"
+fslogix_size_in_mb     = 30000
+fslogix_vhd_type       = "VHDX"
+fslogix_flip_flop      = false
+
+# ── Scaling ───────────────────────────────────────────────────────────────────
+
+scaling_enabled   = true
+scaling_time_zone = "Eastern Standard Time"
+
+# ── Monitoring ────────────────────────────────────────────────────────────────
+
+monitoring_enabled = true
+defender_enabled   = false
+alert_rules_enabled = false
+
+# ── Networking ────────────────────────────────────────────────────────────────
+
+nsg_enabled                = true
+private_endpoints_enabled  = false
+
 # ── Tags ──────────────────────────────────────────────────────────────────────
 
 environment_tag = "production"

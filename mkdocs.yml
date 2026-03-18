@@ -37,6 +37,12 @@ nav:
   - Getting Started: getting-started.md
   - Guides:
       - AVD Deployment Guide: guides/avd-deployment-guide.md
+      - FSLogix Profile Containers: guides/fslogix.md
+      - Identity & RBAC: guides/identity.md
+      - Scaling Plans: guides/scaling.md
+      - Monitoring & Diagnostics: guides/monitoring.md
+      - Networking: guides/networking.md
+      - Validation Matrix: guides/validation-matrix.md
   - Scenarios: scenarios.md
   - Reference:
       - Variables: reference/variables.md

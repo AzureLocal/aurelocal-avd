@@ -1,0 +1,100 @@
+---
+# roles/avd-networking/tasks/main.yml
+# Creates NSG with AVD-required rules and optional private endpoints.
+
+- name: Create NSG for AVD session hosts
+  azure.azcollection.azure_rm_securitygroup:
+    resource_group: "{{ azure_resource_group }}"
+    name: "{{ avd_nsg_name | default(avd_host_pool_name + '-nsg') }}"
+    location: "{{ azure_location }}"
+    rules:
+      - name: "Allow-AVD-Service"
+        priority: 100
+        direction: "Outbound"
+        access: "Allow"
+        protocol: "Tcp"
+        source_port_range: "*"
+        destination_port_range: "443"
+        source_address_prefix: "*"
+        destination_address_prefix: "WindowsVirtualDesktop"
+      - name: "Allow-AzureMonitor"
+        priority: 110
+        direction: "Outbound"
+        access: "Allow"
+        protocol: "Tcp"
+        source_port_range: "*"
+        destination_port_range: "443"
+        source_address_prefix: "*"
+        destination_address_prefix: "AzureMonitor"
+      - name: "Allow-AzureAD"
+        priority: 120
+        direction: "Outbound"
+        access: "Allow"
+        protocol: "Tcp"
+        source_port_range: "*"
+        destination_port_range: "443"
+        source_address_prefix: "*"
+        destination_address_prefix: "AzureActiveDirectory"
+      - name: "Allow-KMS"
+        priority: 130
+        direction: "Outbound"
+        access: "Allow"
+        protocol: "Tcp"
+        source_port_range: "*"
+        destination_port_range: "1688"
+        source_address_prefix: "*"
+        destination_address_prefix: "Internet"
+    tags:
+      environment: "{{ avd_environment_tag }}"
+      owner: "{{ avd_owner_tag }}"
+  when: avd_nsg_enabled | default(true)
+
+- name: Deploy private endpoint for host pool
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: Network
+    resource_type: privateEndpoints
+    resource_name: "{{ avd_host_pool_name }}-pe"
+    api_version: "2023-05-01"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        subnet:
+          id: "{{ avd_private_endpoint_subnet_id }}"
+        privateLinkServiceConnections:
+          - name: "{{ avd_host_pool_name }}-psc"
+            properties:
+              privateLinkServiceId: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/hostPools/{{ avd_host_pool_name }}"
+              groupIds:
+                - "connection"
+  when:
+    - avd_private_endpoints_enabled | default(false)
+    - avd_private_endpoint_subnet_id is defined
+
+- name: Deploy private endpoint for workspace
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: Network
+    resource_type: privateEndpoints
+    resource_name: "{{ avd_workspace_name }}-pe"
+    api_version: "2023-05-01"
+    body:
+      location: "{{ azure_location }}"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        subnet:
+          id: "{{ avd_private_endpoint_subnet_id }}"
+        privateLinkServiceConnections:
+          - name: "{{ avd_workspace_name }}-psc"
+            properties:
+              privateLinkServiceId: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/workspaces/{{ avd_workspace_name }}"
+              groupIds:
+                - "feed"
+  when:
+    - avd_private_endpoints_enabled | default(false)
+    - avd_private_endpoint_subnet_id is defined

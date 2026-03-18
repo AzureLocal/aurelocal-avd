@@ -1,0 +1,296 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "17625961830276968269"
+    }
+  },
+  "parameters": {
+    "scalingPlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for the scaling plan"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region"
+      }
+    },
+    "hostPoolId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the host pool to attach"
+      }
+    },
+    "hostPoolType": {
+      "type": "string",
+      "defaultValue": "Pooled",
+      "allowedValues": [
+        "Pooled",
+        "Personal"
+      ],
+      "metadata": {
+        "description": "Host pool type — scaling only applies to Pooled"
+      }
+    },
+    "scalingEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable scaling plan"
+      }
+    },
+    "timeZone": {
+      "type": "string",
+      "defaultValue": "Eastern Standard Time",
+      "metadata": {
+        "description": "Time zone for scaling schedules"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Resource tags"
+      }
+    },
+    "scheduleName": {
+      "type": "string",
+      "defaultValue": "weekday-schedule",
+      "metadata": {
+        "description": "Schedule name"
+      }
+    },
+    "scheduleDays": {
+      "type": "array",
+      "defaultValue": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "metadata": {
+        "description": "Days of week for the schedule"
+      }
+    },
+    "rampUpStartHour": {
+      "type": "int",
+      "defaultValue": 7,
+      "metadata": {
+        "description": "Ramp-up start time (hour)"
+      }
+    },
+    "rampUpStartMinute": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Ramp-up start time (minute)"
+      }
+    },
+    "rampUpLBAlgorithm": {
+      "type": "string",
+      "defaultValue": "BreadthFirst",
+      "allowedValues": [
+        "BreadthFirst",
+        "DepthFirst"
+      ],
+      "metadata": {
+        "description": "Ramp-up load balancing algorithm"
+      }
+    },
+    "rampUpMinHostsPct": {
+      "type": "int",
+      "defaultValue": 25,
+      "metadata": {
+        "description": "Ramp-up minimum hosts percent"
+      }
+    },
+    "rampUpCapacityPct": {
+      "type": "int",
+      "defaultValue": 60,
+      "metadata": {
+        "description": "Ramp-up capacity threshold percent"
+      }
+    },
+    "peakStartHour": {
+      "type": "int",
+      "defaultValue": 9,
+      "metadata": {
+        "description": "Peak start time (hour)"
+      }
+    },
+    "peakStartMinute": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Peak start time (minute)"
+      }
+    },
+    "peakLBAlgorithm": {
+      "type": "string",
+      "defaultValue": "BreadthFirst",
+      "allowedValues": [
+        "BreadthFirst",
+        "DepthFirst"
+      ],
+      "metadata": {
+        "description": "Peak load balancing algorithm"
+      }
+    },
+    "rampDownStartHour": {
+      "type": "int",
+      "defaultValue": 17,
+      "metadata": {
+        "description": "Ramp-down start time (hour)"
+      }
+    },
+    "rampDownStartMinute": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Ramp-down start time (minute)"
+      }
+    },
+    "rampDownLBAlgorithm": {
+      "type": "string",
+      "defaultValue": "DepthFirst",
+      "allowedValues": [
+        "BreadthFirst",
+        "DepthFirst"
+      ],
+      "metadata": {
+        "description": "Ramp-down load balancing algorithm"
+      }
+    },
+    "rampDownMinHostsPct": {
+      "type": "int",
+      "defaultValue": 10,
+      "metadata": {
+        "description": "Ramp-down minimum hosts percent"
+      }
+    },
+    "rampDownCapacityPct": {
+      "type": "int",
+      "defaultValue": 90,
+      "metadata": {
+        "description": "Ramp-down capacity threshold percent"
+      }
+    },
+    "rampDownForceLogoff": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Force logoff users during ramp-down"
+      }
+    },
+    "rampDownWaitMinutes": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Wait time before force logoff (minutes)"
+      }
+    },
+    "rampDownNotification": {
+      "type": "string",
+      "defaultValue": "Your session will be logged off in 30 minutes.",
+      "metadata": {
+        "description": "Notification message before forced logoff"
+      }
+    },
+    "offPeakStartHour": {
+      "type": "int",
+      "defaultValue": 19,
+      "metadata": {
+        "description": "Off-peak start time (hour)"
+      }
+    },
+    "offPeakStartMinute": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Off-peak start time (minute)"
+      }
+    },
+    "offPeakLBAlgorithm": {
+      "type": "string",
+      "defaultValue": "DepthFirst",
+      "allowedValues": [
+        "BreadthFirst",
+        "DepthFirst"
+      ],
+      "metadata": {
+        "description": "Off-peak load balancing algorithm"
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[and(parameters('scalingEnabled'), equals(parameters('hostPoolType'), 'Pooled'))]",
+      "type": "Microsoft.DesktopVirtualization/scalingPlans",
+      "apiVersion": "2024-04-03",
+      "name": "[parameters('scalingPlanName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "timeZone": "[parameters('timeZone')]",
+        "friendlyName": "[format('{0} Scaling Plan', parameters('scalingPlanName'))]",
+        "hostPoolType": "Pooled",
+        "hostPoolReferences": [
+          {
+            "hostPoolArmPath": "[parameters('hostPoolId')]",
+            "scalingPlanEnabled": true
+          }
+        ],
+        "schedules": [
+          {
+            "name": "[parameters('scheduleName')]",
+            "daysOfWeek": "[parameters('scheduleDays')]",
+            "rampUpStartTime": {
+              "hour": "[parameters('rampUpStartHour')]",
+              "minute": "[parameters('rampUpStartMinute')]"
+            },
+            "rampUpLoadBalancingAlgorithm": "[parameters('rampUpLBAlgorithm')]",
+            "rampUpMinimumHostsPct": "[parameters('rampUpMinHostsPct')]",
+            "rampUpCapacityThresholdPct": "[parameters('rampUpCapacityPct')]",
+            "peakStartTime": {
+              "hour": "[parameters('peakStartHour')]",
+              "minute": "[parameters('peakStartMinute')]"
+            },
+            "peakLoadBalancingAlgorithm": "[parameters('peakLBAlgorithm')]",
+            "rampDownStartTime": {
+              "hour": "[parameters('rampDownStartHour')]",
+              "minute": "[parameters('rampDownStartMinute')]"
+            },
+            "rampDownLoadBalancingAlgorithm": "[parameters('rampDownLBAlgorithm')]",
+            "rampDownMinimumHostsPct": "[parameters('rampDownMinHostsPct')]",
+            "rampDownCapacityThresholdPct": "[parameters('rampDownCapacityPct')]",
+            "rampDownForceLogoffUsers": "[parameters('rampDownForceLogoff')]",
+            "rampDownWaitTimeMinutes": "[parameters('rampDownWaitMinutes')]",
+            "rampDownNotificationMessage": "[parameters('rampDownNotification')]",
+            "offPeakStartTime": {
+              "hour": "[parameters('offPeakStartHour')]",
+              "minute": "[parameters('offPeakStartMinute')]"
+            },
+            "offPeakLoadBalancingAlgorithm": "[parameters('offPeakLBAlgorithm')]"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "scalingPlanId": {
+      "type": "string",
+      "value": "[if(and(parameters('scalingEnabled'), equals(parameters('hostPoolType'), 'Pooled')), resourceId('Microsoft.DesktopVirtualization/scalingPlans', parameters('scalingPlanName')), '')]"
+    },
+    "scalingPlanName": {
+      "type": "string",
+      "value": "[if(and(parameters('scalingEnabled'), equals(parameters('hostPoolType'), 'Pooled')), parameters('scalingPlanName'), '')]"
+    }
+  }
+}
