@@ -2,7 +2,10 @@
 # FSLogix Profile Container Configuration — Terraform
 # =============================================================================
 # Configures FSLogix on session hosts via CustomScriptExtension.
-# Supports single, split, and cloud_cache topologies.
+# Supports single and split topologies.
+# Note: Backup (Storage Replica / Azure Backup) is a storage-level concern
+# handled by the azurelocal-sofs-fslogix companion repo — no session host
+# config changes needed. Cloud Cache is an optional add-on, not a topology.
 # =============================================================================
 
 variable "fslogix_enabled" {
@@ -12,12 +15,12 @@ variable "fslogix_enabled" {
 }
 
 variable "fslogix_share_topology" {
-  description = "FSLogix share topology: single, split, or cloud_cache."
+  description = "FSLogix share topology: single or split (three shares — Profiles, ODFC, AppData)."
   type        = string
   default     = "single"
   validation {
-    condition     = contains(["single", "split", "cloud_cache"], var.fslogix_share_topology)
-    error_message = "fslogix_share_topology must be 'single', 'split', or 'cloud_cache'."
+    condition     = contains(["single", "split"], var.fslogix_share_topology)
+    error_message = "fslogix_share_topology must be 'single' or 'split'."
   }
 }
 
@@ -39,10 +42,10 @@ variable "fslogix_split_office_path" {
   default     = ""
 }
 
-variable "fslogix_cloud_cache_connections" {
-  description = "Cloud Cache connection strings."
-  type        = list(string)
-  default     = []
+variable "fslogix_split_appdata_path" {
+  description = "UNC path for AppData folder redirection (split topology)."
+  type        = string
+  default     = ""
 }
 
 variable "fslogix_size_in_mb" {
@@ -76,13 +79,14 @@ locals {
   fslogix_topology_commands = var.fslogix_enabled ? (
     var.fslogix_share_topology == "single" ? [
       "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\FSLogix\\Profiles' -Name 'VHDLocations' -Value '${var.fslogix_single_vhd_path}' -Type MultiString",
-    ] : var.fslogix_share_topology == "split" ? [
+    ] : [
+      # Split topology — three shares: Profiles (VHDx), ODFC (VHDx), AppData (Folder Redirection)
       "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\FSLogix\\Profiles' -Name 'VHDLocations' -Value '${var.fslogix_split_profile_path}' -Type MultiString",
       "New-Item -Path 'HKLM:\\SOFTWARE\\Policies\\FSLogix\\ODFC' -Force | Out-Null",
       "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\FSLogix\\ODFC' -Name 'Enabled' -Value 1 -Type DWord",
       "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\FSLogix\\ODFC' -Name 'VHDLocations' -Value '${var.fslogix_split_office_path}' -Type MultiString",
-    ] : [
-      "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\FSLogix\\Profiles' -Name 'CCDLocations' -Value '${join(",", var.fslogix_cloud_cache_connections)}' -Type MultiString",
+      # AppData is handled via Folder Redirection GPO pointing to fslogix_split_appdata_path.
+      # The GPO redirects %APPDATA% to \\SOFS\AppData\%USERNAME% — no registry key needed here.
     ]
   ) : []
 

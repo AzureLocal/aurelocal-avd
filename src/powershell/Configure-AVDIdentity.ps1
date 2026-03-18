@@ -2,7 +2,8 @@
 # Configure-AVDIdentity.ps1
 # =============================================================================
 # Configures RBAC role assignments and Entra ID login extension for AVD.
-# Supports ad_only, entra_join, and hybrid_join strategies.
+# Supports ad_only and hybrid_join strategies.
+# Note: Entra-only join is NOT supported on Azure Local Arc-enabled VMs.
 # =============================================================================
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -43,9 +44,9 @@ if ($userGroupId) {
     }
 }
 
-# ── VM Login Roles (Entra-joined or Hybrid-joined only) ──────────────────────
+# ── VM Login Roles (Hybrid-joined only) ──────────────────────────────────────────
 
-if ($strategy -ne 'ad_only') {
+if ($strategy -eq 'hybrid_join') {
     # Virtual Machine User Login
     if ($userGroupId) {
         if ($PSCmdlet.ShouldProcess($rg, "Assign Virtual Machine User Login to $userGroupId")) {
@@ -80,7 +81,7 @@ if ($strategy -ne 'ad_only') {
     for ($i = 1; $i -le $vmCount; $i++) {
         $vmName = '{0}-{1:D2}' -f $vmPrefix, $i
         if ($PSCmdlet.ShouldProcess($vmName, "Deploy AADLoginForWindows extension")) {
-            $extSettings = if ($strategy -eq 'hybrid_join') { @{ mdmId = '' } } else { @{} }
+            $extSettings = @{ mdmId = '' }
 
             $extBody = @{
                 location   = $config.azure.location

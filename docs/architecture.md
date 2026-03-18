@@ -51,7 +51,7 @@ The diagram above shows the full end-to-end architecture — End Users connect v
 │                                                                      │
 │  ┌────────────────────────────────────────────────────────────────┐  │
 │  │              Scale Out File Server (SOFS)                      │  │
-│  │           \\SOFS\FSLogixProfiles  (SMB share)                  │  │
+│  │           \\SOFS\Profiles  (SMB share)                         │  │
 │  │    (see azurelocal-sofs-fslogix companion repository)         │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────┘
@@ -61,8 +61,7 @@ The diagram above shows the full end-to-end architecture — End Users connect v
     ┌──────────────┐
     │  Domain      │
     │  Controllers │
-    │  (AD DS /    │
-    │   Entra ID)  │
+    │  (AD DS)     │
     └──────────────┘
 ```
 
@@ -90,8 +89,10 @@ The diagram above shows the full end-to-end architecture — End Users connect v
 | Option | Description |
 |--------|-------------|
 | **Active Directory Domain Services (AD DS)** | Traditional on-premises domain; session hosts domain-joined |
-| **Microsoft Entra ID + AD DS hybrid** | Hybrid join using Entra Connect; supports Conditional Access |
-| **Microsoft Entra ID only** | Entra-joined session hosts; requires FSLogix cloud cache or Azure Files |
+| **AD DS + Entra ID Hybrid Join** (Recommended) | Hybrid join using Entra Connect; supports Conditional Access and SSO via `AADLoginForWindows` extension |
+
+!!! warning "Azure Local Constraint"
+    Entra-only join is **NOT supported** on Azure Local. Arc-enabled VMs (`Microsoft.HybridCompute/machines`) do not support Entra-only join. Only AD-Only and Hybrid Join are valid identity strategies.
 
 ---
 

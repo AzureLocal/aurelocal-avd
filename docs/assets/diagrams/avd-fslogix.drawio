@@ -1,64 +1,93 @@
 <mxfile host="draw.io" modified="2026-03-18T00:00:00.000Z" agent="GitHub Copilot" version="24.0.0" type="device">
   <diagram id="avd-fslogix" name="FSLogix Profile Containers — Architecture">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1800" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- Title -->
-        <mxCell id="title" value="&lt;b&gt;FSLogix Profile Containers — 3 Topology Options&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" vertex="1" parent="1">
-          <mxGeometry x="300" y="10" width="700" height="35" as="geometry"/>
+        <mxCell id="title" value="&lt;b&gt;FSLogix Profile Containers on Azure Local SOFS — 3 Topology Options&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="250" y="10" width="900" height="35" as="geometry"/>
         </mxCell>
 
         <!-- ══════ SESSION HOSTS ══════ -->
         <mxCell id="sh-zone" value="&lt;b&gt;Session Hosts (Azure Local Arc VMs)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
           <mxGeometry x="20" y="60" width="330" height="300" as="geometry"/>
         </mxCell>
-        <mxCell id="sh1" value="&lt;b&gt;sh-pool01-001&lt;/b&gt;&lt;br&gt;FSLogix Agent installed&lt;br&gt;&lt;br&gt;Registry keys set via:&lt;br&gt;• Arc CustomScriptExtension&lt;br&gt;  (Terraform azapi_resource)&lt;br&gt;• Configure-FSLogix.ps1&lt;br&gt;• Ansible avd-fslogix role&lt;br&gt;&lt;br&gt;HKLM:\\SOFTWARE\\FSLogix\\Profiles&lt;br&gt;├─ Enabled = 1&lt;br&gt;├─ VHDLocations = \\\\share\\path&lt;br&gt;├─ SizeInMBs = 30720&lt;br&gt;├─ IsDynamic = 1&lt;br&gt;├─ VolumeType = VHDX&lt;br&gt;└─ FlipFlopProfileDirectoryName = 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="sh1" value="&lt;b&gt;sh-pool01-001&lt;/b&gt;&lt;br&gt;FSLogix Agent (pre-installed)&lt;br&gt;&lt;br&gt;Registry keys set via:&lt;br&gt;• Arc CustomScriptExtension&lt;br&gt;  (Terraform azapi_resource)&lt;br&gt;• Configure-FSLogix.ps1&lt;br&gt;• Ansible avd-fslogix role&lt;br&gt;&lt;br&gt;HKLM:\\SOFTWARE\\FSLogix\\Profiles&lt;br&gt;├─ Enabled = 1&lt;br&gt;├─ VHDLocations = \\\\SOFS\\share&lt;br&gt;├─ SizeInMBs = 30720&lt;br&gt;├─ IsDynamic = 1&lt;br&gt;├─ VolumeType = VHDX&lt;br&gt;└─ FlipFlopProfileDirectoryName = 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="35" y="95" width="300" height="250" as="geometry"/>
         </mxCell>
 
-        <!-- ══════ TOPOLOGY 1: SINGLE ══════ -->
-        <mxCell id="t1-zone" value="&lt;b&gt;Topology 1: Single Share&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: single&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="420" y="60" width="300" height="220" as="geometry"/>
+        <!-- ══════ TOPOLOGY 1: SINGLE SHARE (sofs-fslogix Option A) ══════ -->
+        <mxCell id="t1-zone" value="&lt;b&gt;Topology 1: Single Share&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: single&lt;/i&gt;&lt;br&gt;&lt;i&gt;(sofs-fslogix Option A)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="420" y="60" width="300" height="240" as="geometry"/>
         </mxCell>
-        <mxCell id="t1-share" value="&lt;b&gt;\\\\fs-01\\FSLogix\\Profiles&lt;/b&gt;&lt;br&gt;SMB 3.x File Share&lt;br&gt;&lt;br&gt;Per-user VHDx:&lt;br&gt;├─ john.doe_SID/&lt;br&gt;│   └─ Profile_john.doe.VHDX&lt;br&gt;│       ├─ AppData\\&lt;br&gt;│       ├─ Desktop\\&lt;br&gt;│       ├─ Documents\\&lt;br&gt;│       └─ ODFC (Office cache)&lt;br&gt;├─ jane.doe_SID/&lt;br&gt;│   └─ Profile_jane.doe.VHDX&lt;br&gt;└─ ..." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="435" y="95" width="270" height="170" as="geometry"/>
+        <mxCell id="t1-vol" value="&lt;b&gt;S2D Volume: FSLogixData&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#2E7D32;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="435" y="105" width="270" height="20" as="geometry"/>
         </mxCell>
-
-        <!-- ══════ TOPOLOGY 2: SPLIT ══════ -->
-        <mxCell id="t2-zone" value="&lt;b&gt;Topology 2: Split (Profile + Office)&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: split&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="420" y="310" width="300" height="270" as="geometry"/>
-        </mxCell>
-        <mxCell id="t2-profile" value="&lt;b&gt;Profile Share&lt;/b&gt;&lt;br&gt;\\\\fs-01\\FSLogix\\Profiles&lt;br&gt;&lt;br&gt;VHDx contains:&lt;br&gt;├─ AppData\\&lt;br&gt;├─ Desktop\\&lt;br&gt;├─ Documents\\&lt;br&gt;└─ Registry hive&lt;br&gt;&lt;br&gt;&lt;i&gt;Typically smaller (5-15 GB)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="435" y="350" width="270" height="100" as="geometry"/>
-        </mxCell>
-        <mxCell id="t2-odfc" value="&lt;b&gt;Office Container (ODFC)&lt;/b&gt;&lt;br&gt;\\\\fs-01\\FSLogix\\ODFC&lt;br&gt;&lt;br&gt;VHDx contains:&lt;br&gt;├─ Outlook OST cache&lt;br&gt;├─ OneDrive cache&lt;br&gt;├─ Teams cache&lt;br&gt;└─ Search index&lt;br&gt;&lt;br&gt;&lt;i&gt;Can grow large (15-30 GB)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="435" y="460" width="270" height="105" as="geometry"/>
+        <mxCell id="t1-share" value="&lt;b&gt;\\\\FSLogixSOFS\\Profiles&lt;/b&gt;&lt;br&gt;SMB 3.x share (CA enabled)&lt;br&gt;&lt;br&gt;Single VHDx per user:&lt;br&gt;├─ jsmith_S-1-5-21-…/&lt;br&gt;│   └─ Profile_jsmith.VHDX&lt;br&gt;│       ├─ AppData\\&lt;br&gt;│       ├─ Desktop\\&lt;br&gt;│       ├─ Documents\\&lt;br&gt;│       └─ Outlook OST, Teams cache&lt;br&gt;├─ jdoe_S-1-5-21-…/&lt;br&gt;│   └─ Profile_jdoe.VHDX&lt;br&gt;└─ ...&lt;br&gt;&lt;br&gt;&lt;i&gt;Best for: &amp;lt;500 users, simplest setup&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="435" y="130" width="270" height="160" as="geometry"/>
         </mxCell>
 
-        <!-- ══════ TOPOLOGY 3: CLOUD CACHE ══════ -->
-        <mxCell id="t3-zone" value="&lt;b&gt;Topology 3: Cloud Cache (HA / DR)&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: cloud_cache&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
-          <mxGeometry x="780" y="60" width="350" height="510" as="geometry"/>
+        <!-- ══════ TOPOLOGY 2: SPLIT — THREE SHARES (sofs-fslogix Option B) ══════ -->
+        <mxCell id="t2-zone" value="&lt;b&gt;Topology 2: Split — Three Shares&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: split&lt;/i&gt;&lt;br&gt;&lt;i&gt;(sofs-fslogix Option B — 3 S2D volumes, 3 shares)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="420" y="330" width="370" height="420" as="geometry"/>
         </mxCell>
-        <mxCell id="t3-local" value="&lt;b&gt;Local Cache (on Session Host)&lt;/b&gt;&lt;br&gt;C:\\ProgramData\\FSLogix\\Cache\\&lt;br&gt;&lt;br&gt;VHDx mounted from local cache&lt;br&gt;Write-back to all providers&lt;br&gt;Instant logon (no SMB wait)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="800" y="105" width="310" height="85" as="geometry"/>
+        <!-- Share 1: Profiles -->
+        <mxCell id="t2-vol1" value="&lt;b&gt;S2D Volume: Profiles (~55% capacity)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#0078D4;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="435" y="385" width="340" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="t3-primary" value="&lt;b&gt;Provider 1 — Primary Site&lt;/b&gt;&lt;br&gt;type=smb,connectionString=&lt;br&gt;\\\\primary.domain.local\\FSLogix&lt;br&gt;&lt;br&gt;Synchronous write-back&lt;br&gt;Closest to session hosts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="800" y="210" width="310" height="80" as="geometry"/>
+        <mxCell id="t2-profile" value="&lt;b&gt;Share 1: \\\\FSLogixSOFS\\Profiles&lt;/b&gt;&lt;br&gt;Profile containers (VHDx per user)&lt;br&gt;├─ Desktop\\, Documents\\, Downloads\\&lt;br&gt;├─ Registry hive (NTUSER.DAT)&lt;br&gt;└─ Start Menu layout, shell settings&lt;br&gt;&lt;br&gt;&lt;i&gt;Typically 5–15 GB per user&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="435" y="410" width="340" height="85" as="geometry"/>
         </mxCell>
-        <mxCell id="t3-secondary" value="&lt;b&gt;Provider 2 — DR Site&lt;/b&gt;&lt;br&gt;type=smb,connectionString=&lt;br&gt;\\\\secondary.domain.local\\FSLogix&lt;br&gt;&lt;br&gt;Asynchronous replication&lt;br&gt;Failover target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="800" y="310" width="310" height="80" as="geometry"/>
+        <!-- Share 2: ODFC -->
+        <mxCell id="t2-vol2" value="&lt;b&gt;S2D Volume: ODFC (~35% capacity)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#0078D4;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="435" y="505" width="340" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="t3-azure" value="&lt;b&gt;Provider 3 — Azure Files (Optional)&lt;/b&gt;&lt;br&gt;type=azure,connectionString=&lt;br&gt;stfslogixprod.file.core.windows.net&lt;br&gt;&lt;br&gt;Cloud backup / tertiary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;strokeDashPattern=8 8;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="800" y="410" width="310" height="70" as="geometry"/>
+        <mxCell id="t2-odfc" value="&lt;b&gt;Share 2: \\\\FSLogixSOFS\\ODFC&lt;/b&gt;&lt;br&gt;Office Data File Containers&lt;br&gt;├─ Outlook OST cache&lt;br&gt;├─ OneDrive sync cache&lt;br&gt;├─ Teams cache&lt;br&gt;└─ Search index&lt;br&gt;&lt;br&gt;&lt;i&gt;Heavy I/O — write-intensive (15–30 GB per user)&lt;/i&gt;&lt;br&gt;&lt;i&gt;Recreatable from Exchange/OneDrive if lost&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="435" y="530" width="340" height="100" as="geometry"/>
+        </mxCell>
+        <!-- Share 3: AppData -->
+        <mxCell id="t2-vol3" value="&lt;b&gt;S2D Volume: AppData (~10% capacity)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#0078D4;fontSize=9;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="435" y="640" width="340" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="t2-appdata" value="&lt;b&gt;Share 3: \\\\FSLogixSOFS\\AppData&lt;/b&gt;&lt;br&gt;Per-user AppData redirections&lt;br&gt;├─ Chrome/Edge profiles&lt;br&gt;├─ Specialized app settings&lt;br&gt;└─ App caches that don't fit in profile&lt;br&gt;&lt;br&gt;&lt;i&gt;Isolated I/O — Chrome profile syncs&lt;/i&gt;&lt;br&gt;&lt;i&gt;don't block profile/ODFC volumes&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="435" y="665" width="340" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Why split matters callout -->
+        <mxCell id="t2-why" value="&lt;b&gt;Why 3 shares:&lt;/b&gt; NTFS metadata isolation, per-volume&lt;br&gt;FSRM quotas, separate PerfMon counters,&lt;br&gt;ODFC churn doesn't contest profile MFT locks.&lt;br&gt;&lt;i&gt;Best for: 500+ users, high-density pooled hosts&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=8;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="420" y="755" width="370" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ TOPOLOGY 3: BACKUP ══════ -->
+        <mxCell id="t3-zone" value="&lt;b&gt;Topology 3: Backup&lt;/b&gt;&lt;br&gt;&lt;i&gt;share_topology: backup&lt;/i&gt;&lt;br&gt;&lt;i&gt;Primary SOFS + scheduled backup to secondary target&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="850" y="60" width="370" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-primary" value="&lt;b&gt;Primary: Active SOFS Share&lt;/b&gt;&lt;br&gt;\\\\FSLogixSOFS\\Profiles&lt;br&gt;&lt;br&gt;Actively mounted by session hosts&lt;br&gt;at logon via VHDLocations.&lt;br&gt;All profile I/O goes here.&lt;br&gt;&lt;br&gt;Can be single share (Option A)&lt;br&gt;or three shares (Option B)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="865" y="115" width="340" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-arrow" value="Scheduled backup&lt;br&gt;(nightly / hourly)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;fontSize=8;" edge="1" parent="1" source="t3-primary" target="t3-backup">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-backup" value="&lt;b&gt;Backup Target (choose one or combine)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#7B1FA2;fontSize=10;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="865" y="240" width="340" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-opt1" value="&lt;b&gt;Option A: Storage Replica&lt;/b&gt;&lt;br&gt;Synchronous or async replication&lt;br&gt;to a secondary Azure Local cluster&lt;br&gt;or secondary SOFS. Zero RPO (sync)&lt;br&gt;or near-zero RPO (async).&lt;br&gt;&lt;br&gt;&lt;i&gt;Best for: DR to a second site&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="865" y="275" width="340" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-opt2" value="&lt;b&gt;Option B: Azure Backup (MARS Agent)&lt;/b&gt;&lt;br&gt;MARS agent on SOFS nodes backs up&lt;br&gt;share data to Azure Recovery Services Vault.&lt;br&gt;Scheduled (e.g., nightly).&lt;br&gt;&lt;br&gt;&lt;i&gt;Best for: offsite protection to Azure cloud&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="865" y="365" width="340" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="t3-note" value="&lt;b&gt;Key point:&lt;/b&gt; Session hosts ONLY mount the primary&lt;br&gt;SOFS share. Backup targets are never accessed&lt;br&gt;by session hosts during normal operation — &lt;br&gt;they're for DR / restore only." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=8;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="455" width="370" height="45" as="geometry"/>
         </mxCell>
 
         <!-- ══════ NTFS PERMISSIONS ══════ -->
         <mxCell id="ntfs-zone" value="&lt;b&gt;NTFS Permission Model (All Shares)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
           <mxGeometry x="20" y="400" width="330" height="170" as="geometry"/>
         </mxCell>
-        <mxCell id="ntfs-detail" value="&lt;b&gt;Share-Level (SMB)&lt;/b&gt;&lt;br&gt;  AVD Users → Change&lt;br&gt;  Administrators → Full Control&lt;br&gt;&lt;br&gt;&lt;b&gt;Folder-Level (NTFS)&lt;/b&gt;&lt;br&gt;  CREATOR OWNER → Full Control (subfolders+files)&lt;br&gt;  AVD Users → Modify (this folder only)&lt;br&gt;  BUILTIN\\Administrators → Full Control (all)&lt;br&gt;&lt;br&gt;&lt;i&gt;Provisioned by New-FSLogixShare.ps1&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="ntfs-detail" value="&lt;b&gt;Share-Level (SMB)&lt;/b&gt;&lt;br&gt;  AVD Users → Change&lt;br&gt;  Administrators → Full Control&lt;br&gt;&lt;br&gt;&lt;b&gt;Folder-Level (NTFS)&lt;/b&gt;&lt;br&gt;  CREATOR OWNER → Full Control (subfolders+files)&lt;br&gt;  AVD Users → Modify (this folder only)&lt;br&gt;  BUILTIN\\Administrators → Full Control (all)&lt;br&gt;&lt;br&gt;&lt;i&gt;Provisioned by New-FSLogixShare.ps1&lt;/i&gt;&lt;br&gt;&lt;i&gt;(or sofs-fslogix companion repo)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="35" y="425" width="300" height="135" as="geometry"/>
         </mxCell>
 
@@ -66,25 +95,19 @@
         <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=2;" edge="1" parent="1" source="sh1" target="t1-share">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e1l" value="SMB 3.x" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e1">
+        <mxCell id="e1l" value="SMB 3.x (port 445)" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
         <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1" source="sh1" target="t2-profile">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;" edge="1" parent="1" source="sh1" target="t3-local">
+        <mxCell id="e2l" value="SMB 3.x" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e2">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="t3-local" target="t3-primary">
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=2;" edge="1" parent="1" source="sh1" target="t3-primary">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="e4l" value="sync write" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e4">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7B1FA2;strokeWidth=1;strokeDashPattern=4 4;" edge="1" parent="1" source="t3-local" target="t3-secondary">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="e5l" value="async replica" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e5">
+        <mxCell id="e3l" value="SMB 3.x" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e3">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
       </root>

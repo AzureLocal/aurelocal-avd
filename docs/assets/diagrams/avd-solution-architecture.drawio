@@ -90,12 +90,12 @@
         </mxCell>
 
         <!-- Session Host 1 -->
-        <mxCell id="sh1" value="&lt;b&gt;sh-pool01-001&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="sh1" value="&lt;b&gt;sh-pool01-001&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows (hybrid_join)&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="890" y="215" width="190" height="130" as="geometry"/>
         </mxCell>
 
         <!-- Session Host 2 -->
-        <mxCell id="sh2" value="&lt;b&gt;sh-pool01-002&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+        <mxCell id="sh2" value="&lt;b&gt;sh-pool01-002&lt;/b&gt;&lt;br&gt;Arc VM (HybridCompute)&lt;br&gt;Win 11 Enterprise Multi-Session&lt;br&gt;├─ NIC (logicalNetwork)&lt;br&gt;├─ Domain Join Extension&lt;br&gt;├─ AVD Agent Extension&lt;br&gt;├─ AADLoginForWindows (hybrid_join)&lt;br&gt;└─ Azure Monitor Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
           <mxGeometry x="1100" y="215" width="190" height="130" as="geometry"/>
         </mxCell>
 
@@ -108,11 +108,11 @@
         <mxCell id="fslogix-zone" value="&lt;b&gt;FSLogix Profile Storage&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="870" y="390" width="340" height="190" as="geometry"/>
         </mxCell>
-        <mxCell id="fs-primary" value="&lt;b&gt;Primary File Server&lt;/b&gt;&lt;br&gt;\\\\fs-01.domain.local\\FSLogix&lt;br&gt;SMB 3.x share&lt;br&gt;NTFS permissions configured&lt;br&gt;VHDx per user (30 GB default)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="885" y="420" width="220" height="80" as="geometry"/>
+<mxCell id="fs-primary" value="&lt;b&gt;Primary SOFS&lt;/b&gt;&lt;br&gt;\\FSLogixSOFS\Profiles&lt;br&gt;\\FSLogixSOFS\ODFC&lt;br&gt;\\FSLogixSOFS\AppData&lt;br&gt;SMB 3.x | NTFS permissions&lt;br&gt;VHDx per user (30 GB default)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="885" y="420" width="220" height="90" as="geometry"/>
         </mxCell>
-        <mxCell id="fs-secondary" value="&lt;b&gt;Secondary (Cloud Cache)&lt;/b&gt;&lt;br&gt;Optional DR replica&lt;br&gt;\\\\fs-02.domain.local\\FSLogix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;strokeDashPattern=8 8;align=left;spacingLeft=8;" vertex="1" parent="1">
-          <mxGeometry x="885" y="510" width="220" height="55" as="geometry"/>
+        <mxCell id="fs-secondary" value="&lt;b&gt;Secondary (Backup)&lt;/b&gt;&lt;br&gt;Storage Replica or&lt;br&gt;Azure Backup MARS Agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;strokeDashPattern=8 8;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="885" y="520" width="220" height="50" as="geometry"/>
         </mxCell>
 
         <!-- AD Domain Controller -->
