@@ -16,11 +16,11 @@ This repository uses a **single central configuration file** — `config/variabl
 
 | Rule | Standard | Example |
 |------|----------|--------|
-| Top-level sections | `snake_case` | `control_plane`, `session_hosts` |
-| Keys within sections | `snake_case` | `subscription_id`, `host_pool_name` |
+| Top-level sections | `snake_case` | `azure_local`, `networking` |
+| Keys within sections | `snake_case` | `subscription_id`, `resource_name` |
 | Pattern | `^[a-z][a-z0-9_]*$` | — |
 | Max length | 50 characters | — |
-| Booleans | Descriptive names | `scaling_enabled: true` |
+| Booleans | Descriptive names | `monitoring_enabled: true` |
 | Secrets | `keyvault://` URI format | `keyvault://kv-iic-platform/admin-password` |
 
 ---

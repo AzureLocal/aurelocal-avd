@@ -22,9 +22,9 @@
 | Type | Convention | Pattern | Example |
 |------|-----------|---------|---------|
 | Directories | lowercase-with-hyphens | `^[a-z][a-z0-9-]*$` | `guides/`, `reference/` |
-| Markdown (docs/) | lowercase with hyphens | `*.md` | `avd-deployment-guide.md` |
+| Markdown (docs/) | lowercase with hyphens | `*.md` | `deployment-guide.md` |
 | Root files | UPPERCASE | — | `README.md`, `CHANGELOG.md`, `CONTRIBUTING.md` |
-| PowerShell scripts | PascalCase | `Verb-Noun.ps1` | `Deploy-HostPool.ps1` |
+| PowerShell scripts | PascalCase | `Verb-Noun.ps1` | `Deploy-Solution.ps1` |
 | Config files | lowercase-with-hyphens | — | `variables.example.yml` |
 
 ---

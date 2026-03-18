@@ -4,7 +4,7 @@ This repository follows the **org-wide AzureLocal standards** maintained on the 
 
 !!! info "Central Standards"
     The full standards suite is at [azurelocal.cloud/standards](https://azurelocal.cloud/standards/).
-    This section provides the key rules adapted for the AVD on Azure Local solution.
+    This section provides the key rules adapted for this solution.
 
 ---
 
@@ -31,8 +31,6 @@ This repository follows the **org-wide AzureLocal standards** maintained on the 
 ---
 
 ## Repo-Specific Conventions
-
-This repository follows additional conventions specific to the AVD on Azure Local solution:
 
 - **IaC tooling**: Terraform, Bicep, ARM, PowerShell, Ansible
 - **Config file**: `config/variables.example.yml` — see [Variable Reference](../reference/variables.md)

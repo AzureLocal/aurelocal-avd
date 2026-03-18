@@ -10,12 +10,12 @@
 
 | Script Type | Pattern | Example |
 |-------------|---------|---------|
-| PowerShell Core | `Verb-Noun.ps1` | `Deploy-HostPool.ps1` |
+| PowerShell Core | `Verb-Noun.ps1` | `Deploy-Solution.ps1` |
 | Azure PowerShell | `Verb-AzResource.ps1` | `New-AzKeyVault.ps1` |
-| Azure CLI (PowerShell) | `az-verb-resource.ps1` | `az-create-hostpool.ps1` |
-| Azure CLI (Bash) | `az-verb-resource.sh` | `az-create-hostpool.sh` |
-| Standalone (no config) | `Verb-Noun-Standalone.ps1` | `Deploy-HostPool-Standalone.ps1` |
-| Remote/orchestration | `Invoke-<Task>.ps1` | `Invoke-SessionHostConfig.ps1` |
+| Azure CLI (PowerShell) | `az-verb-resource.ps1` | `az-deploy-resource.ps1` |
+| Azure CLI (Bash) | `az-verb-resource.sh` | `az-deploy-resource.sh` |
+| Standalone (no config) | `Verb-Noun-Standalone.ps1` | `Deploy-Solution-Standalone.ps1` |
+| Remote/orchestration | `Invoke-<Task>.ps1` | `Invoke-Deployment.ps1` |
 
 ---
 
@@ -23,7 +23,7 @@
 
 | Mode | Config File | Dependencies | Use Case |
 |------|-------------|-------------|----------|
-| Config-driven (Options 2–4) | `config/variables.yml` | Config loader, helpers, Key Vault | Multi-environment automation, CI/CD |
+| Config-driven (Options 2-4) | `config/variables.yml` | Config loader, helpers, Key Vault | Multi-environment automation, CI/CD |
 | Standalone (Option 5) | Inline `#region CONFIGURATION` | None | Demos, single-use, external sharing |
 
 ### Config-Driven Rules
@@ -35,7 +35,7 @@
 ### Standalone Rules
 
 - All variables in `#region CONFIGURATION` block at top
-- Variable names match `variables.yml` paths (e.g., `$avd_subscription_id`)
+- Variable names match `variables.yml` paths (e.g., `$subscription_id`)
 - Zero external dependencies — copy, paste, run
 
 ---
@@ -70,7 +70,7 @@ All `Invoke-` scripts must use `[CmdletBinding()]` to enable `-Verbose` and `-De
 
 ---
 
-## AVD-Specific Script Conventions
+## Solution Script Conventions
 
 | Convention | Rule |
 |-----------|------|

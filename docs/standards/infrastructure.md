@@ -8,7 +8,7 @@
 
 ## Overview
 
-Standards for Infrastructure as Code (IaC), Terraform state management, and deployment processes for the AVD on Azure Local solution.
+Standards for Infrastructure as Code (IaC), Terraform state management, and deployment processes for AzureLocal solutions.
 
 ---
 
@@ -32,7 +32,7 @@ flowchart LR
 | Remote state | Store Terraform state in Azure Storage Account |
 | State locking | Enable locking during all operations |
 | Backup | Regular state file backups before destructive operations |
-| Naming | `avd-<env>.tfstate` (e.g., `avd-prod.tfstate`) |
+| Naming | `<solution>-<env>.tfstate` (e.g., `platform-prod.tfstate`) |
 
 ---
 
@@ -50,21 +50,13 @@ All tools must produce **identical infrastructure** when given the same configur
 
 ---
 
-## AVD-Specific Infrastructure
-
-| Convention | Rule |
-|-----------|------|
-| Primary IaC tool | Terraform |
-| Config source | `config/variables.yml` (single source of truth) |
-| Parameter derivation | All tool-specific param files derived from central config |
-
-### Deployment Phases
+## Deployment Phases
 
 | Phase | Scope | Tools |
 |-------|-------|-------|
-| Phase 1: Azure Foundation | Host pools, workspaces, app groups, networking | Terraform, Bicep, ARM |
-| Phase 2: Session Hosts | VM provisioning, domain join | Terraform, PowerShell |
-| Phase 3: Configuration | FSLogix profiles, GPOs, scaling plans | PowerShell, Ansible |
+| Phase 1: Azure Foundation | Resource groups, networking, Key Vault, storage | Terraform, Bicep, ARM |
+| Phase 2: Compute & Workload | VMs, clusters, workload deployment | Terraform, PowerShell |
+| Phase 3: Configuration | Guest config, monitoring, policies | PowerShell, Ansible |
 
 ---
 

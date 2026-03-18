@@ -10,11 +10,11 @@
 
 Each tool must declare which deployment phases it supports:
 
-| Tool | Azure Resources | Domain Join | Guest Config | Session Hosts |
+| Tool | Azure Resources | Configuration | Networking | Monitoring |
 |------|:---:|:---:|:---:|:---:|
-| **Terraform** | ✅ | ✅ | Delegates | ✅ |
-| **Bicep** | ✅ | ✅ | Delegates | ✅ |
-| **ARM** | ✅ | ✅ | Delegates | ✅ |
+| **Terraform** | ✅ | Delegates | ✅ | ✅ |
+| **Bicep** | ✅ | Delegates | ✅ | ✅ |
+| **ARM** | ✅ | Delegates | ✅ | ✅ |
 | **PowerShell** | ✅ | ✅ | ✅ | ✅ |
 | **Ansible** | ✅ | ✅ | ✅ | ✅ |
 
@@ -43,11 +43,11 @@ The central config is the **single source of truth**. Tool-specific files are co
 
 | Tool | Mechanism | Example |
 |------|-----------|--------|
-| **Terraform** | `count` / `for_each` | `count = var.host_pool_type == "Pooled" ? 1 : 0` |
-| **Bicep** | `if` condition | `resource pool '...' = if (hostPoolType == 'Pooled') { ... }` |
-| **ARM** | `condition` property | `"condition": "[equals(parameters('hostPoolType'), 'Pooled')]"` |
-| **PowerShell** | `switch` / `if` | `if ($config.control_plane.host_pool_type -eq 'Pooled') { ... }` |
-| **Ansible** | `when:` clause | `when: host_pool_type == 'Pooled'` |
+| **Terraform** | `count` / `for_each` | `count = var.enable_feature ? 1 : 0` |
+| **Bicep** | `if` condition | `resource res '...' = if (enableFeature) { ... }` |
+| **ARM** | `condition` property | `"condition": "[equals(parameters('enableFeature'), 'true')]"` |
+| **PowerShell** | `switch` / `if` | `if ($config.feature_enabled) { ... }` |
+| **Ansible** | `when:` clause | `when: enable_feature == true` |
 
 All tools must produce **identical infrastructure** when given the same configuration values.
 

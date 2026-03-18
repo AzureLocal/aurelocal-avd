@@ -11,9 +11,9 @@
 | Type | Convention | Pattern | Example |
 |------|-----------|---------|---------|
 | Directories | lowercase-with-hyphens | `^[a-z][a-z0-9-]*$` | `getting-started/` |
-| Markdown (docs/) | lowercase with hyphens | `*.md` | `avd-deployment-guide.md` |
+| Markdown (docs/) | lowercase with hyphens | `*.md` | `deployment-guide.md` |
 | Root files | UPPERCASE | — | `README.md`, `CHANGELOG.md` |
-| PowerShell scripts | PascalCase | `Verb-Noun.ps1` | `Deploy-HostPool.ps1` |
+| PowerShell scripts | PascalCase | `Verb-Noun.ps1` | `Deploy-Solution.ps1` |
 | Config files | lowercase-with-hyphens | — | `variables.example.yml` |
 
 ---
@@ -24,12 +24,11 @@ All resources follow the [IIC naming patterns](examples.md):
 
 | Resource Type | Pattern | Example |
 |--------------|---------|---------|
-| Resource Group | `rg-iic-avd-<##>` | `rg-iic-avd-01` |
-| Host Pool | `hp-iic-<purpose>` | `hp-iic-desktop` |
-| Workspace | `ws-iic-<purpose>` | `ws-iic-prod` |
-| App Group | `ag-iic-<type>` | `ag-iic-desktop` |
+| Resource Group | `rg-iic-<purpose>-<##>` | `rg-iic-platform-01` |
+| Virtual Network | `vnet-iic-<purpose>-<##>` | `vnet-iic-compute-01` |
+| Network Security Group | `nsg-iic-<purpose>` | `nsg-iic-compute` |
 | Key Vault | `kv-iic-<purpose>` | `kv-iic-platform` |
-| Storage Account | `stiic<purpose><##>` | `stiicprofiles01` |
+| Storage Account | `stiic<purpose><##>` | `stiicdata01` |
 | Log Analytics | `law-iic-<purpose>-<##>` | `law-iic-monitor-01` |
 
 ---
@@ -38,8 +37,8 @@ All resources follow the [IIC naming patterns](examples.md):
 
 | Rule | Standard | Example |
 |------|----------|---------|
-| YAML sections | `snake_case` | `azure_local`, `avd` |
-| YAML keys | `snake_case` | `subscription_id`, `host_pool_name` |
+| YAML sections | `snake_case` | `azure_local`, `networking` |
+| YAML keys | `snake_case` | `subscription_id`, `resource_name` |
 | Pattern | `^[a-z][a-z0-9_]*$` | — |
 | Max length | 50 characters | — |
 
@@ -50,8 +49,8 @@ All resources follow the [IIC naming patterns](examples.md):
 | Pattern | Usage | Example |
 |---------|-------|---------|
 | `main` | Default branch | — |
-| `feature/<description>` | New features | `feature/scaling-plan` |
-| `fix/<description>` | Bug fixes | `fix/session-host-drain` |
+| `feature/<description>` | New features | `feature/add-validation` |
+| `fix/<description>` | Bug fixes | `fix/config-parsing` |
 | `docs/<description>` | Documentation | `docs/deployment-guide` |
 | `infra/<description>` | CI/CD | `infra/add-pester-tests` |
 

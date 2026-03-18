@@ -30,35 +30,35 @@ All examples, sample configurations, and walkthroughs use **one** fictional comp
 
 ---
 
-## AVD Naming Patterns
+## AzureLocal Naming Patterns
 
 ### Azure Resources
 
 | Resource | Pattern | Example |
 |----------|---------|---------|
-| Resource Group | `rg-iic-avd-<##>` | `rg-iic-avd-01` |
-| Host Pool | `hp-iic-<type>-<##>` | `hp-iic-pooled-01` |
-| Workspace | `ws-iic-avd-<##>` | `ws-iic-avd-01` |
-| Application Group | `ag-iic-<type>-<##>` | `ag-iic-desktop-01` |
-| Session Host | `vm-iic-avd-<##>` | `vm-iic-avd-01` through `vm-iic-avd-50` |
+| Resource Group | `rg-iic-<purpose>-<##>` | `rg-iic-platform-01` |
+| Virtual Network | `vnet-iic-<purpose>-<##>` | `vnet-iic-compute-01` |
+| Subnet | `snet-iic-<purpose>` | `snet-iic-management` |
+| Network Security Group | `nsg-iic-<purpose>` | `nsg-iic-compute` |
 | Key Vault | `kv-iic-<purpose>` | `kv-iic-platform` |
-| Storage Account | `stiic<purpose><##>` | `stiicprofiles01` |
+| Storage Account | `stiic<purpose><##>` | `stiicdata01` |
 | Log Analytics | `law-iic-<purpose>-<##>` | `law-iic-monitor-01` |
+| Managed Identity | `id-iic-<purpose>` | `id-iic-deploy` |
 
 ### Active Directory
 
 | Resource | Pattern | Example |
 |----------|---------|---------|
-| OU path | `OU=AVD,OU=Servers,DC=iic,DC=local` | — |
-| Service account | `svc.iic.<purpose>` | `svc.iic.avd-join` |
-| Group | `grp-iic-<purpose>` | `grp-iic-avd-users` |
+| OU path | `OU=<Purpose>,OU=Servers,DC=iic,DC=local` | — |
+| Service account | `svc.iic.<purpose>` | `svc.iic.deploy` |
+| Group | `grp-iic-<purpose>` | `grp-iic-admins` |
 
 ### IP Addresses
 
 | Network | Range | Usage |
 |---------|-------|-------|
 | Management | `10.0.0.0/24` | Node management |
-| Compute | `10.0.2.0/24` | Session host traffic |
+| Compute | `10.0.2.0/24` | Workload traffic |
 
 ---
 
@@ -77,22 +77,22 @@ All examples, sample configurations, and walkthroughs use **one** fictional comp
 
 ```yaml
 subscription:
-  avd_subscription_id: "00000000-0000-0000-0000-000000000000"
+  subscription_id: "00000000-0000-0000-0000-000000000000"
   tenant_id: "00000000-0000-0000-0000-000000000000"
   location: "eastus"
 
 security:
   keyvault_name: "kv-iic-platform"
 
-control_plane:
-  host_pool_name: "hp-iic-pooled-01"
-  workspace_name: "ws-iic-avd-01"
+azure_local:
+  resource_group: "rg-iic-platform-01"
+  cluster_name: "azlocal-iic-01"
 ```
 
 ### In Documentation
 
-> Infinite Improbability Corp's AVD environment uses a pooled host pool (`hp-iic-pooled-01`)
-> with breadth-first load balancing across 50 session hosts on Azure Local.
+> Infinite Improbability Corp deploys Azure Local clusters using IIC naming patterns,
+> with all configuration driven from a single `config/variables.yml` file.
 
 ---
 

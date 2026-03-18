@@ -8,7 +8,7 @@
 
 ## Overview
 
-This standard defines how multiple automation tools (Terraform, Bicep, ARM, PowerShell, Ansible) interoperate within the AVD solution. All tools share a single configuration source and must produce identical infrastructure.
+This standard defines how multiple automation tools (Terraform, Bicep, ARM, PowerShell, Ansible) interoperate across AzureLocal solutions. All tools share a single configuration source and must produce identical infrastructure.
 
 ---
 
@@ -32,11 +32,11 @@ flowchart TB
 
 ## Deployment Path Matrix
 
-| Tool | Phase 1 (Azure) | Session Hosts | Guest Config | Scaling |
+| Tool | Azure Resources | Configuration | Monitoring | Scaling |
 |------|:---:|:---:|:---:|:---:|
-| **Terraform** | ✅ | ✅ | Delegates | ✅ |
-| **Bicep** | ✅ | ✅ | Delegates | ✅ |
-| **ARM** | ✅ | ✅ | Delegates | — |
+| **Terraform** | ✅ | Delegates | ✅ | ✅ |
+| **Bicep** | ✅ | Delegates | ✅ | ✅ |
+| **ARM** | ✅ | Delegates | ✅ | — |
 | **PowerShell** | ✅ | ✅ | ✅ | ✅ |
 | **Ansible** | ✅ | ✅ | ✅ | ✅ |
 
