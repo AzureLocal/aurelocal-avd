@@ -70,7 +70,28 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Private DNS zone resource ID for AVD private link"
+        "description": "Private DNS zone resource ID (privatelink.wvd.microsoft.com) for host pool and workspace PEs"
+      }
+    },
+    "privateDnsGlobalZoneId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Private DNS zone resource ID (privatelink-global.wvd.microsoft.com) for global feed discovery PE"
+      }
+    },
+    "globalWorkspaceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of a dedicated workspace for the global PE (sub-resource: global). Only one needed per tenant."
+      }
+    },
+    "globalWorkspaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name for the global workspace PE"
       }
     },
     "tags": {
@@ -230,6 +251,49 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-pe', parameters('workspaceName')))]"
+      ]
+    },
+    {
+      "condition": "[and(parameters('privateEndpointsEnabled'), not(empty(parameters('globalWorkspaceId'))))]",
+      "type": "Microsoft.Network/privateEndpoints",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}-global-pe', parameters('globalWorkspaceName'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "subnet": {
+          "id": "[parameters('privateEndpointSubnetId')]"
+        },
+        "privateLinkServiceConnections": [
+          {
+            "name": "[format('{0}-global-psc', parameters('globalWorkspaceName'))]",
+            "properties": {
+              "privateLinkServiceId": "[parameters('globalWorkspaceId')]",
+              "groupIds": [
+                "global"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[and(and(parameters('privateEndpointsEnabled'), not(empty(parameters('globalWorkspaceId')))), not(empty(parameters('privateDnsGlobalZoneId'))))]",
+      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', format('{0}-global-pe', parameters('globalWorkspaceName')), 'global')]",
+      "properties": {
+        "privateDnsZoneConfigs": [
+          {
+            "name": "global-config",
+            "properties": {
+              "privateDnsZoneId": "[parameters('privateDnsGlobalZoneId')]"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-global-pe', parameters('globalWorkspaceName')))]"
       ]
     }
   ],

@@ -35,8 +35,17 @@ param workspaceId string
 @description('Subnet resource ID for private endpoints')
 param privateEndpointSubnetId string = ''
 
-@description('Private DNS zone resource ID for AVD private link')
+@description('Private DNS zone resource ID (privatelink.wvd.microsoft.com) for host pool and workspace PEs')
 param privateDnsZoneId string = ''
+
+@description('Private DNS zone resource ID (privatelink-global.wvd.microsoft.com) for global feed discovery PE')
+param privateDnsGlobalZoneId string = ''
+
+@description('Resource ID of a dedicated workspace for the global PE (sub-resource: global). Only one needed per tenant.')
+param globalWorkspaceId string = ''
+
+@description('Name for the global workspace PE')
+param globalWorkspaceName string = ''
 
 @description('Resource tags')
 param tags object = {}
@@ -175,6 +184,48 @@ resource workspacePeDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
         name: 'config'
         properties: {
           privateDnsZoneId: privateDnsZoneId
+        }
+      }
+    ]
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Global Private Endpoint (Feed Discovery)
+// ---------------------------------------------------------------------------
+// Only ONE global PE is needed across all AVD deployments in a tenant.
+// Uses a dedicated workspace and the "global" sub-resource.
+// DNS zone: privatelink-global.wvd.microsoft.com
+
+resource globalPe 'Microsoft.Network/privateEndpoints@2023-05-01' = if (privateEndpointsEnabled && !empty(globalWorkspaceId)) {
+  name: '${globalWorkspaceName}-global-pe'
+  location: location
+  tags: tags
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${globalWorkspaceName}-global-psc'
+        properties: {
+          privateLinkServiceId: globalWorkspaceId
+          groupIds: ['global']
+        }
+      }
+    ]
+  }
+}
+
+resource globalPeDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-05-01' = if (privateEndpointsEnabled && !empty(globalWorkspaceId) && !empty(privateDnsGlobalZoneId)) {
+  parent: globalPe
+  name: 'global'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'global-config'
+        properties: {
+          privateDnsZoneId: privateDnsGlobalZoneId
         }
       }
     ]

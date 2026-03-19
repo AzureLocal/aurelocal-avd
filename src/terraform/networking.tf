@@ -29,7 +29,19 @@ variable "private_endpoint_subnet_id" {
 }
 
 variable "private_dns_zone_id" {
-  description = "Private DNS zone resource ID for AVD private link."
+  description = "Private DNS zone resource ID (privatelink.wvd.microsoft.com) for host pool and workspace PEs."
+  type        = string
+  default     = ""
+}
+
+variable "private_dns_global_zone_id" {
+  description = "Private DNS zone resource ID (privatelink-global.wvd.microsoft.com) for the global feed discovery PE."
+  type        = string
+  default     = ""
+}
+
+variable "global_workspace_id" {
+  description = "Resource ID of a dedicated workspace used for the global PE (sub-resource: global). Only one global PE is needed across all AVD deployments."
   type        = string
   default     = ""
 }
@@ -151,6 +163,36 @@ resource "azurerm_private_endpoint" "workspace" {
     content {
       name                 = "default"
       private_dns_zone_ids = [var.private_dns_zone_id]
+    }
+  }
+}
+
+# ── Private Endpoint for Global Feed Discovery ────────────────────────────────
+# Only ONE global PE is needed across all AVD deployments in a tenant.
+# Uses a dedicated workspace and the "global" sub-resource.
+# DNS zone: privatelink-global.wvd.microsoft.com
+
+resource "azurerm_private_endpoint" "global" {
+  count = var.private_endpoints_enabled && var.global_workspace_id != "" ? 1 : 0
+
+  name                = "${var.workspace_name}-global-pe"
+  location            = azurerm_resource_group.avd.location
+  resource_group_name = azurerm_resource_group.avd.name
+  subnet_id           = var.private_endpoint_subnet_id
+  tags                = local.tags
+
+  private_service_connection {
+    name                           = "${var.workspace_name}-global-psc"
+    private_connection_resource_id = var.global_workspace_id
+    subresource_names              = ["global"]
+    is_manual_connection           = false
+  }
+
+  dynamic "private_dns_zone_group" {
+    for_each = var.private_dns_global_zone_id != "" ? [1] : []
+    content {
+      name                 = "global"
+      private_dns_zone_ids = [var.private_dns_global_zone_id]
     }
   }
 }
