@@ -19,7 +19,7 @@ jobs:
   set-fields:
     needs: add-to-project
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues'
+    if: always() && github.event_name == 'issues'
     env:
       GH_TOKEN: ${{ secrets.ADD_TO_PROJECT_PAT }}
       PROJECT_ID: "PVT_kwDOCxeiOM4BR2KZ"
