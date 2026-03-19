@@ -80,6 +80,7 @@ The diagram above shows the full end-to-end architecture — End Users connect v
 | **Azure Local Cluster** | On-premises | Hyper-converged infrastructure running Storage Spaces Direct |
 | **Arc Resource Bridge** | Azure Local | Enables Azure to manage on-premises VMs as Arc-enabled resources |
 | **Session Host VMs** | Azure Local | Windows VMs running the AVD Agent and FSLogix Agent |
+| **Scaling Plan** | Azure | Autoscaler schedule that powers session host VMs on/off based on demand (Pooled pools) |
 | **SOFS / FSLogix** | Azure Local | SMB share providing profile containers (companion repo) |
 
 ---

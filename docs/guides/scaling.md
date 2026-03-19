@@ -12,8 +12,29 @@ Without a scaling plan, you either leave all hosts running 24/7 (expensive), or 
 
 > *Open the [draw.io source](../assets/diagrams/avd-scaling.drawio) for an editable version.*
 
-!!! note
-    Scaling plans are **only supported for Pooled host pools**. Personal host pools use direct assignment (each user gets a specific VM) and don't support autoscaling. In Terraform, this is enforced with: `count = var.scaling_enabled && var.host_pool_type == "Pooled" ? 1 : 0`.
+!!! note "Pooled vs. Personal"
+    **Pooled host pools** support full capacity-based autoscaling (this guide's focus). **Personal host pools** now also support scaling plans, but with a different model — personal scaling plans deallocate VMs based on user session state (signed out / disconnected), not capacity thresholds. This repo's IaC deploys scaling plans only for Pooled pools: `count = var.scaling_enabled && var.host_pool_type == "Pooled" ? 1 : 0`.
+
+---
+
+## Azure Local Considerations
+
+Scaling plans work on Azure Local session hosts — Microsoft explicitly supports both **power management autoscaling** and **Start VM on Connect** for session hosts on Azure and Azure Local. However, running on-premises introduces important differences compared to Azure-hosted VMs:
+
+!!! warning "Azure Local-Specific Caveats"
+    1. **Fixed hardware capacity** — Unlike Azure, you cannot burst beyond your physical cluster's compute capacity. Design `minimum_hosts_pct` and capacity thresholds conservatively. If all physical cores are committed, the autoscaler cannot power on additional VMs.
+    2. **Azure connectivity required** — The AVD autoscaler is a cloud-hosted service. It sends power commands through Azure Arc to the on-premises cluster. If the Azure Local cluster loses connectivity to Azure, scaling actions will not execute until the connection is restored.
+    3. **Power action latency** — Starting an Arc-enabled VM on Azure Local involves Azure API → Arc agent → Azure Local cluster → Hyper-V. This may add a few seconds of latency compared to starting an Azure VM directly. Factor this into ramp-up `minimum_hosts_pct` to pre-warm hosts before peak.
+    4. **Dynamic autoscaling (preview) is not confirmed for Azure Local** — Dynamic autoscaling (which creates/deletes VMs, not just power on/off) is currently only available in Azure. Azure Local VM provisioning requires Arc VM creation with specific logical networks and on-premises images, which the dynamic autoscaler does not support.
+    5. **Host pool isolation** — Azure and Azure Local session hosts cannot be mixed in the same host pool. Create separate host pools per environment.
+
+| Feature | Azure VMs | Azure Local (Arc VMs) |
+|---|---|---|
+| Power management autoscale | Supported | Supported |
+| Start VM on Connect | Supported | Supported |
+| Dynamic autoscale (create/delete VMs) | Preview | Not supported |
+| Resource type | `Microsoft.Compute/virtualMachines` | `Microsoft.HybridCompute/machines` |
+| RBAC role | DVU Power On/Off Contributor | Same role, same subscription-level assignment |
 
 ---
 
@@ -171,6 +192,23 @@ The AVD scaling service runs under a Microsoft first-party application (not your
 
 This role assignment is **not** created by the scaling plan itself — your identity deployment (or a separate step) must create it. If this role is missing, the scaling plan will evaluate correctly but fail to actually start or stop VMs, and you'll see errors in the scaling plan diagnostics log.
 
+### Start VM on Connect — Separate RBAC
+
+**Start VM on Connect** is a complementary feature (configured on the host pool, not the scaling plan) that powers on a session host when a user tries to connect and no running host is available. It is explicitly supported on both Azure and Azure Local.
+
+| Property | Value |
+|---|---|
+| Feature | Start VM on Connect (host pool property) |
+| Required Role | `Desktop Virtualization Power On Contributor` |
+| Scope | Subscription containing session host VMs |
+| Config field | `control_plane.start_vm_on_connect: true` |
+
+!!! tip
+    Use **Start VM on Connect** together with scaling plans. During ramp-up, the scaling plan pre-warms hosts. During off-peak, if the scaling plan has powered off most hosts, Start VM on Connect ensures an after-hours user can still trigger a host to start automatically.
+
+!!! note
+    The RBAC roles are different: scaling plans need **Power On/Off Contributor** (can start AND stop), while Start VM on Connect needs **Power On Contributor** (can only start). Both must be assigned at the subscription level for Azure Local to work correctly.
+
 ---
 
 ## Configuration — Every Field Explained
@@ -178,7 +216,7 @@ This role assignment is **not** created by the scaling plan itself — your iden
 ```yaml
 scaling:
   enabled: true                        # Master toggle. If false, no scaling plan is deployed.
-                                       # Host pool must be Pooled — Personal is not supported.
+                                       # This repo deploys Pooled-type scaling plans only.
   time_zone: "Eastern Standard Time"   # Windows time zone name (NOT IANA/Linux format).
                                        # The autoscaler evaluates phase start times in this zone.
                                        # Common values: "Eastern Standard Time", "Pacific Standard Time",
@@ -306,6 +344,6 @@ ansible-playbook src/ansible/playbooks/site.yml -i inventory.yml --tags scaling
 | Scaling plan shows "Enabled" in portal but VMs never start | The AVD service principal (`9cdead84-...`) doesn't have `Desktop Virtualization Power On/Off Contributor` on the RG | Assign the role to the first-party app on the resource group scope |
 | VMs start but users can't connect | Scaling plan starts VMs but they take 2-5 min to register as available in the host pool | This is normal — Windows boot + AVD agent registration takes time. Increase `minimum_hosts_pct` in ramp-up to have more hosts pre-warmed. |
 | Users are forcefully logged off at 5 PM | `force_logoff: true` and `wait_time_minutes: 0` | Set `wait_time_minutes` to a reasonable value (15-30) and enable `notification_message` |
-| "This scaling plan is not supported for this type of host pool" | Scaling plan assigned to a Personal host pool | Scaling plans only work with Pooled host pools. For Personal, use Start VM on Connect instead. |
+| "This scaling plan is not supported for this type of host pool" | Pooled scaling plan assigned to a Personal host pool (or vice versa) | Scaling plan type must match host pool type. Pooled plans use capacity thresholds; Personal plans use session-state-based deallocation. This repo deploys Pooled-type scaling plans only. For Personal host pools, use Start VM on Connect and/or create a Personal-type scaling plan. |
 | Scaling plan diagnostics show evaluation failures | Incorrect `time_zone` value — must be a Windows time zone name, not IANA | Use `[System.TimeZoneInfo]::GetSystemTimeZones()` in PowerShell to list valid names |
 | Hosts oscillate — turning on and off repeatedly | `capacity_threshold_pct` too close to actual utilization — e.g., threshold is 60% and usage bounces between 55-65% | Increase the gap: raise peak threshold to 75% or lower ramp-down threshold to 50% |
