@@ -1,0 +1,29 @@
+---
+- name: Validate session host count contract
+  ansible.builtin.assert:
+    that:
+      - avd_vm_count | int > 0
+
+- name: Validate AVD host pool exists
+  azure.azcollection.azure_rm_resource_info:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: hostPools
+    resource_name: "{{ avd_host_pool_name }}"
+    api_version: "2024-04-03"
+  register: host_pool_info
+
+- name: Assert host pool lookup returned one resource
+  ansible.builtin.assert:
+    that:
+      - host_pool_info.response | length > 0
+
+- name: Validate diagnostic query guidance is documented
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/../../../docs/reference/monitoring-queries.md"
+  register: monitoring_doc
+
+- name: Assert monitoring query doc exists
+  ansible.builtin.assert:
+    that:
+      - monitoring_doc.stat.exists

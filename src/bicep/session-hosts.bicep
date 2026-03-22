@@ -136,6 +136,17 @@ param entraAdminLoginGroupId string = ''
 @description('Resource tags applied to the resource group')
 param tags object = {}
 
+@description('Enable FSLogix configuration extension deployment')
+param enableFslogix bool = false
+
+@description('FSLogix profile share UNC path')
+param fslogixProfileSharePath string = ''
+
+@description('FSLogix profile container size in MB')
+param fslogixSizeInMBs int = 30720
+
+var fslogixMachineNames = [for i in range(0, sessionHostCount): '${vmNamingPrefix}-${padLeft(string(vmStartIndex + i), 3, '0')}']
+
 // ---------------------------------------------------------------------------
 // Resource Group — created at subscription scope
 // ---------------------------------------------------------------------------
@@ -177,6 +188,17 @@ module sessionHosts './session-host-resources.bicep' = {
     enrollInIntune: enrollInIntune
     entraUserLoginGroupId: entraUserLoginGroupId
     entraAdminLoginGroupId: entraAdminLoginGroupId
+  }
+}
+
+module fslogix './fslogix.bicep' = if (enableFslogix && !empty(fslogixProfileSharePath)) {
+  scope: rg
+  name: 'avd-fslogix-${uniqueString(resourceGroupName, vmNamingPrefix)}'
+  params: {
+    location: location
+    machineNames: fslogixMachineNames
+    profileSharePath: fslogixProfileSharePath
+    sizeInMBs: fslogixSizeInMBs
   }
 }
 

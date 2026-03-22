@@ -124,6 +124,15 @@ param tags object = {}
 @description('Enable Microsoft Entra ID single sign-on (appends enablerdsaadauth:i:1 to host pool RDP properties)')
 param enableEntraIdAuth bool = false
 
+@description('Log Analytics workspace name for diagnostics routing')
+param logAnalyticsWorkspaceName string = ''
+
+@description('Desktop Virtualization User group object ID for app group scope assignment')
+param desktopVirtualizationUserGroupId string = ''
+
+@description('Service principal object ID for Start VM on Connect role assignment')
+param startVmOnConnectPrincipalId string = ''
+
 // ---------------------------------------------------------------------------
 // Resource Group — created at subscription scope
 // ---------------------------------------------------------------------------
@@ -161,6 +170,27 @@ module controlPlane './control-plane-resources.bicep' = {
     workspaceFriendlyName: workspaceFriendlyName
     tags: tags
     enableEntraIdAuth: enableEntraIdAuth
+  }
+}
+
+module diagnostics './diagnostics.bicep' = if (!empty(logAnalyticsWorkspaceName)) {
+  scope: rg
+  name: 'avd-diagnostics-${uniqueString(resourceGroupName, hostPoolName)}'
+  params: {
+    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    hostPoolName: hostPoolName
+    appGroupName: appGroupName
+    workspaceName: workspaceName
+  }
+}
+
+module identity './identity.bicep' = {
+  scope: rg
+  name: 'avd-identity-${uniqueString(resourceGroupName, appGroupName)}'
+  params: {
+    appGroupName: appGroupName
+    desktopVirtualizationUserGroupId: desktopVirtualizationUserGroupId
+    startVmOnConnectPrincipalId: startVmOnConnectPrincipalId
   }
 }
 

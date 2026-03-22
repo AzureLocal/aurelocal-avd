@@ -1,99 +1,506 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/AzureLocal/aurelocal-avd/config/schema/variables.schema.json",
+  "$id": "https://github.com/AzureLocal/azurelocal-avd/config/schema/variables.schema.json",
   "title": "AVD on Azure Local Variables",
-  "description": "Schema for config/variables.example.yml — validates required sections and key structure.",
+  "description": "Schema for config/variables.yml and config/variables.example.yml.",
   "type": "object",
-  "required": ["subscription", "security", "control_plane", "session_hosts", "domain", "tags"],
+  "required": [
+    "subscription",
+    "security",
+    "control_plane",
+    "session_hosts",
+    "domain",
+    "monitoring",
+    "rbac",
+    "fslogix",
+    "image",
+    "tags"
+  ],
   "properties": {
     "subscription": {
       "type": "object",
-      "required": ["avd_subscription_id", "azure_local_subscription_id", "tenant_id", "location"],
+      "required": [
+        "avd_subscription_id",
+        "azure_local_subscription_id",
+        "tenant_id",
+        "location"
+      ],
       "properties": {
-        "avd_subscription_id": { "type": "string" },
-        "azure_local_subscription_id": { "type": "string" },
-        "tenant_id": { "type": "string" },
-        "location": { "type": "string" }
-      }
+        "avd_subscription_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "azure_local_subscription_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "tenant_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "location": {
+          "type": "string",
+          "minLength": 2
+        }
+      },
+      "additionalProperties": false
     },
     "security": {
       "type": "object",
-      "required": ["key_vault_name", "key_vault_resource_group"],
+      "required": [
+        "key_vault_name",
+        "key_vault_resource_group"
+      ],
       "properties": {
-        "key_vault_name": { "type": "string" },
-        "key_vault_resource_group": { "type": "string" }
-      }
+        "key_vault_name": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-]{3,24}$"
+        },
+        "key_vault_resource_group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        }
+      },
+      "additionalProperties": false
     },
     "control_plane": {
       "type": "object",
-      "required": ["resource_group", "host_pool_name", "host_pool_type", "app_group_name", "workspace_name"],
+      "required": [
+        "resource_group",
+        "host_pool_name",
+        "host_pool_type",
+        "app_group_name",
+        "workspace_name"
+      ],
       "properties": {
-        "resource_group": { "type": "string" },
-        "host_pool_name": { "type": "string" },
-        "host_pool_type": { "type": "string", "enum": ["Pooled", "Personal"] },
-        "load_balancer_type": { "type": "string", "enum": ["BreadthFirst", "DepthFirst"] },
-        "max_session_limit": { "type": "integer", "minimum": 1 },
-        "preferred_app_group_type": { "type": "string", "enum": ["Desktop", "RailApplications", "None"] },
-        "personal_assignment_type": { "type": "string", "enum": ["Automatic", "Direct"] },
-        "start_vm_on_connect": { "type": "boolean" },
-        "validation_environment": { "type": "boolean" },
-        "custom_rdp_properties": { "type": "string" },
-        "host_pool_friendly_name": { "type": "string" },
-        "host_pool_description": { "type": "string" },
-        "app_group_name": { "type": "string" },
-        "app_group_type": { "type": "string", "enum": ["Desktop", "RemoteApp"] },
-        "app_group_friendly_name": { "type": "string" },
-        "workspace_name": { "type": "string" },
-        "workspace_friendly_name": { "type": "string" }
-      }
+        "resource_group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        },
+        "host_pool_name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "host_pool_type": {
+          "type": "string",
+          "enum": [
+            "Pooled",
+            "Personal"
+          ]
+        },
+        "load_balancer_type": {
+          "type": "string",
+          "enum": [
+            "BreadthFirst",
+            "DepthFirst"
+          ]
+        },
+        "max_session_limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "preferred_app_group_type": {
+          "type": "string",
+          "enum": [
+            "Desktop",
+            "RailApplications",
+            "None"
+          ]
+        },
+        "personal_assignment_type": {
+          "type": "string",
+          "enum": [
+            "Automatic",
+            "Direct"
+          ]
+        },
+        "start_vm_on_connect": {
+          "type": "boolean"
+        },
+        "validation_environment": {
+          "type": "boolean"
+        },
+        "custom_rdp_properties": {
+          "type": "string"
+        },
+        "host_pool_friendly_name": {
+          "type": "string"
+        },
+        "host_pool_description": {
+          "type": "string"
+        },
+        "app_group_name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "app_group_type": {
+          "type": "string",
+          "enum": [
+            "Desktop",
+            "RemoteApp"
+          ]
+        },
+        "app_group_friendly_name": {
+          "type": "string"
+        },
+        "workspace_name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 64
+        },
+        "workspace_friendly_name": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "host_pool_type": {
+                "const": "Pooled"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "load_balancer_type",
+              "max_session_limit"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "host_pool_type": {
+                "const": "Personal"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "personal_assignment_type"
+            ]
+          }
+        }
+      ]
     },
     "session_hosts": {
       "type": "object",
-      "required": ["resource_group", "session_host_count", "vm_naming_prefix", "vm_processors", "vm_memory_mb", "vm_admin_username", "vm_admin_password", "custom_location_id", "logical_network_id", "gallery_image_id", "storage_path_id"],
+      "required": [
+        "resource_group",
+        "session_host_count",
+        "vm_naming_prefix",
+        "vm_processors",
+        "vm_memory_mb",
+        "vm_admin_username",
+        "vm_admin_password",
+        "custom_location_id",
+        "logical_network_id",
+        "gallery_image_id",
+        "storage_path_id"
+      ],
       "properties": {
-        "resource_group": { "type": "string" },
-        "session_host_count": { "type": "integer", "minimum": 1 },
-        "vm_naming_prefix": { "type": "string" },
-        "vm_start_index": { "type": "integer", "minimum": 0 },
-        "vm_processors": { "type": "integer", "minimum": 1 },
-        "vm_memory_mb": { "type": "integer", "minimum": 1024 },
-        "vm_admin_username": { "type": "string" },
-        "vm_admin_password": { "type": "string" },
-        "session_host_os": { "type": "string" },
-        "custom_location_id": { "type": "string" },
-        "logical_network_id": { "type": "string" },
-        "gallery_image_id": { "type": "string" },
-        "storage_path_id": { "type": "string" }
-      }
+        "resource_group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        },
+        "session_host_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "vm_naming_prefix": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 20
+        },
+        "vm_start_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "vm_processors": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "vm_memory_mb": {
+          "type": "integer",
+          "minimum": 1024
+        },
+        "vm_admin_username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vm_admin_password": {
+          "type": "string",
+          "pattern": "^keyvault://[a-zA-Z0-9-]+/[a-zA-Z0-9-]+$"
+        },
+        "session_host_os": {
+          "type": "string"
+        },
+        "custom_location_id": {
+          "type": "string",
+          "pattern": "^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\\.ExtendedLocation/customLocations/[^/]+$"
+        },
+        "logical_network_id": {
+          "type": "string",
+          "pattern": "^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\\.AzureStackHCI/logicalNetworks/[^/]+$"
+        },
+        "gallery_image_id": {
+          "type": "string",
+          "pattern": "^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\\.AzureStackHCI/marketplaceGalleryImages/[^/]+$"
+        },
+        "storage_path_id": {
+          "type": "string",
+          "pattern": "^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\\.AzureStackHCI/storageContainers/[^/]+$"
+        }
+      },
+      "additionalProperties": false
     },
     "domain": {
       "type": "object",
-      "required": ["domain_fqdn", "domain_join_username", "domain_join_password"],
+      "required": [
+        "domain_fqdn",
+        "domain_join_username",
+        "domain_join_password"
+      ],
       "properties": {
-        "domain_fqdn": { "type": "string" },
-        "domain_join_username": { "type": "string" },
-        "domain_join_password": { "type": "string" },
-        "domain_join_ou_path": { "type": "string" }
-      }
+        "domain_fqdn": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9.-]+$"
+        },
+        "domain_join_username": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain_join_password": {
+          "type": "string",
+          "pattern": "^keyvault://[a-zA-Z0-9-]+/[a-zA-Z0-9-]+$"
+        },
+        "domain_join_ou_path": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "monitoring": {
+      "type": "object",
+      "required": [
+        "log_analytics_workspace_name",
+        "log_analytics_resource_group",
+        "log_analytics_retention_days",
+        "host_pool_diagnostic_categories",
+        "app_group_diagnostic_categories",
+        "workspace_diagnostic_categories"
+      ],
+      "properties": {
+        "log_analytics_workspace_name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 63
+        },
+        "log_analytics_resource_group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90
+        },
+        "log_analytics_retention_days": {
+          "type": "integer",
+          "minimum": 30,
+          "maximum": 730
+        },
+        "host_pool_diagnostic_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "app_group_diagnostic_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "workspace_diagnostic_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "rbac": {
+      "type": "object",
+      "required": [
+        "desktop_virtualization_user_group_id",
+        "vm_user_login_group_id",
+        "vm_admin_login_group_id",
+        "start_vm_on_connect_principal_id",
+        "session_host_operator_principal_id"
+      ],
+      "properties": {
+        "desktop_virtualization_user_group_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "vm_user_login_group_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "vm_admin_login_group_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "start_vm_on_connect_principal_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "session_host_operator_principal_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "fslogix": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "profile_container_type",
+        "profile_share_path",
+        "vhd_size_gb",
+        "cloud_cache_enabled",
+        "cloud_cache_locations",
+        "exclude_common_folders"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "profile_container_type": {
+          "type": "string",
+          "enum": [
+            "VHD",
+            "VHDX"
+          ]
+        },
+        "profile_share_path": {
+          "type": "string",
+          "pattern": "^\\\\\\\\[^\\\\]+\\\\[^\\\\]+"
+        },
+        "vhd_size_gb": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 2048
+        },
+        "cloud_cache_enabled": {
+          "type": "boolean"
+        },
+        "cloud_cache_locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclude_common_folders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "cloud_cache_enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cloud_cache_locations": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "source",
+        "publisher",
+        "offer",
+        "sku",
+        "version"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "marketplace",
+            "custom"
+          ]
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "offer": {
+          "type": "string"
+        },
+        "sku": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
     "entra_id": {
       "type": "object",
       "properties": {
-        "enable_entra_id_auth": { "type": "boolean" },
-        "enroll_in_intune": { "type": "boolean" },
-        "entra_user_login_group_id": { "type": "string" },
-        "entra_admin_login_group_id": { "type": "string" }
-      }
+        "enable_entra_id_auth": {
+          "type": "boolean"
+        },
+        "enroll_in_intune": {
+          "type": "boolean"
+        },
+        "entra_user_login_group_id": {
+          "type": "string"
+        },
+        "entra_admin_login_group_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     },
     "tags": {
       "type": "object",
-      "additionalProperties": { "type": "string" }
+      "additionalProperties": {
+        "type": "string"
+      }
     },
     "ansible": {
       "type": "object",
       "properties": {
-        "ansible_connection": { "type": "string" }
-      }
+        "ansible_connection": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false

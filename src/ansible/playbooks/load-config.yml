@@ -1,0 +1,44 @@
+---
+- name: Load canonical config/variables.yml into Ansible facts
+  hosts: localhost
+  gather_facts: false
+  vars:
+    avd_config_file: "{{ playbook_dir }}/../../../config/variables.yml"
+  tasks:
+    - name: Ensure canonical config exists
+      ansible.builtin.stat:
+        path: "{{ avd_config_file }}"
+      register: config_file_stat
+
+    - name: Fail when config is missing
+      ansible.builtin.fail:
+        msg: "Canonical config file not found at {{ avd_config_file }}"
+      when: not config_file_stat.stat.exists
+
+    - name: Load canonical config file
+      ansible.builtin.include_vars:
+        file: "{{ avd_config_file }}"
+        name: avd_config
+
+    - name: Set commonly used compatibility variables
+      ansible.builtin.set_fact:
+        azure_subscription_id: "{{ avd_config.subscription.avd_subscription_id }}"
+        azure_resource_group: "{{ avd_config.control_plane.resource_group }}"
+        azure_location: "{{ avd_config.subscription.location }}"
+        avd_host_pool_name: "{{ avd_config.control_plane.host_pool_name }}"
+        avd_host_pool_type: "{{ avd_config.control_plane.host_pool_type }}"
+        avd_load_balancer_type: "{{ avd_config.control_plane.load_balancer_type | default('BreadthFirst') }}"
+        avd_max_session_limit: "{{ avd_config.control_plane.max_session_limit | default(16) }}"
+        avd_app_group_name: "{{ avd_config.control_plane.app_group_name }}"
+        avd_workspace_name: "{{ avd_config.control_plane.workspace_name }}"
+        avd_key_vault_name: "{{ avd_config.security.key_vault_name }}"
+        avd_log_analytics_workspace_name: "{{ avd_config.monitoring.log_analytics_workspace_name }}"
+        avd_custom_location_id: "{{ avd_config.session_hosts.custom_location_id }}"
+        avd_vm_name_prefix: "{{ avd_config.session_hosts.vm_naming_prefix }}"
+        avd_vm_count: "{{ avd_config.session_hosts.session_host_count }}"
+        avd_image_id: "{{ avd_config.session_hosts.gallery_image_id }}"
+        avd_vnet_id: "{{ avd_config.session_hosts.logical_network_id }}"
+        avd_subnet_name: "default"
+        avd_domain_fqdn: "{{ avd_config.domain.domain_fqdn }}"
+        avd_domain_join_user: "{{ avd_config.domain.domain_join_username }}"
+        avd_ou_path: "{{ avd_config.domain.domain_join_ou_path | default('') }}"

@@ -82,8 +82,9 @@ jobs:
 
       - name: Deploy Session Hosts
         run: |
-          az deployment group create \
+          az deployment sub create \
             --name "avd-session-hosts-$(date +%Y%m%d%H%M%S)" \
-            --resource-group ${{ github.event.inputs.resource_group_name }} \
+            --location ${{ github.event.inputs.location }} \
             --template-file src/bicep/session-hosts.bicep \
-            --parameters src/bicep/session-hosts.bicepparam
+            --parameters src/bicep/session-hosts.bicepparam \
+            --parameters sessionHostCount=2

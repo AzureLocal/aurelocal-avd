@@ -79,3 +79,11 @@ param enableEntraIdAuth      = true
 param enrollInIntune         = false
 param entraUserLoginGroupId  = '<ENTRA_USER_LOGIN_GROUP_OBJECT_ID>'
 param entraAdminLoginGroupId = '<ENTRA_ADMIN_LOGIN_GROUP_OBJECT_ID>'
+
+// ---------------------------------------------------------------------------
+// FSLogix
+// ---------------------------------------------------------------------------
+
+param enableFslogix          = true
+param fslogixProfileSharePath = '\\\\sofs-cluster\\FSLogixProfiles'
+param fslogixSizeInMBs       = 30720

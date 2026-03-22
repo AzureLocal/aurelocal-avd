@@ -202,6 +202,9 @@ if (-not $SkipControlPlane) {
             workspaceFriendlyName         = if ($cp.workspace_friendly_name) { $cp.workspace_friendly_name } else { "" }
             tags                          = if ($tags) { $tags } else { @{} }
             enableEntraIdAuth             = $cpEnableEntra
+            logAnalyticsWorkspaceName     = if ($cfg.monitoring.log_analytics_workspace_name) { $cfg.monitoring.log_analytics_workspace_name } else { "" }
+            desktopVirtualizationUserGroupId = if ($cfg.rbac.desktop_virtualization_user_group_id) { $cfg.rbac.desktop_virtualization_user_group_id } else { "" }
+            startVmOnConnectPrincipalId   = if ($cfg.rbac.start_vm_on_connect_principal_id) { $cfg.rbac.start_vm_on_connect_principal_id } else { "" }
         }
     }
 
@@ -391,6 +394,9 @@ $deployParams = @{
         enrollInIntune         = if ($null -ne $eid -and $null -ne $eid.enroll_in_intune) { [bool]$eid.enroll_in_intune } else { $false }
         entraUserLoginGroupId  = if ($eid.entra_user_login_group_id) { $eid.entra_user_login_group_id } else { "" }
         entraAdminLoginGroupId = if ($eid.entra_admin_login_group_id) { $eid.entra_admin_login_group_id } else { "" }
+        enableFslogix          = if ($null -ne $cfg.fslogix -and $null -ne $cfg.fslogix.enabled) { [bool]$cfg.fslogix.enabled } else { $false }
+        fslogixProfileSharePath = if ($cfg.fslogix.profile_share_path) { $cfg.fslogix.profile_share_path } else { "" }
+        fslogixSizeInMBs       = if ($cfg.fslogix.vhd_size_gb) { [int]$cfg.fslogix.vhd_size_gb * 1024 } else { 30720 }
     }
 }
 

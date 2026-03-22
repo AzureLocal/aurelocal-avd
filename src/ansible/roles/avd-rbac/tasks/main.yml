@@ -1,0 +1,21 @@
+---
+- name: Assign Desktop Virtualization User role
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/applicationGroups/{{ avd_app_group_name }}"
+    role_definition_name: "Desktop Virtualization User"
+    assignee_object_id: "{{ avd_config.rbac.desktop_virtualization_user_group_id | default('') }}"
+  when: avd_config.rbac.desktop_virtualization_user_group_id | default('') | length > 0
+
+- name: Assign Virtual Machine User Login role
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ avd_config.session_hosts.resource_group | default(azure_resource_group) }}"
+    role_definition_name: "Virtual Machine User Login"
+    assignee_object_id: "{{ avd_config.rbac.vm_user_login_group_id | default('') }}"
+  when: avd_config.rbac.vm_user_login_group_id | default('') | length > 0
+
+- name: Assign Virtual Machine Administrator Login role
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ avd_config.session_hosts.resource_group | default(azure_resource_group) }}"
+    role_definition_name: "Virtual Machine Administrator Login"
+    assignee_object_id: "{{ avd_config.rbac.vm_admin_login_group_id | default('') }}"
+  when: avd_config.rbac.vm_admin_login_group_id | default('') | length > 0

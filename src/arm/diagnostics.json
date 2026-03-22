@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hostPoolName": { "type": "string" },
+    "appGroupName": { "type": "string" },
+    "workspaceName": { "type": "string" },
+    "logAnalyticsWorkspaceResourceId": { "type": "string" }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('diag-', parameters('hostPoolName'))]",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName'))]",
+      "properties": {
+        "workspaceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+        "logs": [
+          { "category": "Checkpoint", "enabled": true },
+          { "category": "Error", "enabled": true },
+          { "category": "Management", "enabled": true },
+          { "category": "Connection", "enabled": true },
+          { "category": "HostRegistration", "enabled": true },
+          { "category": "AgentHealthStatus", "enabled": true }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('diag-', parameters('appGroupName'))]",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('appGroupName'))]",
+      "properties": {
+        "workspaceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+        "logs": [
+          { "category": "Checkpoint", "enabled": true },
+          { "category": "Error", "enabled": true },
+          { "category": "Management", "enabled": true }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[concat('diag-', parameters('workspaceName'))]",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('workspaceName'))]",
+      "properties": {
+        "workspaceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
+        "logs": [
+          { "category": "Checkpoint", "enabled": true },
+          { "category": "Error", "enabled": true },
+          { "category": "Management", "enabled": true },
+          { "category": "Feed", "enabled": true }
+        ]
+      }
+    }
+  ]
+}

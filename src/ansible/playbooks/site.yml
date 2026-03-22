@@ -2,6 +2,9 @@
 # site.yml – Master playbook for AVD on Azure Local
 # Run with:  ansible-playbook site.yml -i inventory.example.yml
 
+- name: Load Canonical Config
+  import_playbook: load-config.yml
+
 - name: Deploy AVD Control Plane
   hosts: localhost
   connection: local
@@ -19,3 +22,25 @@
     - session-hosts
   roles:
     - avd-session-hosts
+
+- name: Configure Diagnostics and RBAC
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - diagnostics
+    - rbac
+  roles:
+    - avd-diagnostics
+    - avd-rbac
+
+- name: Configure FSLogix and Validate Deployment
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tags:
+    - fslogix
+    - validation
+  roles:
+    - avd-fslogix
+    - avd-validation

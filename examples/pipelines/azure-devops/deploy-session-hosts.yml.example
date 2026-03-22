@@ -13,9 +13,9 @@ parameters:
 variables:
   - group: avd-secrets
   - name: bicepFile
-    value: infrastructure/bicep/session-hosts/main.bicep
+    value: src/bicep/session-hosts.bicep
   - name: bicepParams
-    value: infrastructure/bicep/session-hosts/main.bicepparam
+    value: src/bicep/session-hosts.bicepparam
 
 stages:
   - stage: Validate
@@ -51,11 +51,11 @@ stages:
               scriptType: bash
               scriptLocation: inlineScript
               inlineScript: |
-                az deployment group what-if \
-                  --resource-group "${{ parameters.resourceGroupName }}" \
+                az deployment sub what-if \
+                  --location "eastus" \
                   --template-file $(bicepFile) \
                   --parameters $(bicepParams) \
-                  --parameters vmCount=${{ parameters.vmCount }}
+                  --parameters sessionHostCount=${{ parameters.vmCount }}
 
   - stage: Deploy
     displayName: Deploy Session Hosts
@@ -88,12 +88,12 @@ stages:
                     scriptType: bash
                     scriptLocation: inlineScript
                     inlineScript: |
-                      az deployment group create \
+                      az deployment sub create \
                         --name "avd-session-hosts-$(Build.BuildId)" \
-                        --resource-group "${{ parameters.resourceGroupName }}" \
+                        --location "eastus" \
                         --template-file $(bicepFile) \
                         --parameters $(bicepParams) \
-                        --parameters vmCount=${{ parameters.vmCount }}
+                        --parameters sessionHostCount=${{ parameters.vmCount }}
 
                 - task: AzureCLI@2
                   displayName: Verify session host status

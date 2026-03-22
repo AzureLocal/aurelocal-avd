@@ -37,6 +37,25 @@ output "log_analytics_workspace_id" {
   value       = azurerm_log_analytics_workspace.avd.id
 }
 
+output "diagnostic_setting_ids" {
+  description = "Diagnostic setting IDs for AVD control plane resources."
+  value = {
+    host_pool = azurerm_monitor_diagnostic_setting.host_pool.id
+    app_group = azurerm_monitor_diagnostic_setting.app_group.id
+    workspace = azurerm_monitor_diagnostic_setting.workspace.id
+  }
+}
+
+output "rbac_assignment_ids" {
+  description = "Role assignment IDs created for AVD identity automation."
+  value = {
+    desktop_virtualization_user = try(azurerm_role_assignment.desktop_virtualization_user[0].id, null)
+    vm_user_login               = try(azurerm_role_assignment.vm_user_login[0].id, null)
+    vm_admin_login              = try(azurerm_role_assignment.vm_admin_login[0].id, null)
+    start_vm_on_connect         = try(azurerm_role_assignment.start_vm_on_connect[0].id, null)
+  }
+}
+
 # =============================================================================
 # Outputs — Session Hosts
 # =============================================================================

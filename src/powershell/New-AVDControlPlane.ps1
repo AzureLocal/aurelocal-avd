@@ -76,6 +76,9 @@ param (
     [string]$ParametersFile,
 
     [Parameter(Mandatory = $false)]
+    [string]$ConfigFile,
+
+    [Parameter(Mandatory = $false)]
     [string]$ResourceGroupName,
 
     [Parameter(Mandatory = $false)]
@@ -117,7 +120,30 @@ param (
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+$importScript = Join-Path $PSScriptRoot 'Import-AVDConfig.ps1'
+if (Test-Path $importScript) {
+    . $importScript
+}
+
 #region Load parameters file
+if ($ConfigFile) {
+    if (-not (Get-Command Import-AVDConfig -ErrorAction SilentlyContinue)) {
+        throw 'Import-AVDConfig function is not available. Ensure Import-AVDConfig.ps1 is present.'
+    }
+
+    $cfg = Import-AVDConfig -ConfigFile $ConfigFile
+    if (-not $ResourceGroupName) { $ResourceGroupName = $cfg.control_plane.resource_group }
+    if (-not $Location) { $Location = $cfg.subscription.location }
+    if (-not $HostPoolName) { $HostPoolName = $cfg.control_plane.host_pool_name }
+    if (-not $HostPoolType) { $HostPoolType = $cfg.control_plane.host_pool_type }
+    if (-not $LoadBalancerType) { $LoadBalancerType = $cfg.control_plane.load_balancer_type }
+    if (-not $MaxSessionLimit -and $cfg.control_plane.max_session_limit) { $MaxSessionLimit = [int]$cfg.control_plane.max_session_limit }
+    if (-not $WorkspaceName) { $WorkspaceName = $cfg.control_plane.workspace_name }
+    if (-not $AppGroupName) { $AppGroupName = $cfg.control_plane.app_group_name }
+    if (-not $KeyVaultName) { $KeyVaultName = $cfg.security.key_vault_name }
+    if (-not $LogAnalyticsWorkspaceName) { $LogAnalyticsWorkspaceName = $cfg.monitoring.log_analytics_workspace_name }
+}
+
 if ($ParametersFile) {
     if (-not (Test-Path $ParametersFile)) {
         throw "Parameters file not found: $ParametersFile"

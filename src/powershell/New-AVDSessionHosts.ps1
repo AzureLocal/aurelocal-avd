@@ -68,6 +68,9 @@ param (
     [string]$ParametersFile,
 
     [Parameter(Mandatory = $false)]
+    [string]$ConfigFile,
+
+    [Parameter(Mandatory = $false)]
     [string]$ResourceGroupName,
 
     [Parameter(Mandatory = $false)]
@@ -113,7 +116,32 @@ param (
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+$importScript = Join-Path $PSScriptRoot 'Import-AVDConfig.ps1'
+if (Test-Path $importScript) {
+    . $importScript
+}
+
 #region Load parameters file
+if ($ConfigFile) {
+    if (-not (Get-Command Import-AVDConfig -ErrorAction SilentlyContinue)) {
+        throw 'Import-AVDConfig function is not available. Ensure Import-AVDConfig.ps1 is present.'
+    }
+
+    $cfg = Import-AVDConfig -ConfigFile $ConfigFile
+    if (-not $ResourceGroupName) { $ResourceGroupName = $cfg.session_hosts.resource_group }
+    if (-not $CustomLocationId) { $CustomLocationId = $cfg.session_hosts.custom_location_id }
+    if (-not $HostPoolName) { $HostPoolName = $cfg.control_plane.host_pool_name }
+    if (-not $HostPoolResourceGroupName) { $HostPoolResourceGroupName = $cfg.control_plane.resource_group }
+    if (-not $KeyVaultName) { $KeyVaultName = $cfg.security.key_vault_name }
+    if (-not $VmNamePrefix) { $VmNamePrefix = $cfg.session_hosts.vm_naming_prefix }
+    if (-not $VmCount -and $cfg.session_hosts.session_host_count) { $VmCount = [int]$cfg.session_hosts.session_host_count }
+    if (-not $ImageId) { $ImageId = $cfg.session_hosts.gallery_image_id }
+    if (-not $VnetId) { $VnetId = $cfg.session_hosts.logical_network_id }
+    if (-not $DomainFqdn) { $DomainFqdn = $cfg.domain.domain_fqdn }
+    if (-not $DomainJoinUser) { $DomainJoinUser = "$($cfg.domain.domain_fqdn)\$($cfg.domain.domain_join_username)" }
+    if (-not $OuPath) { $OuPath = $cfg.domain.domain_join_ou_path }
+}
+
 if ($ParametersFile) {
     if (-not (Test-Path $ParametersFile)) {
         throw "Parameters file not found: $ParametersFile"

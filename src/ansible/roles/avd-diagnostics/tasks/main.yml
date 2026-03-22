@@ -1,0 +1,50 @@
+---
+- name: Configure host pool diagnostic settings
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: Insights
+    resource_type: diagnosticSettings
+    resource_name: "diag-{{ avd_host_pool_name }}"
+    api_version: "2021-05-01-preview"
+    subresource:
+      - namespace: "Microsoft.DesktopVirtualization"
+        type: "hostPools"
+        name: "{{ avd_host_pool_name }}"
+    body:
+      properties:
+        workspaceId: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ avd_config.monitoring.log_analytics_resource_group | default(azure_resource_group) }}/providers/Microsoft.OperationalInsights/workspaces/{{ avd_log_analytics_workspace_name }}"
+        logs:
+          - category: "Checkpoint"
+            enabled: true
+          - category: "Error"
+            enabled: true
+          - category: "Management"
+            enabled: true
+          - category: "Connection"
+            enabled: true
+          - category: "HostRegistration"
+            enabled: true
+          - category: "AgentHealthStatus"
+            enabled: true
+
+- name: Configure app group diagnostic settings
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: Insights
+    resource_type: diagnosticSettings
+    resource_name: "diag-{{ avd_app_group_name }}"
+    api_version: "2021-05-01-preview"
+    subresource:
+      - namespace: "Microsoft.DesktopVirtualization"
+        type: "applicationGroups"
+        name: "{{ avd_app_group_name }}"
+    body:
+      properties:
+        workspaceId: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ avd_config.monitoring.log_analytics_resource_group | default(azure_resource_group) }}/providers/Microsoft.OperationalInsights/workspaces/{{ avd_log_analytics_workspace_name }}"
+        logs:
+          - category: "Checkpoint"
+            enabled: true
+          - category: "Error"
+            enabled: true
+          - category: "Management"
+            enabled: true
