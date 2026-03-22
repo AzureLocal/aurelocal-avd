@@ -33,10 +33,10 @@ theme:
 
 nav:
   - Home: index.md
-  - Architecture: architecture.md
-  - Deep Architecture:
-    - Deep Design: architecture/deep-design.md
-    - FSLogix Integration: architecture/fslogix-integration.md
+  - Architecture:
+      - Overview: architecture/overview.md
+      - Detailed Design: architecture/deep-design.md
+      - FSLogix Integration: architecture/fslogix-integration.md
   - Getting Started: getting-started.md
   - Guides:
       - AVD Deployment Guide: guides/avd-deployment-guide.md
@@ -54,7 +54,6 @@ nav:
       - Host Pool Options: reference/host-pool-options.md
       - RBAC Reference: reference/rbac.md
       - Docs Validation Checklist: reference/docs-validation-checklist.md
-  - Diagrams: diagrams/index.md
   - Standards:
       - Overview: standards/index.md
       - Documentation: standards/documentation.md

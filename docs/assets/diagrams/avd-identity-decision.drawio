@@ -1,0 +1,78 @@
+<mxfile host="app.diagrams.net" modified="2026-03-22T00:00:00.000Z" agent="Copilot" version="24.7.17" type="device">
+	<diagram id="avd-identity-decision" name="AVD Identity Pattern Decision">
+		<mxGraphModel dx="1100" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="560" math="0" shadow="0">
+			<root>
+				<mxCell id="0"/>
+				<mxCell id="1" parent="0"/>
+
+				<!-- Title -->
+				<mxCell id="title" value="&lt;b&gt;Identity Pattern Selection&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=16;fontStyle=1;fontColor=#222222;" vertex="1" parent="1">
+					<mxGeometry x="60" y="12" width="1280" height="30" as="geometry"/>
+				</mxCell>
+
+				<!-- Question bar -->
+				<mxCell id="q1" value="&lt;b&gt;What is the identity environment for this Azure Local AVD deployment?&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#999999;fontSize=13;fontStyle=1;fontColor=#222222" vertex="1" parent="1">
+					<mxGeometry x="60" y="52" width="1280" height="40" as="geometry"/>
+				</mxCell>
+
+				<!-- Left panel: AD DS -->
+				<mxCell id="left_panel" value="&lt;b&gt;On-premises AD DS Available&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Identity type:&lt;/b&gt; AD DS domain join&lt;br&gt;&lt;b&gt;Session host join:&lt;/b&gt; Domain-joined (on-prem DC)&lt;br&gt;&lt;b&gt;FSLogix mechanism:&lt;/b&gt; VHDX on SOFS&lt;br&gt;&lt;b&gt;Kerberos for SMB:&lt;/b&gt; On-premises DC&lt;br&gt;&lt;b&gt;Cloud dependency (profiles):&lt;/b&gt; None&lt;br&gt;&lt;br&gt;Simple operations · Predictable performance&lt;br&gt;No cloud egress cost · Proven at scale" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;verticalAlign=top;spacingTop=10;spacingLeft=10;spacingRight=8;align=left;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="60" y="112" width="400" height="250" as="geometry"/>
+				</mxCell>
+
+				<!-- Recommended badge on left panel -->
+				<mxCell id="rec_badge" value="★  Recommended for Azure Local" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontStyle=1;fontSize=10;fontColor=#ffffff" vertex="1" parent="1">
+					<mxGeometry x="80" y="375" width="260" height="26" as="geometry"/>
+				</mxCell>
+
+				<!-- Center panel: Hybrid Entra ID -->
+				<mxCell id="center_panel" value="&lt;b&gt;AD DS + Entra ID (Hybrid Join)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Identity type:&lt;/b&gt; Hybrid Entra ID join&lt;br&gt;&lt;b&gt;Session host join:&lt;/b&gt; Domain + Entra-registered&lt;br&gt;&lt;b&gt;FSLogix mechanism:&lt;/b&gt; VHDX on SOFS&lt;br&gt;&lt;b&gt;Kerberos for SMB:&lt;/b&gt; On-premises DC&lt;br&gt;&lt;b&gt;Cloud dependency (profiles):&lt;/b&gt; Entra ID (auth only)&lt;br&gt;&lt;br&gt;Entra Connect sync required · Conditional Access&lt;br&gt;SSO for AVD sessions · MFA support" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;verticalAlign=top;spacingTop=10;spacingLeft=10;spacingRight=8;align=left;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="490" y="112" width="400" height="250" as="geometry"/>
+				</mxCell>
+
+				<!-- Right panel: Entra-only -->
+				<mxCell id="right_panel" value="&lt;b&gt;Entra ID Only (Cloud-native)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Identity type:&lt;/b&gt; Entra-joined&lt;br&gt;&lt;b&gt;Session host join:&lt;/b&gt; Entra-joined only&lt;br&gt;&lt;b&gt;FSLogix mechanism:&lt;/b&gt; Cloud Cache (CCD)&lt;br&gt;&lt;b&gt;Kerberos for SMB:&lt;/b&gt; Entra Kerberos / none&lt;br&gt;&lt;b&gt;Cloud dependency (profiles):&lt;/b&gt; Azure Files or Blob&lt;br&gt;&lt;br&gt;No on-prem AD DS needed · Higher complexity&lt;br&gt;Write amplification 2–3× · Cloud egress cost" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;verticalAlign=top;spacingTop=10;spacingLeft=10;spacingRight=8;align=left;strokeWidth=2" vertex="1" parent="1">
+					<mxGeometry x="920" y="112" width="420" height="250" as="geometry"/>
+				</mxCell>
+
+				<!-- Arrows from question bar to panels -->
+				<mxCell id="aq_left" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="q1" target="left_panel">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="aq_center" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#d6b656;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="q1" target="center_panel">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="aq_right" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="q1" target="right_panel">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Result bars -->
+				<mxCell id="res_left" value="VHDX containers on SOFS (Kerberos)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontStyle=1;fontSize=11;fontColor=#ffffff" vertex="1" parent="1">
+					<mxGeometry x="60" y="410" width="400" height="38" as="geometry"/>
+				</mxCell>
+				<mxCell id="res_center" value="VHDX on SOFS + SSO + Conditional Access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b5a000;strokeColor=#907800;fontStyle=1;fontSize=11;fontColor=#ffffff" vertex="1" parent="1">
+					<mxGeometry x="490" y="410" width="400" height="38" as="geometry"/>
+				</mxCell>
+				<mxCell id="res_right" value="Cloud Cache (CCD) + Azure Files / Blob Storage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#005a9e;fontStyle=1;fontSize=11;fontColor=#ffffff" vertex="1" parent="1">
+					<mxGeometry x="920" y="410" width="420" height="38" as="geometry"/>
+				</mxCell>
+
+				<!-- Arrows from panels to result bars -->
+				<mxCell id="ar_left" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="left_panel" target="res_left">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="ar_center" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#d6b656;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="center_panel" target="res_center">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="ar_right" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="right_panel" target="res_right">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Bottom note -->
+				<mxCell id="note" value="Default to AD DS or Hybrid Entra ID for Azure Local. Only adopt Entra-only if no on-premises AD DS exists and cloud-backed profile storage is acceptable." style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="60" y="464" width="1280" height="30" as="geometry"/>
+				</mxCell>
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>

@@ -1,0 +1,147 @@
+<mxfile host="app.diagrams.net" modified="2026-03-22T00:00:00.000Z" agent="Copilot" version="24.7.17" type="device">
+	<diagram id="avd-deployment-phases" name="AVD Deployment Phases">
+		<mxGraphModel dx="1100" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="880" math="0" shadow="0">
+			<root>
+				<mxCell id="0"/>
+				<mxCell id="1" parent="0"/>
+
+				<!-- Legend -->
+				<mxCell id="leg0" value="Planning / Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=10;fontColor=#333333" vertex="1" parent="1">
+					<mxGeometry x="60" y="15" width="160" height="26" as="geometry"/>
+				</mxCell>
+				<mxCell id="leg1" value="Azure Control Plane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=10" vertex="1" parent="1">
+					<mxGeometry x="240" y="15" width="155" height="26" as="geometry"/>
+				</mxCell>
+				<mxCell id="leg2" value="Azure Local (On-premises)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10" vertex="1" parent="1">
+					<mxGeometry x="415" y="15" width="175" height="26" as="geometry"/>
+				</mxCell>
+				<mxCell id="leg3" value="Cross-cutting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10" vertex="1" parent="1">
+					<mxGeometry x="610" y="15" width="120" height="26" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 0 -->
+				<mxCell id="p0" value="&lt;b&gt;Phase 0 — Config and Schema Validation&lt;/b&gt;&lt;br&gt;Populate variables.yml · Run schema validation · Choose tool path" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;fontColor=#333333" vertex="1" parent="1">
+					<mxGeometry x="180" y="60" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d0" value="CI + schema · PowerShell · Python validators" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="70" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed0" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p0" target="d0">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a01" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p0" target="p1">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 1 -->
+				<mxCell id="p1" value="&lt;b&gt;Phase 1 — Control Plane Deployment&lt;/b&gt;&lt;br&gt;Host pool · Application groups · Workspace · Key Vault · Log Analytics · Storage account" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="150" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d1" value="Bicep (primary) · Terraform · ARM · PowerShell · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="160" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed1" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p1" target="d1">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a12" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p1" target="p2">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 2 -->
+				<mxCell id="p2" value="&lt;b&gt;Phase 2 — Registration Token &amp;amp; Secret Management&lt;/b&gt;&lt;br&gt;Generate host pool token · Store in Key Vault · Grant session host identity access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="240" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d2" value="PowerShell/Bicep orchestrator · ARM · Terraform · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="250" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed2" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p2" target="d2">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a23" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p2" target="p3">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 3 -->
+				<mxCell id="p3" value="&lt;b&gt;Phase 3 — Session Host Provisioning on Azure Local&lt;/b&gt;&lt;br&gt;Arc VM creation · Image selection · VM sizing · Host pool registration · Anti-affinity rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="330" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d3" value="Bicep session template · Terraform · ARM · PowerShell · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="340" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed3" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p3" target="d3">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a34" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p3" target="p4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 4 -->
+				<mxCell id="p4" value="&lt;b&gt;Phase 4 — Domain Join &amp;amp; Agent Install&lt;/b&gt;&lt;br&gt;Domain join via Arc extension · AVD agent install · FSLogix agent install · Validate registration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="420" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d4" value="Bicep/PowerShell Arc extensions · ARM · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="430" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed4" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p4" target="d4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a45" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p4" target="p5">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 5 -->
+				<mxCell id="p5" value="&lt;b&gt;Phase 5 — Diagnostics &amp;amp; Monitoring Enablement&lt;/b&gt;&lt;br&gt;Diagnostic settings · AVD Insights · Log Analytics categories · Alert rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="510" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d5" value="Bicep + Terraform · PowerShell · ARM · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="520" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed5" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p5" target="d5">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a56" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p5" target="p6">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 6 -->
+				<mxCell id="p6" value="&lt;b&gt;Phase 6 — Identity &amp;amp; RBAC Assignments&lt;/b&gt;&lt;br&gt;AVD RBAC roles · Managed identity grants · Entra group assignments · User access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="600" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d6" value="Bicep + Terraform · PowerShell · ARM · Ansible" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="610" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed6" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p6" target="d6">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a67" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#666666;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p6" target="p7">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 7 -->
+				<mxCell id="p7" value="&lt;b&gt;Phase 7 — FSLogix Profile Configuration&lt;/b&gt;&lt;br&gt;Registry baseline · VHDLocations · Container model · AV exclusions · Permissions validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10" vertex="1" parent="1">
+					<mxGeometry x="180" y="690" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d7" value="PowerShell · Ansible · Bicep · Terraform · ARM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="700" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed7" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p7" target="d7">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="a78" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="p7" target="p8">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+
+				<!-- Phase 8 -->
+				<mxCell id="p8" value="&lt;b&gt;Phase 8 — Validation Matrix Execution&lt;/b&gt;&lt;br&gt;Schema checks · End-to-end sign-in tests · Profile mount validation · Tool parity checks · CI gate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=10;fontColor=#333333" vertex="1" parent="1">
+					<mxGeometry x="180" y="780" width="700" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="d8" value="Tests + CI · All tools" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#cccccc;fontSize=10;fontStyle=2;fontColor=#555555" vertex="1" parent="1">
+					<mxGeometry x="950" y="790" width="360" height="40" as="geometry"/>
+				</mxCell>
+				<mxCell id="ed8" style="endArrow=open;html=1;dashed=1;strokeColor=#aaaaaa;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="p8" target="d8">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>

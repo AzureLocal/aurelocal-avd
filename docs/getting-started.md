@@ -193,4 +193,4 @@ Set-ItemProperty -Path "HKLM:\SOFTWARE\FSLogix\Profiles" `
 
 - Review [deployment scenarios](./scenarios.md) for more configurations.
 - Set up CI/CD pipelines using the examples in `examples/pipelines/` for automated deployments.
-- Review the [architecture overview](./architecture.md) to understand the full solution.
+- Review the [architecture overview](./architecture/overview.md) to understand the full solution.

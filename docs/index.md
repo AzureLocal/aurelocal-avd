@@ -29,7 +29,7 @@ Infrastructure-as-code and automation for deploying **AVD** with session hosts r
 
 ## Related
 
-- [Architecture Overview](architecture.md)
+- [Architecture Overview](architecture/overview.md)
 - [Deployment Scenarios](scenarios.md)
 - [Variable Reference](reference/variables.md)
 - Companion repo: [azurelocal-sofs-fslogix](https://github.com/AzureLocal/azurelocal-sofs-fslogix)
