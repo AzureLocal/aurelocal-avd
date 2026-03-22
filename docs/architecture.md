@@ -60,6 +60,10 @@ The AVD architecture has two distinct planes:
     └──────────────┘
 ```
 
+Diagram asset:
+
+![AVD on Azure Local reference architecture](diagrams/avd-reference-architecture.png)
+
 ---
 
 ## Key Components
@@ -135,3 +139,14 @@ Reference docs:
 - [FSLogix documentation](https://learn.microsoft.com/en-us/fslogix/)
 - [Arc Resource Bridge](https://learn.microsoft.com/en-us/azure/azure-arc/resource-bridge/overview)
 - [Companion SOFS/FSLogix repository](https://github.com/AzureLocal/azurelocal-sofs-fslogix)
+
+## Extended Documentation
+
+- [Architecture Deep Design](architecture/deep-design.md)
+- [FSLogix Integration Guide](architecture/fslogix-integration.md)
+- [Host Pool Options](reference/host-pool-options.md)
+- [RBAC Reference](reference/rbac.md)
+- [Monitoring Queries](reference/monitoring-queries.md)
+- [Cost Management](operations/cost-management.md)
+- [Defender Operations](security/defender-operations.md)
+- [Diagrams Index](diagrams/index.md)

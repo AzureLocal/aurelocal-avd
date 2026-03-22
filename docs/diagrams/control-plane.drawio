@@ -1,0 +1,49 @@
+<mxfile host="app.diagrams.net" modified="2026-03-22T00:00:00.000Z" agent="Copilot" version="24.7.17" type="device">
+	<diagram id="control-plane" name="Control Plane">
+		<mxGraphModel dx="1100" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+			<root>
+				<mxCell id="0"/>
+				<mxCell id="1" parent="0"/>
+				<mxCell id="2" value="Azure (Control Plane)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1">
+					<mxGeometry x="60" y="60" width="460" height="280" as="geometry"/>
+				</mxCell>
+				<mxCell id="3" value="Host Pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" vertex="1" parent="1">
+					<mxGeometry x="90" y="120" width="120" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="4" value="Application Group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" vertex="1" parent="1">
+					<mxGeometry x="230" y="120" width="140" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="5" value="Workspace" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656" vertex="1" parent="1">
+					<mxGeometry x="390" y="120" width="110" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="6" value="Key Vault" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" vertex="1" parent="1">
+					<mxGeometry x="120" y="220" width="110" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="7" value="Log Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366" vertex="1" parent="1">
+					<mxGeometry x="250" y="220" width="130" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="8" value="Azure Local (Session Hosts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1" vertex="1" parent="1">
+					<mxGeometry x="620" y="60" width="420" height="280" as="geometry"/>
+				</mxCell>
+				<mxCell id="9" value="Session Host Pool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00" vertex="1" parent="1">
+					<mxGeometry x="660" y="130" width="150" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="10" value="SOFS FSLogix Share" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00" vertex="1" parent="1">
+					<mxGeometry x="830" y="130" width="170" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="11" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="3" target="9">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="12" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="9" target="10">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="13" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="3" target="4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="14" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="4" target="5">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+			</root>
+		</mxGraphModel>
+	</diagram>
+</mxfile>

@@ -1,16 +1,20 @@
 # Diagrams
 
-This directory will contain draw.io sources and exported images for architecture diagrams.
+This directory contains architecture diagram sources and rendered assets for AVD on Azure Local documentation.
 
-Guidance:
-- Prefer draw.io `.drawio` source files for maintainability.
-- Export PNG and SVG for MkDocs rendering.
-- For SOFS-specific diagrams we will reference the companion repo assets and copy needed exported PNGs into this directory.
+## Standards
+- Use draw.io (`.drawio`) for editable sources.
+- Keep exported `.png` and `.svg` for MkDocs compatibility.
+- Name diagrams by function and scope (for example `control-plane`, `network-flow`, `dr-recovery`).
 
-Current references (external):
-- SOFS deployment phases (source): `../..../azurelocal-sofs-fslogix/docs/assets/diagrams/sofs-deployment-phases.drawio`
-- SOFS exported PNG: `https://raw.githubusercontent.com/AzureLocal/azurelocal-sofs-fslogix/feature/epic-59-completion/docs/assets/images/sofs-deployment-phases.png`
+## Included assets
+- `control-plane.drawio`
+- `avd-reference-architecture.drawio`
+- `avd-reference-architecture.png`
+- `sofs-deployment-phases.drawio`
+- `sofs-deployment-phases.png`
 
-TODO:
-- Add local copies of exported PNGs into this directory as part of the next PR (do not modify SOFS repo).
-- Add `sofs-deployment-phases.drawio` copy as a base and adapt for AVD control-plane diagrams.
+## Workflow
+1. Edit diagram in draw.io.
+2. Export PNG and SVG to this folder.
+3. Update `docs/diagrams/index.md` if a new asset is added.
