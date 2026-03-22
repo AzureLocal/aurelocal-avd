@@ -59,6 +59,13 @@ flowchart TB
 
 Scripts must use variable paths that exist in the schema. See the [Variable Standards](variables.md) for naming rules and the [Variable Reference](../reference/variables.md) for the complete catalog.
 
+Additional interoperability references:
+
+- [Variable Mapping](../reference/variable-mapping.md)
+- [Tool Parity Matrix](../reference/tool-parity-matrix.md)
+- [Phase Ownership Matrix](../reference/phase-ownership.md)
+- [Monitoring Queries](../reference/monitoring-queries.md)
+
 ---
 
 ## Related Standards

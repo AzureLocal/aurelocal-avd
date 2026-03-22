@@ -14,6 +14,8 @@ This guide walks through a complete AVD deployment using the IaC tools in this r
 4. Post-deployment configuration with Ansible
 5. Validation and testing
 
+The canonical contract for all tooling is `config/variables.yml` validated by `config/schema/variables.schema.json`.
+
 ---
 
 ## Step 1 – Configuration
@@ -26,6 +28,13 @@ cp config/variables.example.yml config/variables.yml
 
 See [Variable Reference](../reference/variables.md) for details on each parameter.
 
+Also review:
+
+- [Variable Mapping](../reference/variable-mapping.md)
+- [Tool Parity Matrix](../reference/tool-parity-matrix.md)
+- [Phase Ownership](../reference/phase-ownership.md)
+- [Monitoring Queries](../reference/monitoring-queries.md)
+
 ---
 
 ## Step 2 – Deploy the AVD Control Plane
@@ -36,12 +45,8 @@ The control plane creates Azure resources: host pool, application group, workspa
 
     ```bash
     cd src/bicep
-    cp control-plane.bicepparam.example control-plane.bicepparam
-    # Edit control-plane.bicepparam
-    az deployment sub create \
-      --location eastus \
-      --template-file control-plane.bicep \
-      --parameters control-plane.bicepparam
+        # preferred path: canonical orchestrator reads config/variables.yml
+        pwsh ./Deploy-AVDSessionHosts.ps1 -ControlPlaneOnly
     ```
 
 === "Terraform"
@@ -59,9 +64,8 @@ The control plane creates Azure resources: host pool, application group, workspa
 
     ```powershell
     cd src/powershell
-    cp parameters.example.ps1 parameters.ps1
-    # Edit parameters.ps1
-    .\New-AVDControlPlane.ps1 -ParametersFile .\parameters.ps1
+    # transitional mode is still supported
+    .\New-AVDControlPlane.ps1 -ConfigFile ..\..\config\variables.yml
     ```
 
 === "Azure CLI"
@@ -84,11 +88,8 @@ Session hosts are Arc-enabled VMs on your Azure Local cluster.
 
     ```bash
     cd src/bicep
-    cp session-hosts.bicepparam.example session-hosts.bicepparam
-    az deployment group create \
-      --resource-group <rg> \
-      --template-file session-hosts.bicep \
-      --parameters session-hosts.bicepparam
+        # subscription-scope wrapper creates/targets resource groups via module
+        pwsh ./Deploy-AVDSessionHosts.ps1 -SkipControlPlane
     ```
 
 === "Terraform"
@@ -103,7 +104,7 @@ Session hosts are Arc-enabled VMs on your Azure Local cluster.
 
     ```powershell
     cd src/powershell
-    .\New-AVDSessionHosts.ps1 -ParametersFile .\parameters.ps1
+    .\New-AVDSessionHosts.ps1 -ConfigFile ..\..\config\variables.yml
     ```
 
 ---
@@ -119,6 +120,8 @@ cp inventory/hosts.example.yml inventory/hosts.yml
 ansible-playbook -i inventory/hosts.yml playbooks/site.yml
 ```
 
+Ansible role coverage includes control plane, session hosts, diagnostics, RBAC, FSLogix, and validation checks.
+
 ---
 
 ## Step 5 – Validate
@@ -128,6 +131,8 @@ Get-AzWvdSessionHost -ResourceGroupName <rg> -HostPoolName <pool>
 ```
 
 All hosts should show `Status = Available`.
+
+Run monitoring checks in Log Analytics using [Monitoring Queries](../reference/monitoring-queries.md).
 
 ---
 

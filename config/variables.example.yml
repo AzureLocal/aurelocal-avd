@@ -80,6 +80,65 @@ domain:
   domain_join_ou_path: ""                     # Empty = default Computers container
 
 # -----------------------------------------------------------------------------
+# Monitoring / Diagnostics
+# -----------------------------------------------------------------------------
+monitoring:
+  log_analytics_workspace_name: "law-iic-monitor-01"
+  log_analytics_resource_group: "rg-iic-avd-hp-eus-01"
+  log_analytics_retention_days: 30
+  host_pool_diagnostic_categories:
+    - "Checkpoint"
+    - "Error"
+    - "Management"
+    - "Connection"
+    - "HostRegistration"
+    - "AgentHealthStatus"
+  app_group_diagnostic_categories:
+    - "Checkpoint"
+    - "Error"
+    - "Management"
+  workspace_diagnostic_categories:
+    - "Checkpoint"
+    - "Error"
+    - "Management"
+    - "Feed"
+
+# -----------------------------------------------------------------------------
+# Identity / RBAC
+# -----------------------------------------------------------------------------
+rbac:
+  desktop_virtualization_user_group_id: "00000000-0000-0000-0000-000000000000"
+  vm_user_login_group_id: "00000000-0000-0000-0000-000000000000"
+  vm_admin_login_group_id: "00000000-0000-0000-0000-000000000000"
+  start_vm_on_connect_principal_id: "00000000-0000-0000-0000-000000000000"
+  session_host_operator_principal_id: "00000000-0000-0000-0000-000000000000"
+
+# -----------------------------------------------------------------------------
+# FSLogix
+# -----------------------------------------------------------------------------
+fslogix:
+  enabled: true
+  profile_container_type: "VHDX"              # VHD | VHDX
+  profile_share_path: "\\\\sofs-cluster\\FSLogixProfiles"
+  vhd_size_gb: 30
+  cloud_cache_enabled: false
+  cloud_cache_locations: []
+  exclude_common_folders:
+    - "Teams"
+    - "OutlookOST"
+    - "OneDrive"
+
+# -----------------------------------------------------------------------------
+# Image Management
+# -----------------------------------------------------------------------------
+image:
+  source: "marketplace"                       # marketplace | custom
+  publisher: "MicrosoftWindowsDesktop"
+  offer: "windows-11"
+  sku: "win11-22h2-avd"
+  version: "latest"
+
+# -----------------------------------------------------------------------------
 # Entra ID Authentication (optional — Hybrid Join + SSO)
 # -----------------------------------------------------------------------------
 entra_id:

@@ -1,0 +1,18 @@
+---
+- name: Assert FSLogix share path is configured
+  ansible.builtin.assert:
+    that:
+      - avd_config.fslogix.profile_share_path is defined
+      - avd_config.fslogix.profile_share_path | length > 3
+    fail_msg: "fslogix.profile_share_path must be set in canonical config"
+
+- name: Validate FSLogix SMB share is reachable from control host
+  ansible.builtin.command: "powershell -NoProfile -Command \"Test-Path '{{ avd_config.fslogix.profile_share_path }}'\""
+  register: fslogix_path_test
+  changed_when: false
+
+- name: Assert SMB path reachable
+  ansible.builtin.assert:
+    that:
+      - "'True' in fslogix_path_test.stdout"
+    fail_msg: "FSLogix share path is not reachable: {{ avd_config.fslogix.profile_share_path }}"

@@ -70,6 +70,8 @@ The AVD architecture has two distinct planes:
 | **Application Group** | Azure | Collection of apps or desktops published to users |
 | **Workspace** | Azure | User-facing aggregator for one or more application groups |
 | **Log Analytics Workspace** | Azure | Diagnostics, monitoring, and Azure Monitor integration |
+| **Diagnostic Settings** | Azure | Sends AVD control-plane diagnostic categories to Log Analytics |
+| **RBAC Assignments** | Azure | Least-privilege role assignments for AVD users and VM login roles |
 | **Key Vault** | Azure | Stores domain-join credentials, registration tokens, and certificates |
 | **Storage Account** | Azure | Optional: MSIX app attach packages or cloud-side FSLogix share |
 | **Azure Local Cluster** | On-premises | Hyper-converged infrastructure running Storage Spaces Direct |
@@ -106,6 +108,23 @@ The AVD architecture has two distinct planes:
 | Up to 100  | 30 GB / user    | ~3 TB usable         |
 | 100 – 500  | 30 GB / user    | ~15 TB usable        |
 | 500+       | 30 GB / user    | Scale horizontally   |
+
+---
+
+## Operational Baseline
+
+- Canonical configuration contract is `config/variables.yml` validated by `config/schema/variables.schema.json`.
+- Bicep is the strongest direct path; Terraform, ARM, PowerShell, and Ansible consume mapped/derived values.
+- Monitoring is required: host pool, application group, and workspace diagnostics route to Log Analytics.
+- Identity is required: role assignments for AVD users and VM login groups are managed as code.
+- FSLogix profile settings are configured post-provisioning (or extension-based) and validated in test scenarios.
+
+Reference docs:
+
+- `docs/reference/variable-mapping.md`
+- `docs/reference/tool-parity-matrix.md`
+- `docs/reference/phase-ownership.md`
+- `docs/reference/monitoring-queries.md`
 
 ---
 

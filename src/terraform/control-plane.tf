@@ -1,4 +1,5 @@
 data "azurerm_client_config" "current" {}
+data "azurerm_subscription" "current" {}
 
 # ── Resource Group ─────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ resource "azurerm_log_analytics_workspace" "avd" {
   location            = azurerm_resource_group.avd.location
   resource_group_name = azurerm_resource_group.avd.name
   sku                 = "PerGB2018"
-  retention_in_days   = 30
+  retention_in_days   = var.log_analytics_retention_days
   tags                = local.tags
 }
 

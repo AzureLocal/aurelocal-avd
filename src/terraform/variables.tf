@@ -12,6 +12,16 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "avd_subscription_id" {
+  description = "AVD subscription ID."
+  type        = string
+  default     = "00000000-0000-0000-0000-000000000000"
+  validation {
+    condition     = can(regex("^[0-9a-fA-F-]{36}$", var.avd_subscription_id))
+    error_message = "avd_subscription_id must be a GUID."
+  }
+}
+
 variable "host_pool_name" {
   description = "Name of the AVD host pool."
   type        = string
@@ -58,6 +68,12 @@ variable "key_vault_name" {
   type        = string
 }
 
+variable "log_analytics_retention_days" {
+  description = "Log Analytics retention in days."
+  type        = number
+  default     = 30
+}
+
 variable "log_analytics_workspace_name" {
   description = "Name of the Log Analytics workspace."
   type        = string
@@ -70,6 +86,10 @@ variable "log_analytics_workspace_name" {
 variable "custom_location_id" {
   description = "Resource ID of the Arc Custom Location for the Azure Local cluster."
   type        = string
+  validation {
+    condition     = can(regex("^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/.+/providers/Microsoft\\.ExtendedLocation/customLocations/.+$", var.custom_location_id))
+    error_message = "custom_location_id must be a valid custom location resource ID."
+  }
 }
 
 variable "vm_name_prefix" {
@@ -100,6 +120,12 @@ variable "vnet_id" {
   type        = string
 }
 
+variable "storage_path_id" {
+  description = "Resource ID of the Azure Local storage container path."
+  type        = string
+  default     = ""
+}
+
 variable "subnet_name" {
   description = "Subnet name within the VNet."
   type        = string
@@ -120,6 +146,48 @@ variable "ou_path" {
   description = "OU path for computer accounts."
   type        = string
   default     = ""
+}
+
+variable "desktop_virtualization_user_group_id" {
+  description = "Object ID for Desktop Virtualization User role assignment."
+  type        = string
+  default     = ""
+}
+
+variable "vm_user_login_group_id" {
+  description = "Object ID for Virtual Machine User Login role assignment."
+  type        = string
+  default     = ""
+}
+
+variable "vm_admin_login_group_id" {
+  description = "Object ID for Virtual Machine Administrator Login role assignment."
+  type        = string
+  default     = ""
+}
+
+variable "start_vm_on_connect_principal_id" {
+  description = "Principal ID for Desktop Virtualization Power On Contributor role assignment."
+  type        = string
+  default     = ""
+}
+
+variable "fslogix_enabled" {
+  description = "Enable FSLogix profile configuration extension."
+  type        = bool
+  default     = true
+}
+
+variable "fslogix_profile_share_path" {
+  description = "UNC path to the FSLogix profile share."
+  type        = string
+  default     = ""
+}
+
+variable "fslogix_size_in_mbs" {
+  description = "FSLogix profile container max size in MB."
+  type        = number
+  default     = 30720
 }
 
 # =============================================================================

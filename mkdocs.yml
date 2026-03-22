@@ -40,6 +40,10 @@ nav:
   - Scenarios: scenarios.md
   - Reference:
       - Variables: reference/variables.md
+      - Variable Mapping: reference/variable-mapping.md
+      - Tool Parity Matrix: reference/tool-parity-matrix.md
+      - Phase Ownership: reference/phase-ownership.md
+      - Monitoring Queries: reference/monitoring-queries.md
   - Standards:
       - Overview: standards/index.md
       - Documentation: standards/documentation.md

@@ -124,6 +124,7 @@ param enableEntraIdAuth bool = false
 
 // For Personal host pools, loadBalancerType MUST be 'Persistent' — enforce it
 var effectiveLoadBalancerType = hostPoolType == 'Personal' ? 'Persistent' : loadBalancerType
+var effectivePersonalDesktopAssignmentType = hostPoolType == 'Personal' ? personalDesktopAssignmentType : ''
 
 // When Entra ID auth is enabled, append the SSO RDP property so the RD client
 // requests an Entra token during connection. This is non-destructive — any
@@ -137,50 +138,50 @@ var effectiveCustomRdpProperty = enableEntraIdAuth
 // Resources
 // ---------------------------------------------------------------------------
 
-// Resource 1: Host Pool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
-  name: hostPoolName
-  location: location
-  tags: tags
-  properties: {
+// Resource 1: Host Pool (AVM)
+module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:0.8.1' = {
+  name: 'hostPoolDeployment'
+  params: {
+    name: hostPoolName
+    location: location
     hostPoolType: hostPoolType
     loadBalancerType: effectiveLoadBalancerType
     preferredAppGroupType: preferredAppGroupType
     maxSessionLimit: hostPoolType == 'Pooled' ? maxSessionLimit : 1
-    personalDesktopAssignmentType: hostPoolType == 'Personal' ? personalDesktopAssignmentType : null
+    personalDesktopAssignmentType: effectivePersonalDesktopAssignmentType
     startVMOnConnect: startVMOnConnect
     validationEnvironment: validationEnvironment
     customRdpProperty: effectiveCustomRdpProperty
     friendlyName: !empty(hostPoolFriendlyName) ? hostPoolFriendlyName : hostPoolName
     description: hostPoolDescription
-    // Registration token is NOT generated here — the deploy script handles it
-    // via New-AzWvdRegistrationInfo after this template deploys. This avoids
-    // the unreliable pattern of extracting tokens from Bicep outputs.
+    tags: tags
   }
 }
 
-// Resource 2: Application Group
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' = {
-  name: appGroupName
-  location: location
-  tags: tags
-  properties: {
+// Resource 2: Application Group (AVM)
+module appGroup 'br/public:avm/res/desktop-virtualization/application-group:0.4.1' = {
+  name: 'applicationGroupDeployment'
+  params: {
+    name: appGroupName
+    location: location
     applicationGroupType: appGroupType
-    hostPoolArmPath: hostPool.id
+    hostpoolName: hostPoolName
     friendlyName: !empty(appGroupFriendlyName) ? appGroupFriendlyName : appGroupName
+    tags: tags
   }
 }
 
-// Resource 3: Workspace
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-04-03' = {
-  name: workspaceName
-  location: location
-  tags: tags
-  properties: {
+// Resource 3: Workspace (AVM)
+module workspace 'br/public:avm/res/desktop-virtualization/workspace:0.9.1' = {
+  name: 'workspaceDeployment'
+  params: {
+    name: workspaceName
+    location: location
     friendlyName: !empty(workspaceFriendlyName) ? workspaceFriendlyName : workspaceName
     applicationGroupReferences: [
-      appGroup.id
+      appGroup.outputs.resourceId
     ]
+    tags: tags
   }
 }
 
@@ -188,9 +189,9 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-04-03' = {
 // Outputs
 // ---------------------------------------------------------------------------
 
-output hostPoolId string = hostPool.id
-output hostPoolName string = hostPool.name
-output appGroupId string = appGroup.id
-output appGroupName string = appGroup.name
-output workspaceId string = workspace.id
-output workspaceName string = workspace.name
+output hostPoolId string = hostPool.outputs.resourceId
+output hostPoolName string = hostPool.outputs.name
+output appGroupId string = appGroup.outputs.resourceId
+output appGroupName string = appGroup.outputs.name
+output workspaceId string = workspace.outputs.resourceId
+output workspaceName string = workspace.outputs.name

@@ -1,5 +1,7 @@
-# AVD parameters – copy to parameters.ps1 and fill in your values.
+# AVD parameters (TRANSITIONAL) – copy to parameters.ps1 and fill in your values.
 # DO NOT commit parameters.ps1 (it is .gitignore'd).
+# Preferred contract: config/variables.yml consumed through -ConfigFile.
+# This file remains for backward compatibility while migration to canonical YAML completes.
 
 # ── Subscription & Global ────────────────────────────────────────────
 $ResourceGroupName = 'rg-avd-prod'

@@ -41,3 +41,8 @@ param tags = {}
 
 // --- Entra ID Authentication ---
 param enableEntraIdAuth = true
+
+// --- Monitoring / Identity ---
+param logAnalyticsWorkspaceName = '<LOG_ANALYTICS_WORKSPACE_NAME>'
+param desktopVirtualizationUserGroupId = '<ENTRA_GROUP_OBJECT_ID>'
+param startVmOnConnectPrincipalId = '<SERVICE_PRINCIPAL_OBJECT_ID>'

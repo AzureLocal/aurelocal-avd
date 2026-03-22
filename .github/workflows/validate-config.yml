@@ -38,23 +38,38 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml jsonschema
 
-      - name: Validate variables.example.yml against schema
+        - name: Validate canonical config files
+        run: python3 scripts/validate-config.py
+
+        - name: Validate negative schema fixtures fail
         run: |
-          python3 -c "
-          import yaml, json, sys
-          from jsonschema import validate, ValidationError
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import sys
+          import yaml
+          from jsonschema import ValidationError, validate
 
-          with open('config/variables.example.yml') as f:
-              data = yaml.safe_load(f)
+          root = pathlib.Path('.').resolve()
+          schema = json.loads((root / 'config' / 'schema' / 'variables.schema.json').read_text(encoding='utf-8'))
+          invalid_dir = root / 'tests' / 'schemas'
+          invalid_files = sorted(invalid_dir.glob('invalid-*.yml'))
+          if not invalid_files:
+            print('No negative fixtures found; skipping.')
+            sys.exit(0)
 
-          with open('config/schema/variables.schema.json') as f:
-              schema = json.load(f)
-
-          try:
+          failures = []
+          for file in invalid_files:
+            data = yaml.safe_load(file.read_text(encoding='utf-8'))
+            try:
               validate(instance=data, schema=schema)
-              print('✅ config/variables.example.yml passes schema validation')
-          except ValidationError as e:
-              print(f'❌ Schema validation failed: {e.message}')
-              print(f'   Path: {\" > \".join(str(p) for p in e.absolute_path)}')
-              sys.exit(1)
-          "
+              failures.append(file.name)
+            except ValidationError:
+              print(f'Expected failure confirmed: {file.name}')
+
+          if failures:
+            print('These files unexpectedly passed schema validation:')
+            for name in failures:
+              print(f' - {name}')
+            sys.exit(1)
+          PY

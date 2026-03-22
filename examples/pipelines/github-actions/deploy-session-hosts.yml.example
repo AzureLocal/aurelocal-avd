@@ -43,11 +43,11 @@ jobs:
 
       - name: What-if deployment
         run: |
-          az deployment group what-if \
-            --resource-group ${{ github.event.inputs.resource_group_name }} \
+          az deployment sub what-if \
+            --location eastus \
             --template-file ${{ env.BICEP_FILE }} \
             --parameters ${{ env.BICEP_PARAMS }} \
-            --parameters vmCount=${{ github.event.inputs.vm_count }}
+            --parameters sessionHostCount=${{ github.event.inputs.vm_count }}
 
   deploy:
     name: Deploy Session Hosts
@@ -70,20 +70,16 @@ jobs:
 
       - name: Deploy Session Hosts
         run: |
-          az deployment group create \
+          az deployment sub create \
             --name "avd-session-hosts-$(date +%Y%m%d%H%M%S)" \
-            --resource-group ${{ github.event.inputs.resource_group_name }} \
+            --location eastus \
             --template-file ${{ env.BICEP_FILE }} \
             --parameters ${{ env.BICEP_PARAMS }} \
-            --parameters vmCount=${{ github.event.inputs.vm_count }}
+            --parameters sessionHostCount=${{ github.event.inputs.vm_count }}
 
       - name: Verify session hosts
         run: |
           echo "Waiting 120s for AVD agent registration..."
           sleep 120
-          POOL_NAME=$(az deployment group show \
-            --resource-group ${{ github.event.inputs.resource_group_name }} \
-            --name "avd-session-hosts-$(date +%Y%m%d%H%M%S)" \
-            --query "properties.parameters.vmNamePrefix.value" -o tsv 2>/dev/null || echo "unknown")
-          echo "Session hosts deployed with prefix: ${POOL_NAME}"
+          echo "Session hosts deployment submitted successfully."
           echo "Verify in Azure Portal: AVD > Host Pools > Session Hosts"

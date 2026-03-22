@@ -1,0 +1,59 @@
+subscription:
+  avd_subscription_id: "00000000-0000-0000-0000-000000000000"
+  azure_local_subscription_id: "00000000-0000-0000-0000-000000000000"
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  location: "eastus"
+security:
+  key_vault_name: "kv-iic-platform"
+  key_vault_resource_group: "rg-iic-mgmt-eus-01"
+control_plane:
+  resource_group: "rg-iic-avd-hp-eus-01"
+  host_pool_name: "hp-iic-avd-pool01"
+  host_pool_type: "Pooled"
+  app_group_name: "vdag-iic-avd-eus-01"
+  workspace_name: "vdws-iic-avd-eus-01"
+session_hosts:
+  resource_group: "rg-iic-avd-sh-eus-01"
+  session_host_count: 1
+  vm_naming_prefix: "vm-iicavd"
+  vm_processors: 4
+  vm_memory_mb: 16384
+  vm_admin_username: "avd_admin"
+  vm_admin_password: "keyvault://kv-iic-platform/avd-local-admin-password"
+  custom_location_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+  logical_network_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/logicalNetworks/lnet-compute-01"
+  gallery_image_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/img-win11-avd-m365"
+  storage_path_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/storageContainers/sp-vmstore-01"
+domain:
+  domain_fqdn: "iic.local"
+  domain_join_username: "svc.domainjoin"
+  domain_join_password: "keyvault://kv-iic-platform/domain-join-password"
+monitoring:
+  log_analytics_workspace_name: "law-iic-monitor-01"
+  log_analytics_resource_group: "rg-iic-avd-hp-eus-01"
+  log_analytics_retention_days: 30
+  host_pool_diagnostic_categories: ["Checkpoint"]
+  app_group_diagnostic_categories: ["Checkpoint"]
+  workspace_diagnostic_categories: ["Checkpoint"]
+rbac:
+  desktop_virtualization_user_group_id: "00000000-0000-0000-0000-000000000000"
+  vm_user_login_group_id: "00000000-0000-0000-0000-000000000000"
+  vm_admin_login_group_id: "00000000-0000-0000-0000-000000000000"
+  start_vm_on_connect_principal_id: "00000000-0000-0000-0000-000000000000"
+  session_host_operator_principal_id: "00000000-0000-0000-0000-000000000000"
+fslogix:
+  enabled: true
+  profile_container_type: "VHDX"
+  profile_share_path: "\\\\sofs-cluster\\FSLogixProfiles"
+  vhd_size_gb: 30
+  cloud_cache_enabled: false
+  cloud_cache_locations: []
+  exclude_common_folders: ["Teams"]
+image:
+  source: "marketplace"
+  publisher: "MicrosoftWindowsDesktop"
+  offer: "windows-11"
+  sku: "win11-22h2-avd"
+  version: "latest"
+tags:
+  Environment: "Production"
