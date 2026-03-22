@@ -34,6 +34,9 @@ Also review:
 - [Tool Parity Matrix](../reference/tool-parity-matrix.md)
 - [Phase Ownership](../reference/phase-ownership.md)
 - [Monitoring Queries](../reference/monitoring-queries.md)
+- [Host Pool Options](../reference/host-pool-options.md)
+- [RBAC Reference](../reference/rbac.md)
+- [FSLogix Integration](../architecture/fslogix-integration.md)
 
 ---
 
@@ -141,3 +144,5 @@ Run monitoring checks in Log Analytics using [Monitoring Queries](../reference/m
 - Review [deployment scenarios](../scenarios.md) for different configurations
 - Set up CI/CD pipelines using the examples in `examples/pipelines/` for automated deployments
 - Deploy [FSLogix profiles](https://github.com/AzureLocal/azurelocal-sofs-fslogix) with the companion repo
+- Publish applications using [RemoteApps Guide](rdapps.md)
+- Review [Cost Management](../operations/cost-management.md) and [Defender Operations](../security/defender-operations.md)

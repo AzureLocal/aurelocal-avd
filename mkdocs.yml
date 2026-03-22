@@ -34,16 +34,27 @@ theme:
 nav:
   - Home: index.md
   - Architecture: architecture.md
+  - Deep Architecture:
+    - Deep Design: architecture/deep-design.md
+    - FSLogix Integration: architecture/fslogix-integration.md
   - Getting Started: getting-started.md
   - Guides:
       - AVD Deployment Guide: guides/avd-deployment-guide.md
+      - RemoteApps Guide: guides/rdapps.md
   - Scenarios: scenarios.md
+  - Operations:
+      - Cost Management: operations/cost-management.md
+      - Defender Operations: security/defender-operations.md
   - Reference:
       - Variables: reference/variables.md
       - Variable Mapping: reference/variable-mapping.md
       - Tool Parity Matrix: reference/tool-parity-matrix.md
       - Phase Ownership: reference/phase-ownership.md
       - Monitoring Queries: reference/monitoring-queries.md
+      - Host Pool Options: reference/host-pool-options.md
+      - RBAC Reference: reference/rbac.md
+      - Docs Validation Checklist: reference/docs-validation-checklist.md
+  - Diagrams: diagrams/index.md
   - Standards:
       - Overview: standards/index.md
       - Documentation: standards/documentation.md

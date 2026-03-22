@@ -1,0 +1,426 @@
+<mxfile host="draw.io" type="device">
+  <diagram name="AVD Reference Architecture" id="avd-ref-arch">
+    <mxGraphModel dx="1500" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1000">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- TITLE                                                       -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="title" value="Azure Local – Azure Virtual Desktop reference architecture" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="30" y="10" width="700" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="powered_by" value="&lt;font style=&quot;font-size:10px;color:#888&quot;&gt;Powered by&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:11px&quot;&gt;&lt;b&gt;Arc Jumpstart&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="10" width="120" height="35" as="geometry"/>
+        </mxCell>
+        <!-- Arc Jumpstart cloud icon -->
+        <mxCell id="powered_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Azure_Arc.svg;" vertex="1" parent="1">
+          <mxGeometry x="1435" y="10" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- CONTROL PLANE BAR                                           -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="ctrl_bg" value="" style="shape=image;aspect=fixed;html=1;points=[];fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="42" y="62" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="ctrl_plane" value="&lt;b&gt;Control plane&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Azure portal, ARM and Bicep templates, Azure CLI and tools&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2F2F2;strokeColor=#CCCCCC;fontSize=11;verticalAlign=middle;align=center;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1420" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- AZURE CLOUD SERVICES AREA (light blue background)          -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="azure_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#BDD7EE;strokeWidth=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="105" width="1420" height="220" as="geometry"/>
+        </mxCell>
+
+        <!-- ── ROW 1: Cloud Services ─────────────────────────────── -->
+
+        <!-- Microsoft Entra ID -->
+        <mxCell id="entra_box" value="&lt;b&gt;Microsoft&lt;br&gt;Entra ID&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="118" width="110" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="entra_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/identity/Azure_Active_Directory.svg;" vertex="1" parent="1">
+          <mxGeometry x="90" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 2 circle + label -->
+        <mxCell id="step2" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:13px&quot;&gt;2&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#0078D4;" vertex="1" parent="1">
+          <mxGeometry x="245" y="155" width="28" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="step2_lbl" value="&lt;font color=&quot;#E60074&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;User authentication&lt;br&gt;and token exchange&lt;br&gt;during login&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="195" y="118" width="130" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Virtual Desktop -->
+        <mxCell id="avd_box" value="&lt;b&gt;Azure Virtual&lt;br&gt;Desktop&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="340" y="118" width="110" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="avd_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/other/Azure_Virtual_Desktop.svg;" vertex="1" parent="1">
+          <mxGeometry x="371" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Site Recovery -->
+        <mxCell id="asr_box" value="&lt;b&gt;Azure Site Recovery&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="118" width="125" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="asr_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/migrate/Azure_Site_Recovery.svg;" vertex="1" parent="1">
+          <mxGeometry x="508" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Backup -->
+        <mxCell id="backup_box" value="&lt;b&gt;Azure Backup&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="615" y="118" width="110" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="backup_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/general/Recovery_Services_Vaults.svg;" vertex="1" parent="1">
+          <mxGeometry x="646" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure File Sync -->
+        <mxCell id="filesync_box" value="&lt;b&gt;Azure File Sync&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="745" y="118" width="110" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="filesync_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/storage/Storage_Sync_Services.svg;" vertex="1" parent="1">
+          <mxGeometry x="776" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Update Manager -->
+        <mxCell id="aum_box" value="&lt;b&gt;Azure Update&lt;br&gt;Manager&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="875" y="118" width="110" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="aum_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Update_Management.svg;" vertex="1" parent="1">
+          <mxGeometry x="906" y="122" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Additional Azure services integration via Azure Arc -->
+        <mxCell id="addl_box" value="&lt;b&gt;Additional&lt;br&gt;Azure services&lt;br&gt;integration via&lt;br&gt;Azure Arc&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=9;shadow=1;verticalAlign=middle;align=center;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="118" width="100" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Arc large icon -->
+        <mxCell id="arc_main_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F0FF;strokeColor=#0078D4;strokeWidth=2;arcSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="118" width="75" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_main_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Azure_Arc.svg;" vertex="1" parent="1">
+          <mxGeometry x="1145" y="130" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- ── ROW 2: More Cloud Services ────────────────────────── -->
+
+        <!-- Azure Policy -->
+        <mxCell id="policy_box" value="&lt;b&gt;Azure Policy&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="470" y="210" width="125" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="policy_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Policy.svg;" vertex="1" parent="1">
+          <mxGeometry x="508" y="213" width="42" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Monitor -->
+        <mxCell id="monitor_box" value="&lt;b&gt;Azure Monitor&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="615" y="210" width="110" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="monitor_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Azure_Monitor.svg;" vertex="1" parent="1">
+          <mxGeometry x="649" y="213" width="42" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Key Vault -->
+        <mxCell id="kv_box" value="&lt;b&gt;Azure Key Vault&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="745" y="210" width="110" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="kv_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/security/Key_Vaults.svg;" vertex="1" parent="1">
+          <mxGeometry x="779" y="213" width="42" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Microsoft Defender for Cloud -->
+        <mxCell id="defender_box" value="&lt;b&gt;Microsoft Defender&lt;br&gt;for Cloud&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="875" y="210" width="130" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="defender_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/security/Security_Center.svg;" vertex="1" parent="1">
+          <mxGeometry x="919" y="213" width="42" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- MIDDLE SECTION: Identity, Session, User Device Flows       -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <!-- Active Directory Domain Services (left side) -->
+        <mxCell id="adds_box" value="&lt;b&gt;Active Directory&lt;br&gt;Domain Services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="65" y="400" width="140" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="adds_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/identity/Active_Directory.svg;" vertex="1" parent="1">
+          <mxGeometry x="111" y="404" width="48" height="48" as="geometry"/>
+        </mxCell>
+
+        <!-- Hybrid identity arrow (magenta, bidirectional, AD DS ↔ Entra ID) -->
+        <mxCell id="hybrid_arrow" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E60074;strokeWidth=2;curved=1;entryX=0.3;entryY=1;exitX=0.5;exitY=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="135" y="400" as="sourcePoint"/>
+            <mxPoint x="100" y="193" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="100" y="340"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hybrid_label" value="&lt;font color=&quot;#E60074&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;Hybrid identity synchronization&lt;br&gt;between on-premises AD DS and&lt;br&gt;cloud-based Entra ID for local&lt;br&gt;authentication and cloud access&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="290" width="220" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Step 3: Session initiation -->
+        <mxCell id="step3" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:13px&quot;&gt;3&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E74856;strokeColor=#E74856;" vertex="1" parent="1">
+          <mxGeometry x="540" y="358" width="28" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="step3_lbl" value="&lt;font color=&quot;#E74856&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;Session initiation to Azure Virtual Desktop in Azure from user's device&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="385" y="345" width="380" height="16" as="geometry"/>
+        </mxCell>
+        <mxCell id="avd_agent_conn_lbl" value="&lt;font color=&quot;#0078D4&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;Azure Virtual Desktop agent connects to Azure, handling&lt;br&gt;session brokering, user sessions, metering, and diagnostics&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="385" y="378" width="380" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Session initiation red arrow (AVD client → cloud) -->
+        <mxCell id="session_red_arrow" value="" style="endArrow=classic;html=1;strokeColor=#E74856;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="925" y="368" as="sourcePoint"/>
+            <mxPoint x="570" y="368" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- AVD agent blue arrow (session hosts → AVD cloud service) -->
+        <mxCell id="avd_agent_blue_arrow" value="" style="endArrow=classic;html=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="490" y="540" as="sourcePoint"/>
+            <mxPoint x="395" y="195" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="490" y="410"/>
+              <mxPoint x="395" y="410"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 1: Azure Virtual Desktop client (right side) -->
+        <mxCell id="step1" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:13px&quot;&gt;1&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#0078D4;" vertex="1" parent="1">
+          <mxGeometry x="895" y="358" width="28" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="avd_client_box" value="&lt;b&gt;Azure Virtual Desktop client&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5D5D5;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="930" y="345" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="avd_client_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/other/Azure_Virtual_Desktop.svg;" vertex="1" parent="1">
+          <mxGeometry x="986" y="348" width="48" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="user_devices_lbl" value="&lt;b&gt;User devices&lt;/b&gt;" style="text;html=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="960" y="418" width="100" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- User credential validation arrow (magenta, bidirectional, AD DS ↔ session hosts) -->
+        <mxCell id="cred_arrow" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E60074;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="205" y="450" as="sourcePoint"/>
+            <mxPoint x="440" y="555" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="360" y="450"/>
+              <mxPoint x="360" y="555"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cred_lbl" value="&lt;font color=&quot;#E74856&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;User credential validation, group policy application&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="205" y="462" width="300" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- RDP Shortpath label + arrow (pink/magenta, dashed) -->
+        <mxCell id="rdp_lbl" value="&lt;font color=&quot;#E60074&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;RDP Shortpath (with VPN)&lt;br&gt;or Direct UDP connection&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="575" y="455" width="175" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="rdp_arrow" value="" style="endArrow=classic;html=1;strokeColor=#E60074;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1010" y="418" as="sourcePoint"/>
+            <mxPoint x="720" y="540" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1010" y="485"/>
+              <mxPoint x="720" y="485"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 4: Arc agent integration (far right) -->
+        <mxCell id="step4" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:13px&quot;&gt;4&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#0078D4;" vertex="1" parent="1">
+          <mxGeometry x="1245" y="405" width="28" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="step4_lbl" value="&lt;font color=&quot;#0078D4&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;Arc agent integration for&lt;br&gt;additional governance,&lt;br&gt;monitoring, and lifecycle&lt;br&gt;management&lt;/b&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="380" width="155" height="55" as="geometry"/>
+        </mxCell>
+        <!-- Green dashed arrow: Arc agent → Azure Arc services -->
+        <mxCell id="arc_integ_arrow" value="" style="endArrow=classic;html=1;strokeColor=#00A651;strokeWidth=2;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1168" y="540" as="sourcePoint"/>
+            <mxPoint x="1168" y="195" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- AZURE LOCAL INSTANCE (salmon/pink border)                  -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <mxCell id="azl_outer" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF5F5;strokeColor=#FF9999;strokeWidth=2;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="510" width="1180" height="420" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Local instance icon + label (bottom left) -->
+        <mxCell id="azl_lbl" value="&lt;b&gt;Azure Local&lt;br&gt;instance&lt;/b&gt;" style="text;html=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="55" y="710" width="80" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="azl_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Azure_Stack_HCI.svg;" vertex="1" parent="1">
+          <mxGeometry x="65" y="662" width="55" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Arc VMs (left of session hosts) -->
+        <mxCell id="arc_vms_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F0FF;strokeColor=#0078D4;strokeWidth=1;arcSize=10;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="620" width="130" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm1" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="170" y="628" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm2" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="210" y="628" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm3" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="250" y="628" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm4" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="170" y="666" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm5" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="210" y="666" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vm6" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/Virtual_Machine.svg;" vertex="1" parent="1">
+          <mxGeometry x="250" y="666" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_vms_lbl" value="&lt;b&gt;Arc VMs&lt;/b&gt;" style="text;html=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="185" y="700" width="80" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Session Hosts (green dashed border) ────────────────── -->
+        <mxCell id="session_hosts_green" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#00A651;strokeWidth=2;dashed=1;arcSize=6;" vertex="1" parent="1">
+          <mxGeometry x="330" y="525" width="640" height="130" as="geometry"/>
+        </mxCell>
+
+        <!-- AVD agent bar -->
+        <mxCell id="avd_agent_bar" value="&lt;b&gt;Azure Virtual Desktop agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#999999;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=middle;align=center;arcSize=8;spacingLeft=42;" vertex="1" parent="1">
+          <mxGeometry x="355" y="548" width="275" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="avd_agent_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/other/Azure_Virtual_Desktop.svg;" vertex="1" parent="1">
+          <mxGeometry x="362" y="553" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Arc agent bar -->
+        <mxCell id="arc_agent_bar" value="&lt;b&gt;Azure Arc agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#999999;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=middle;align=center;arcSize=8;spacingLeft=42;" vertex="1" parent="1">
+          <mxGeometry x="650" y="548" width="200" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="arc_agent_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Azure_Arc.svg;" vertex="1" parent="1">
+          <mxGeometry x="658" y="553" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- AVD icon centered below agents -->
+        <mxCell id="avd_session_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/other/Azure_Virtual_Desktop.svg;" vertex="1" parent="1">
+          <mxGeometry x="540" y="600" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="session_hosts_lbl" value="&lt;b&gt;Azure Virtual Desktop (session hosts)&lt;/b&gt;" style="text;html=1;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="430" y="645" width="260" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- ── Bottom row: Infrastructure ─────────────────────────── -->
+
+        <!-- Hyper-V -->
+        <mxCell id="hyperv_box" value="&lt;b&gt;Hyper-V&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#999999;strokeWidth=1;fontSize=11;shadow=1;verticalAlign=middle;align=center;arcSize=8;spacingLeft=42;" vertex="1" parent="1">
+          <mxGeometry x="170" y="778" width="200" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="hyperv_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/compute/OS_Images_Classic.svg;" vertex="1" parent="1">
+          <mxGeometry x="180" y="787" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Arc Resource Bridge -->
+        <mxCell id="arcbridge_box" value="&lt;b&gt;Azure Arc&lt;br&gt;Resource Bridge&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#999999;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=middle;align=center;arcSize=8;spacingLeft=42;" vertex="1" parent="1">
+          <mxGeometry x="410" y="773" width="190" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="arcbridge_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/management_governance/Azure_Arc.svg;" vertex="1" parent="1">
+          <mxGeometry x="420" y="787" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Storage Spaces Direct (S2D) -->
+        <mxCell id="s2d_box" value="&lt;b&gt;Storage Spaces Direct (S2D)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#999999;strokeWidth=1;fontSize=10;shadow=1;verticalAlign=middle;align=center;arcSize=8;spacingLeft=42;" vertex="1" parent="1">
+          <mxGeometry x="640" y="778" width="260" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="s2d_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="1">
+          <mxGeometry x="650" y="787" width="32" height="32" as="geometry"/>
+        </mxCell>
+
+        <!-- Azure Local version releases label -->
+        <mxCell id="azl_versions_lbl" value="&lt;b&gt;Azure Local version releases&lt;/b&gt;" style="text;html=1;fontSize=10;align=center;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="370" y="850" width="220" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!-- USER PROFILES (right side, partially overlapping)          -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
+        <!-- Profile storage location label (red) -->
+        <mxCell id="profile_loc_lbl" value="&lt;font color=&quot;#E74856&quot; style=&quot;font-size:9px&quot;&gt;&lt;b&gt;User profile storage location:&lt;/b&gt;&lt;br&gt;&lt;i&gt;Dedicated NAS / SMB file share&lt;br&gt;storage (Preferred option)&lt;/i&gt;&lt;br&gt;OR&lt;br&gt;&lt;i&gt;S2D pool on Azure Local instance&lt;/i&gt;&lt;/font&gt;" style="text;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="562" width="190" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow from session hosts area to profiles -->
+        <mxCell id="profile_arrow" value="" style="endArrow=classic;html=1;strokeColor=#E74856;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="970" y="595" as="sourcePoint"/>
+            <mxPoint x="1040" y="595" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 5 -->
+        <mxCell id="step5" value="&lt;b&gt;&lt;font color=&quot;#ffffff&quot; style=&quot;font-size:13px&quot;&gt;5&lt;/font&gt;&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#0078D4;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="650" width="28" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- User profiles on S2D (teal box) -->
+        <mxCell id="profiles_s2d_box" value="&lt;b&gt;User profiles&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00838F;strokeWidth=2;fontSize=10;shadow=1;verticalAlign=bottom;align=center;spacingBottom=4;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="690" width="100" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="profiles_s2d_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/identity/Groups.svg;" vertex="1" parent="1">
+          <mxGeometry x="1081" y="695" width="40" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow from S2D to user profiles -->
+        <mxCell id="s2d_profile_arrow" value="" style="endArrow=classic;html=1;strokeColor=#00838F;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="900" y="800" as="sourcePoint"/>
+            <mxPoint x="1055" y="725" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="1020" y="800"/>
+              <mxPoint x="1020" y="725"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- User profiles NAS/SMB (far right) -->
+        <mxCell id="profiles_nas_box" value="&lt;b&gt;User profiles&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#666&quot;&gt;Network attached storage&lt;br&gt;OR SMB File Share&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F7FA;strokeColor=#00838F;strokeWidth=2;fontSize=10;shadow=1;verticalAlign=top;align=center;spacingTop=4;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="655" width="170" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="profiles_nas_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/identity/Groups.svg;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="688" width="40" height="40" as="geometry"/>
+        </mxCell>
+        <!-- NAS icon -->
+        <mxCell id="nas_icon" value="" style="sketch=0;aspect=fixed;html=1;points=[];align=center;fontSize=12;outlineConnect=0;image=img/lib/azure2/storage/Storage_Accounts.svg;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="733" width="28" height="28" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrow between profile boxes -->
+        <mxCell id="profiles_link" value="" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#00838F;strokeWidth=1;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1155" y="725" as="sourcePoint"/>
+            <mxPoint x="1240" y="725" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
