@@ -127,3 +127,9 @@ Usage
 - Hourly: host heartbeat and active error checks.
 - Daily: connection trend and ingestion checks.
 - Weekly: host-pool balancing and user-density review.
+
+## References
+- Azure Monitor: https://learn.microsoft.com/azure/azure-monitor/
+- Azure Monitor diagnostic settings: https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings
+- AVD diagnostic categories: https://learn.microsoft.com/azure/virtual-desktop/diagnostics-log-analytics
+- Log Analytics query language (KQL): https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-overview

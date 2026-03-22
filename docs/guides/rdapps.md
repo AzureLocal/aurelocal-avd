@@ -87,3 +87,9 @@ WVDConnections
 - Launch succeeds from multiple client types.
 - App group assignment respects least privilege.
 - Telemetry shows stable launch and session metrics.
+
+## References
+- AVD RemoteApp overview: https://learn.microsoft.com/azure/virtual-desktop/remote-app-streaming/overview
+- Manage application groups: https://learn.microsoft.com/azure/virtual-desktop/manage-app-groups
+- MSIX app attach: https://learn.microsoft.com/azure/virtual-desktop/app-attach-overview
+- FSLogix documentation: https://learn.microsoft.com/fslogix/

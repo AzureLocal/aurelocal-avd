@@ -110,3 +110,9 @@ Recommended controls:
 - Track session distribution by host and pool.
 - Alert on host pools with registration or heartbeat drops.
 - Review `maxSessionLimit` quarterly against real concurrency.
+
+## References
+- AVD host pool overview: https://learn.microsoft.com/azure/virtual-desktop/host-pool-load-balancing
+- Personal desktop assignment: https://learn.microsoft.com/azure/virtual-desktop/configure-host-pool-personal-desktop-assignment-type
+- Autoscale for pooled host pools: https://learn.microsoft.com/azure/virtual-desktop/autoscale-scaling-plan
+- Start VM on Connect: https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect

@@ -19,6 +19,7 @@ This index maps the core architecture, guide, operations, and reference pages.
 - [Host Pool Options](reference/host-pool-options.md)
 - [Monitoring Queries](reference/monitoring-queries.md)
 - [RBAC Reference](reference/rbac.md)
+- [Docs Validation Checklist](reference/docs-validation-checklist.md)
 - [Variable Mapping](reference/variable-mapping.md)
 - [Tool Parity Matrix](reference/tool-parity-matrix.md)
 

@@ -90,6 +90,7 @@ Ansible example:
 		- { name: IsDynamic, type: dword, data: 1 }
 		- { name: SizeInMBs, type: dword, data: 30720 }
 		- { name: VolumeType, type: string, data: vhdx }
+		- { name: VHDLocations, type: multistring, data: '\\sofs\fslogixprofiles' }
 ```
 
 ## 5) Antivirus and performance exclusions

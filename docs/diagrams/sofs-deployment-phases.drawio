@@ -1,11 +1,55 @@
-<mxfile host="copied">
-    <!-- draw.io stub copied as placeholder; source intentionally small -->
-    <diagram name="SOFS Deployment Phases (copied)" id="copied1"> 
-        <mxGraphModel dx="1000" dy="600" grid="1" gridSize="10">
-            <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-            </root>
-        </mxGraphModel>
-    </diagram>
+<mxfile host="app.diagrams.net" modified="2026-03-22T00:00:00.000Z" agent="Copilot" version="24.7.17" type="device">
+	<diagram id="sofs-phases" name="SOFS Deployment Phases">
+		<mxGraphModel dx="1100" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+			<root>
+				<mxCell id="0"/>
+				<mxCell id="1" parent="0"/>
+				<mxCell id="p1" value="Phase 1: Cluster Preparation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13" vertex="1" parent="1">
+					<mxGeometry x="60" y="80" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p1a" value="Validate Azure Local cluster&#xa;health and network readiness" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" vertex="1" parent="1">
+					<mxGeometry x="60" y="160" width="240" height="50" as="geometry"/>
+				</mxCell>
+				<mxCell id="p2" value="Phase 2: Storage Configuration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13" vertex="1" parent="1">
+					<mxGeometry x="380" y="80" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p2a" value="Create CSV volumes&#xa;Configure SOFS role&#xa;Create SMB shares" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" vertex="1" parent="1">
+					<mxGeometry x="380" y="160" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p3" value="Phase 3: FSLogix Integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13" vertex="1" parent="1">
+					<mxGeometry x="700" y="80" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p3a" value="Set NTFS/share permissions&#xa;Configure registry keys&#xa;Validate profile mount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" vertex="1" parent="1">
+					<mxGeometry x="700" y="160" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p4" value="Phase 4: Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13" vertex="1" parent="1">
+					<mxGeometry x="1020" y="80" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="p4a" value="Test user sign-in&#xa;Verify profile attach&#xa;Monitor frxsvc events" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666" vertex="1" parent="1">
+					<mxGeometry x="1020" y="160" width="240" height="60" as="geometry"/>
+				</mxCell>
+				<mxCell id="e1" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="p1" target="p2">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e2" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="p2" target="p3">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e3" style="endArrow=block;html=1;strokeWidth=2" edge="1" parent="1" source="p3" target="p4">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e1a" style="endArrow=open;html=1;dashed=1" edge="1" parent="1" source="p1" target="p1a">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e2a" style="endArrow=open;html=1;dashed=1" edge="1" parent="1" source="p2" target="p2a">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e3a" style="endArrow=open;html=1;dashed=1" edge="1" parent="1" source="p3" target="p3a">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+				<mxCell id="e4a" style="endArrow=open;html=1;dashed=1" edge="1" parent="1" source="p4" target="p4a">
+					<mxGeometry relative="1" as="geometry"/>
+				</mxCell>
+			</root>
+		</mxGraphModel>
+	</diagram>
 </mxfile>

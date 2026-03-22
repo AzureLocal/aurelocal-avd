@@ -149,4 +149,6 @@ Reference docs:
 - [Monitoring Queries](reference/monitoring-queries.md)
 - [Cost Management](operations/cost-management.md)
 - [Defender Operations](security/defender-operations.md)
+- [RemoteApps Guide](guides/rdapps.md)
+- [Docs Validation Checklist](reference/docs-validation-checklist.md)
 - [Diagrams Index](diagrams/index.md)
