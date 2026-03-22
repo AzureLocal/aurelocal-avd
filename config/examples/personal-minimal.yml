@@ -1,0 +1,146 @@
+# =============================================================================
+# Example: Personal Host Pool — Minimal Configuration
+# =============================================================================
+# 1:1 Personal desktop assignment on Azure Local. No FSLogix, no scaling plan.
+# AD-only join. Copy to config/variables.yml and update values.
+# =============================================================================
+
+subscription:
+  avd_subscription_id: "00000000-0000-0000-0000-000000000000"
+  azure_local_subscription_id: "00000000-0000-0000-0000-000000000000"
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  location: "eastus"
+
+deployment:
+  mode: "greenfield"
+  naming_convention: "iic"
+
+security:
+  key_vault_name: "kv-iic-platform"
+  key_vault_resource_group: "rg-iic-mgmt-eus-01"
+
+control_plane:
+  resource_group: "rg-iic-avd-hp-eus-01"
+  host_pool_name: "hp-iic-avd-personal01"
+  host_pool_type: "Personal"
+  load_balancer_type: "BreadthFirst"          # Ignored for Personal (forced to Persistent)
+  max_session_limit: 1
+  preferred_app_group_type: "Desktop"
+  personal_assignment_type: "Automatic"
+  start_vm_on_connect: true
+  validation_environment: false
+  custom_rdp_properties: ""
+  host_pool_friendly_name: "Azure Local Personal Desktops"
+  host_pool_description: "1:1 personal desktops on Azure Local"
+  app_group_name: "vdag-iic-avd-personal-eus-01"
+  app_group_type: "Desktop"
+  app_group_friendly_name: ""
+  workspace_name: "vdws-iic-avd-personal-eus-01"
+  workspace_friendly_name: ""
+
+session_hosts:
+  resource_group: "rg-iic-avd-sh-eus-01"
+  session_host_count: 2
+  vm_naming_prefix: "vm-iicavdp"
+  vm_start_index: 1
+  vm_processors: 4
+  vm_memory_mb: 16384
+  vm_admin_username: "avd_admin"
+  vm_admin_password: "keyvault://kv-iic-platform/avd-local-admin-password"
+  session_host_os: "Windows-11-Enterprise"
+  custom_location_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.ExtendedLocation/customLocations/cl-azurelocal-01"
+  logical_network_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/logicalNetworks/lnet-compute-01"
+  gallery_image_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/marketplaceGalleryImages/img-win11-ent"
+  storage_path_id: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/storageContainers/sp-vmstore-01"
+
+domain:
+  domain_fqdn: "iic.local"
+  domain_join_username: "svc.domainjoin"
+  domain_join_password: "keyvault://kv-iic-platform/domain-join-password"
+  domain_join_ou_path: ""
+
+identity:
+  strategy: "ad_only"
+  entra_id:
+    enable_entra_id_auth: false
+    enroll_in_intune: false
+    entra_user_login_group_id: ""
+    entra_admin_login_group_id: ""
+  rbac:
+    desktop_virtualization_user_group_id: ""
+    desktop_virtualization_admin_group_id: ""
+    power_on_contributor_group_id: ""
+
+fslogix:
+  enabled: false
+  share_topology: "single"
+  single_share:
+    vhd_path: ""
+  split_shares:
+    profile_vhd_path: ""
+    office_vhd_path: ""
+  cloud_cache:
+    connections: []
+  profile_container:
+    size_in_mb: 30000
+    vhd_type: "VHDX"
+    flip_flop_enabled: false
+    delete_on_logoff: false
+    is_dynamic: true
+    locked_retry_count: 12
+    locked_retry_interval: 5
+
+scaling:
+  enabled: false
+
+monitoring:
+  log_analytics:
+    workspace_name: "law-iic-avd-eus-01"
+    resource_group: "rg-iic-mgmt-eus-01"
+    retention_days: 30
+  diagnostics:
+    enable_host_pool_diagnostics: true
+    enable_workspace_diagnostics: true
+    log_categories:
+      - "Checkpoint"
+      - "Error"
+      - "Management"
+      - "Connection"
+      - "HostRegistration"
+      - "AgentHealthStatus"
+  defender:
+    enable_defender_for_cloud: false
+  alerts:
+    enable_alerts: false
+    action_group_id: ""
+
+image:
+  source: "marketplace"
+  marketplace:
+    publisher: "MicrosoftWindowsDesktop"
+    offer: "windows-11"
+    sku: "win11-23h2-ent"
+  gallery:
+    gallery_image_id: ""
+  customization:
+    install_m365_apps: false
+    install_teams_new: false
+    install_onedrive: false
+    additional_scripts: []
+
+networking:
+  private_endpoints:
+    enabled: false
+    subnet_id: ""
+  nsg:
+    apply_default_avd_rules: true
+
+tags:
+  Environment: "Production"
+  Project: "AVD on Azure Local"
+  ManagedBy: "Infrastructure as Code"
+  Owner: "Platform Team"
+  CostCenter: "IT-Infrastructure"
+
+ansible:
+  ansible_connection: "local"

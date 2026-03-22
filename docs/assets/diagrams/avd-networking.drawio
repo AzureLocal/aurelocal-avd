@@ -1,0 +1,121 @@
+<mxfile host="65bd71144e">
+    <diagram id="avd-networking" name="AVD Networking — NSG Rules &amp; Private Endpoints">
+        <mxGraphModel dx="2200" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="&lt;b&gt;AVD Networking — NSG Rules, Private Endpoints &amp; DNS (Azure Local Hybrid Architecture)&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="10" width="900" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="onprem-zone" value="&lt;b&gt;Azure Local — On-Premises Logical Network&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="60" width="370" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="sh-subnet" value="&lt;b&gt;Session Host Subnet&lt;/b&gt;&lt;br&gt;10.0.1.0/24 (Azure Local logical network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="35" y="100" width="340" height="310" as="geometry"/>
+                </mxCell>
+                <mxCell id="nsg" value="&lt;b&gt;NSG: hp-pool01-nsg&lt;/b&gt;&lt;br&gt;(attached to subnet)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="135" width="310" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="rule1" value="&lt;b&gt;Priority 100: Allow-AVD-Service&lt;/b&gt;&lt;br&gt;Direction: Outbound&lt;br&gt;Source: VirtualNetwork&lt;br&gt;Dest: &lt;b&gt;WindowsVirtualDesktop&lt;/b&gt; (Service Tag)&lt;br&gt;Port: 443 (HTTPS)&lt;br&gt;Action: Allow&lt;br&gt;&lt;i&gt;Purpose: AVD Broker communication,&lt;br&gt;session orchestration, agent heartbeat&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=8;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="175" width="150" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="rule2" value="&lt;b&gt;Priority 110: Allow-AzureMonitor&lt;/b&gt;&lt;br&gt;Direction: Outbound&lt;br&gt;Source: VirtualNetwork&lt;br&gt;Dest: &lt;b&gt;AzureMonitor&lt;/b&gt; (Service Tag)&lt;br&gt;Port: 443 (HTTPS)&lt;br&gt;Action: Allow&lt;br&gt;&lt;i&gt;Purpose: Diagnostics, metrics,&lt;br&gt;AMA telemetry upload&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=8;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="175" width="150" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="rule3" value="&lt;b&gt;Priority 120: Allow-AzureAD&lt;/b&gt;&lt;br&gt;Direction: Outbound&lt;br&gt;Source: VirtualNetwork&lt;br&gt;Dest: &lt;b&gt;AzureActiveDirectory&lt;/b&gt;&lt;br&gt;Port: 443 (HTTPS)&lt;br&gt;Action: Allow&lt;br&gt;&lt;i&gt;Purpose: Entra ID auth,&lt;br&gt;Conditional Access, MFA&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=8;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="295" width="150" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="rule4" value="&lt;b&gt;Priority 130: Allow-KMS&lt;/b&gt;&lt;br&gt;Direction: Outbound&lt;br&gt;Source: VirtualNetwork&lt;br&gt;Dest: Internet&lt;br&gt;Port: 1688 (TCP)&lt;br&gt;Action: Allow&lt;br&gt;&lt;i&gt;Purpose: Windows activation&lt;br&gt;via Azure KMS server&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;fontSize=8;align=left;spacingLeft=6;" parent="1" vertex="1">
+                    <mxGeometry x="210" y="295" width="150" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="onprem-dns" value="&lt;b&gt;On-Premises DNS&lt;/b&gt;&lt;br&gt;(e.g., AD Domain Controller)&lt;br&gt;&lt;br&gt;Conditional forwarder:&lt;br&gt;*.wvd.microsoft.com →&lt;br&gt;Azure DNS Private Resolver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="35" y="440" width="340" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="hybrid-link" value="&lt;b&gt;ExpressRoute / Site-to-Site VPN&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="405" y="250" width="70" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-vnet-zone" value="&lt;b&gt;Azure VNet — Hub/Spoke (Azure Region)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="60" width="340" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="pe-subnet" value="&lt;b&gt;Private Endpoint Subnet&lt;/b&gt;&lt;br&gt;10.1.2.0/28 (in Azure VNet)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C5CAE9;strokeColor=#3F51B5;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=6;" parent="1" vertex="1">
+                    <mxGeometry x="505" y="100" width="310" height="300" as="geometry"/>
+                </mxCell>
+                <mxCell id="pe-hp" value="&lt;b&gt;PE: Host Pool&lt;/b&gt;&lt;br&gt;pe-hp-pool01-connection&lt;br&gt;Sub-resource: &lt;b&gt;connection&lt;/b&gt;&lt;br&gt;Private IP: 10.1.2.4&lt;br&gt;&lt;br&gt;RDP reverse-connect on&lt;br&gt;Microsoft backbone" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="515" y="135" width="140" height="95" as="geometry"/>
+                </mxCell>
+                <mxCell id="pe-ws" value="&lt;b&gt;PE: Workspace&lt;/b&gt;&lt;br&gt;pe-ws-avd-prod-feed&lt;br&gt;Sub-resource: &lt;b&gt;feed&lt;/b&gt;&lt;br&gt;Private IP: 10.1.2.5&lt;br&gt;&lt;br&gt;User feed download on&lt;br&gt;private network" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="665" y="135" width="140" height="95" as="geometry"/>
+                </mxCell>
+                <mxCell id="pe-global" value="&lt;b&gt;PE: Global (Feed Discovery)&lt;/b&gt;&lt;br&gt;pe-ws-global-discovery&lt;br&gt;Sub-resource: &lt;b&gt;global&lt;/b&gt;&lt;br&gt;Private IP: 10.1.2.6&lt;br&gt;&lt;br&gt;Initial feed discovery — only&lt;br&gt;ONE needed across all AVD&lt;br&gt;deployments" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="515" y="245" width="290" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="dns-resolver" value="&lt;b&gt;Azure DNS Private Resolver&lt;/b&gt;&lt;br&gt;Inbound endpoint: 10.1.0.4&lt;br&gt;(reachable from on-prem via ER/VPN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=10;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="505" y="420" width="310" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="dns-zones" value="&lt;b&gt;Private DNS Zones (linked to VNet)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Zone 1:&lt;/b&gt; privatelink.wvd.microsoft.com&lt;br&gt;hp-pool01.privatelink.wvd.microsoft.com → 10.1.2.4&lt;br&gt;ws-avd-prod.privatelink.wvd.microsoft.com → 10.1.2.5&lt;br&gt;&lt;br&gt;&lt;b&gt;Zone 2:&lt;/b&gt; privatelink-global.wvd.microsoft.com&lt;br&gt;ws-global.privatelink-global.wvd.microsoft.com → 10.1.2.6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F51B5;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="505" y="465" width="310" height="105" as="geometry"/>
+                </mxCell>
+                <mxCell id="azure-zone" value="&lt;b&gt;Azure Cloud — AVD Service Endpoints&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="60" width="700" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="svc-wvd" value="&lt;b&gt;WindowsVirtualDesktop&lt;/b&gt;&lt;br&gt;Service Tag&lt;br&gt;&lt;br&gt;rdbroker.wvd.microsoft.com&lt;br&gt;rdweb.wvd.microsoft.com&lt;br&gt;rdgateway.wvd.microsoft.com&lt;br&gt;&lt;br&gt;Session brokering, gateway&lt;br&gt;reverse-connect, web client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="100" width="170" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="svc-monitor" value="&lt;b&gt;AzureMonitor&lt;/b&gt;&lt;br&gt;Service Tag&lt;br&gt;&lt;br&gt;*.ods.opinsights.azure.com&lt;br&gt;*.oms.opinsights.azure.com&lt;br&gt;*.monitoring.azure.com&lt;br&gt;&lt;br&gt;LAW ingestion, AMA upload,&lt;br&gt;metrics pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="100" width="170" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="svc-aad" value="&lt;b&gt;AzureActiveDirectory&lt;/b&gt;&lt;br&gt;Service Tag&lt;br&gt;&lt;br&gt;login.microsoftonline.com&lt;br&gt;login.windows.net&lt;br&gt;graph.microsoft.com&lt;br&gt;&lt;br&gt;Entra ID auth, token&lt;br&gt;issuance, CA policies" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="100" width="160" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="svc-kms" value="&lt;b&gt;KMS Activation&lt;/b&gt;&lt;br&gt;azkms.core.windows.net:1688&lt;br&gt;kms.core.windows.net:1688" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="235" width="260" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-zone" value="&lt;b&gt;Deployment per IaC Tool&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" parent="1" vertex="1">
+                    <mxGeometry x="870" y="340" width="700" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="d-tf" value="&lt;b&gt;Terraform (networking.tf)&lt;/b&gt;&lt;br&gt;&lt;br&gt;azurerm_network_security_group&lt;br&gt;+ 4 dynamic security_rule blocks&lt;br&gt;azurerm_private_endpoint × 3&lt;br&gt;(connection + feed + global)&lt;br&gt;+ dns_zone_group for 2 DNS zones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="885" y="370" width="170" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="d-bicep" value="&lt;b&gt;Bicep (networking.bicep)&lt;/b&gt;&lt;br&gt;&lt;br&gt;Microsoft.Network/nsg@2023-05-01&lt;br&gt;Microsoft.Network/privateEndpoints × 3&lt;br&gt;privateDnsZoneGroups child resources&lt;br&gt;→ ARM: networking.json" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1070" y="370" width="175" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="d-ps" value="&lt;b&gt;PowerShell&lt;/b&gt;&lt;br&gt;Configure-AVDNetworking.ps1&lt;br&gt;&lt;br&gt;New-AzNetworkSecurityGroup&lt;br&gt;New-AzPrivateEndpoint × 3&lt;br&gt;New-AzPrivateDnsZone × 2&lt;br&gt;New-AzPrivateDnsZoneGroup" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="885" y="480" width="170" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="d-ansible" value="&lt;b&gt;Ansible (avd-networking role)&lt;/b&gt;&lt;br&gt;&lt;br&gt;azure_rm_securitygroup&lt;br&gt;azure_rm_resource (PE × 3)&lt;br&gt;+ 2 Private DNS zone groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#7B1FA2;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1070" y="480" width="175" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="note-hybrid" value="&lt;b&gt;⚠ Azure Local Hybrid Note&lt;/b&gt;&lt;br&gt;&lt;br&gt;Session hosts are ON-PREMISES (Azure Local logical network).&lt;br&gt;Private endpoints are in an AZURE VNET (Azure region).&lt;br&gt;ExpressRoute or S2S VPN required for PE connectivity.&lt;br&gt;On-prem DNS must forward to Azure DNS Private Resolver.&lt;br&gt;Default: private_endpoints_enabled = false" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFECB3;strokeColor=#FF8F00;fontSize=9;align=left;spacingLeft=8;" parent="1" vertex="1">
+                    <mxGeometry x="1260" y="370" width="300" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;" parent="1" source="sh-subnet" target="svc-wvd" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#C62828;strokeWidth=2;" parent="1" source="sh-subnet" target="svc-monitor" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-hybrid1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=3;" parent="1" source="onprem-zone" target="hybrid-link" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-hybrid2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=3;" parent="1" source="hybrid-link" target="azure-vnet-zone" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=2;strokeDashPattern=4 4;" parent="1" source="pe-hp" target="svc-wvd" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3l" value="Private Link" style="edgeLabel;html=1;fontSize=8;fontColor=#3F51B5;" parent="e3" vertex="1" connectable="0">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=1;" parent="1" source="pe-hp" target="dns-resolver" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=1;" parent="1" source="pe-ws" target="dns-resolver" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3F51B5;strokeWidth=1;" parent="1" source="pe-global" target="dns-resolver" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

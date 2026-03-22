@@ -1,18 +1,65 @@
 ---
-- name: Assert FSLogix share path is configured
-  ansible.builtin.assert:
-    that:
-      - avd_config.fslogix.profile_share_path is defined
-      - avd_config.fslogix.profile_share_path | length > 3
-    fail_msg: "fslogix.profile_share_path must be set in canonical config"
+# roles/avd-fslogix/tasks/main.yml
+# Configures FSLogix profile containers on session hosts via Arc CustomScriptExtension.
 
-- name: Validate FSLogix SMB share is reachable from control host
-  ansible.builtin.command: "powershell -NoProfile -Command \"Test-Path '{{ avd_config.fslogix.profile_share_path }}'\""
-  register: fslogix_path_test
-  changed_when: false
+- name: Skip FSLogix for disabled configurations
+  ansible.builtin.debug:
+    msg: "FSLogix is disabled, skipping role."
+  when: not (avd_fslogix_enabled | default(false))
 
-- name: Assert SMB path reachable
-  ansible.builtin.assert:
-    that:
-      - "'True' in fslogix_path_test.stdout"
-    fail_msg: "FSLogix share path is not reachable: {{ avd_config.fslogix.profile_share_path }}"
+- name: Build FSLogix base registry commands
+  ansible.builtin.set_fact:
+    fslogix_base_cmds: >-
+      New-Item -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Force | Out-Null;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'Enabled' -Value 1 -Type DWord;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'SizeInMBs' -Value {{ avd_fslogix_size_in_mb | default(30000) }} -Type DWord;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'VolumeType' -Value '{{ avd_fslogix_vhd_type | default("VHDX") }}' -Type String;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'FlipFlopProfileDirectoryName' -Value {{ 1 if (avd_fslogix_flip_flop | default(false)) else 0 }} -Type DWord
+  when: avd_fslogix_enabled | default(false)
+
+- name: Build single-share topology commands
+  ansible.builtin.set_fact:
+    fslogix_topology_cmds: >-
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'VHDLocations' -Value '{{ avd_fslogix_single_vhd_path }}' -Type MultiString
+  when:
+    - avd_fslogix_enabled | default(false)
+    - (avd_fslogix_share_topology | default("single")) == "single"
+
+- name: Build split-share topology commands
+  ansible.builtin.set_fact:
+    fslogix_topology_cmds: >-
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'VHDLocations' -Value '{{ avd_fslogix_split_profile_path }}' -Type MultiString;
+      New-Item -Path 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Force | Out-Null;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'Enabled' -Value 1 -Type DWord;
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\FSLogix\ODFC' -Name 'VHDLocations' -Value '{{ avd_fslogix_split_office_path }}' -Type MultiString
+  when:
+    - avd_fslogix_enabled | default(false)
+    - (avd_fslogix_share_topology | default("single")) == "split"
+
+- name: Build cloud-cache topology commands
+  ansible.builtin.set_fact:
+    fslogix_topology_cmds: >-
+      Set-ItemProperty -Path 'HKLM:\SOFTWARE\FSLogix\Profiles' -Name 'CCDLocations' -Value '{{ avd_fslogix_cloud_cache_connections | join(",") }}' -Type MultiString
+  when:
+    - avd_fslogix_enabled | default(false)
+    - (avd_fslogix_share_topology | default("single")) == "cloud_cache"
+
+- name: Deploy FSLogix configuration extension on session hosts
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: HybridCompute
+    resource_type: machines/extensions
+    resource_name: "{{ item }}/FSLogixConfig"
+    api_version: "2023-10-03-preview"
+    body:
+      location: "{{ azure_location }}"
+      properties:
+        publisher: "Microsoft.Compute"
+        type: "CustomScriptExtension"
+        typeHandlerVersion: "1.10"
+        autoUpgradeMinorVersion: true
+        settings: {}
+        protectedSettings:
+          commandToExecute: "powershell -ExecutionPolicy Bypass -Command \"{{ fslogix_base_cmds }}; {{ fslogix_topology_cmds }}\""
+  loop: "{{ avd_vm_names }}"
+  when: avd_fslogix_enabled | default(false)

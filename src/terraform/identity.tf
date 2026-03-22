@@ -1,34 +1,108 @@
-locals {
-  role_desktop_virtualization_user         = "/providers/Microsoft.Authorization/roleDefinitions/1d336d6b-1444-4a47-9fbb-26e0a0e4f6bb"
-  role_vm_user_login                       = "/providers/Microsoft.Authorization/roleDefinitions/fb879df8-f326-4884-b1cf-06f3ad86be52"
-  role_vm_admin_login                      = "/providers/Microsoft.Authorization/roleDefinitions/1c0163c0-47e6-4577-8991-ea5c82e286e4"
-  role_desktop_virtualization_power_on     = "/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e"
+# =============================================================================
+# Identity & RBAC — Terraform
+# =============================================================================
+# Role assignments for AVD: Desktop Virtualization User, VM User Login,
+# and optional VM Administrator Login for hybrid-joined hosts.
+# Note: Entra-only join is NOT supported on Azure Local Arc-enabled VMs.
+# =============================================================================
+
+variable "identity_strategy" {
+  description = "Identity strategy: ad_only or hybrid_join. Entra-only join is not supported on Azure Local."
+  type        = string
+  default     = "ad_only"
+  validation {
+    condition     = contains(["ad_only", "hybrid_join"], var.identity_strategy)
+    error_message = "identity_strategy must be 'ad_only' or 'hybrid_join'."
+  }
 }
 
-resource "azurerm_role_assignment" "desktop_virtualization_user" {
-  count              = var.desktop_virtualization_user_group_id == "" ? 0 : 1
-  scope              = azurerm_virtual_desktop_application_group.avd.id
-  role_definition_id = "${data.azurerm_subscription.current.id}${local.role_desktop_virtualization_user}"
-  principal_id       = var.desktop_virtualization_user_group_id
+variable "avd_user_group_id" {
+  description = "Object ID of the Entra ID group to assign Desktop Virtualization User role."
+  type        = string
+  default     = ""
 }
+
+variable "avd_admin_group_id" {
+  description = "Object ID of the Entra ID group to assign Virtual Machine Administrator Login."
+  type        = string
+  default     = ""
+}
+
+variable "rbac_assignments" {
+  description = "Additional RBAC role assignments."
+  type = list(object({
+    role_definition_name = string
+    principal_id         = string
+    scope                = string
+  }))
+  default = []
+}
+
+# ── Desktop Virtualization User ───────────────────────────────────────────────
+# Grants users permission to connect to the application group.
+
+resource "azurerm_role_assignment" "avd_user" {
+  count = var.avd_user_group_id != "" ? 1 : 0
+
+  scope                = azurerm_virtual_desktop_application_group.avd.id
+  role_definition_name = "Desktop Virtualization User"
+  principal_id         = var.avd_user_group_id
+}
+
+# ── Virtual Machine User Login ────────────────────────────────────────────────
+# Required for hybrid-joined hosts so users can sign in via Entra ID.
 
 resource "azurerm_role_assignment" "vm_user_login" {
-  count              = var.vm_user_login_group_id == "" ? 0 : 1
-  scope              = azurerm_resource_group.avd.id
-  role_definition_id = "${data.azurerm_subscription.current.id}${local.role_vm_user_login}"
-  principal_id       = var.vm_user_login_group_id
+  count = var.identity_strategy == "hybrid_join" && var.avd_user_group_id != "" ? 1 : 0
+
+  scope                = azurerm_resource_group.avd.id
+  role_definition_name = "Virtual Machine User Login"
+  principal_id         = var.avd_user_group_id
 }
+
+# ── Virtual Machine Administrator Login ───────────────────────────────────────
+# Optional admin access for hybrid-joined hosts.
 
 resource "azurerm_role_assignment" "vm_admin_login" {
-  count              = var.vm_admin_login_group_id == "" ? 0 : 1
-  scope              = azurerm_resource_group.avd.id
-  role_definition_id = "${data.azurerm_subscription.current.id}${local.role_vm_admin_login}"
-  principal_id       = var.vm_admin_login_group_id
+  count = var.identity_strategy == "hybrid_join" && var.avd_admin_group_id != "" ? 1 : 0
+
+  scope                = azurerm_resource_group.avd.id
+  role_definition_name = "Virtual Machine Administrator Login"
+  principal_id         = var.avd_admin_group_id
 }
 
-resource "azurerm_role_assignment" "start_vm_on_connect" {
-  count              = var.start_vm_on_connect_principal_id == "" ? 0 : 1
-  scope              = azurerm_resource_group.avd.id
-  role_definition_id = "${data.azurerm_subscription.current.id}${local.role_desktop_virtualization_power_on}"
-  principal_id       = var.start_vm_on_connect_principal_id
+# ── Additional role assignments from config ───────────────────────────────────
+
+resource "azurerm_role_assignment" "custom" {
+  count = length(var.rbac_assignments)
+
+  scope                = var.rbac_assignments[count.index].scope
+  role_definition_name = var.rbac_assignments[count.index].role_definition_name
+  principal_id         = var.rbac_assignments[count.index].principal_id
+}
+
+# ── Entra ID Login Extension ─────────────────────────────────────────────────
+# For hybrid_join, deploy AADLoginForWindows on each session host.
+
+resource "azapi_resource" "aad_login_ext" {
+  for_each = var.identity_strategy == "hybrid_join" ? toset(local.vm_names) : toset([])
+
+  type      = "Microsoft.HybridCompute/machines/extensions@2023-10-03-preview"
+  name      = "AADLoginForWindows"
+  location  = var.location
+  parent_id = azapi_resource.machine[each.key].id
+
+  body = jsonencode({
+    properties = {
+      publisher               = "Microsoft.Azure.ActiveDirectory"
+      type                    = "AADLoginForWindows"
+      typeHandlerVersion      = "2.0"
+      autoUpgradeMinorVersion = true
+      settings = {
+        mdmId = ""
+      }
+    }
+  })
+
+  depends_on = [azapi_resource.avd_agent_ext]
 }

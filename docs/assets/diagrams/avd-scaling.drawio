@@ -1,0 +1,105 @@
+<mxfile host="draw.io" modified="2026-03-18T00:00:00.000Z" agent="GitHub Copilot" version="24.0.0" type="device">
+  <diagram id="avd-scaling" name="AVD Scaling Plan — Schedule Phases &amp; Logic">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b&gt;AVD Scaling Plan — Automated Session Host Lifecycle&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="700" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="&lt;i&gt;Pooled host pools only — Personal pools use direct assignment&lt;/i&gt;" style="text;html=1;fontSize=11;fontColor=#666;align=center;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="500" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ TIME ARROW ══════ -->
+        <mxCell id="timeline" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#E0E0E0;strokeColor=#9E9E9E;width=15;endSize=8;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="130" as="sourcePoint"/>
+            <mxPoint x="1370" y="130" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tl-label" value="&lt;b&gt;24-HOUR SCHEDULE TIMELINE&lt;/b&gt;" style="text;html=1;fontSize=10;fontColor=#666;align=center;" vertex="1" parent="1">
+          <mxGeometry x="550" y="108" width="250" height="20" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ PHASE 1: RAMP-UP ══════ -->
+        <mxCell id="p1-zone" value="&lt;b&gt;RAMP-UP&lt;/b&gt;&lt;br&gt;7:00 — 9:00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="155" width="320" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-algo" value="&lt;b&gt;Load Balancing: BreadthFirst&lt;/b&gt;&lt;br&gt;Spread users across all hosts evenly&lt;br&gt;Better user experience during ramp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="195" width="290" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-logic" value="&lt;b&gt;Scaling Logic&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. Check minimum_hosts_pct (25%)&lt;br&gt;   → Ensure 25% of hosts are ON&lt;br&gt;2. Check capacity_threshold_pct (60%)&lt;br&gt;   → If active sessions &gt; 60% capacity,&lt;br&gt;     start additional hosts&lt;br&gt;3. Power on hosts one-by-one&lt;br&gt;   until threshold is satisfied&lt;br&gt;4. Uses DVU Power On Contributor role&lt;br&gt;   to start Arc VMs via Azure API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F57F17;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="45" y="250" width="290" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1-hosts" value="&lt;b&gt;Host State&lt;/b&gt;&lt;br&gt;█ █ █ ░ ░ ░ ░ ░ ░ ░&lt;br&gt;3/10 ON → gradually to 6/10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="45" y="400" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ PHASE 2: PEAK ══════ -->
+        <mxCell id="p2-zone" value="&lt;b&gt;PEAK&lt;/b&gt;&lt;br&gt;9:00 — 17:00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="370" y="155" width="310" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-algo" value="&lt;b&gt;Load Balancing: BreadthFirst&lt;/b&gt;&lt;br&gt;Even distribution for best UX&lt;br&gt;Max session limit per host: 10-16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="385" y="195" width="280" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-logic" value="&lt;b&gt;Scaling Logic&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. All required hosts should be ON&lt;br&gt;2. No forced shutdowns during peak&lt;br&gt;3. Additional hosts start on-demand&lt;br&gt;   if capacity_threshold exceeded&lt;br&gt;4. Drain mode NOT activated&lt;br&gt;5. New user connections actively&lt;br&gt;   load balanced across all hosts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="385" y="250" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="p2-hosts" value="&lt;b&gt;Host State&lt;/b&gt;&lt;br&gt;█ █ █ █ █ █ █ █ █ █&lt;br&gt;10/10 ON — full capacity available" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="385" y="400" width="280" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ PHASE 3: RAMP-DOWN ══════ -->
+        <mxCell id="p3-zone" value="&lt;b&gt;RAMP-DOWN&lt;/b&gt;&lt;br&gt;17:00 — 19:00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#BF360C;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="700" y="155" width="320" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-algo" value="&lt;b&gt;Load Balancing: DepthFirst&lt;/b&gt;&lt;br&gt;Pack users onto fewer hosts&lt;br&gt;Free up hosts for shutdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BF360C;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="715" y="195" width="290" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-logic" value="&lt;b&gt;Scaling Logic&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. Switch LB to DepthFirst&lt;br&gt;2. Set drain mode on least-loaded hosts&lt;br&gt;3. capacity_threshold_pct = 90%&lt;br&gt;   (allow high packing)&lt;br&gt;4. force_logoff = false (default)&lt;br&gt;5. wait_time_minutes = 30&lt;br&gt;6. Send notification_message to users:&lt;br&gt;   &quot;Session will be logged off in 30m&quot;&lt;br&gt;7. After wait, log off + deallocate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BF360C;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="715" y="250" width="290" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="p3-hosts" value="&lt;b&gt;Host State&lt;/b&gt;&lt;br&gt;█ █ █ █ █ ░ ░ ░ ░ ░&lt;br&gt;10→5 (draining + deallocating)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#BF360C;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="715" y="400" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ PHASE 4: OFF-PEAK ══════ -->
+        <mxCell id="p4-zone" value="&lt;b&gt;OFF-PEAK&lt;/b&gt;&lt;br&gt;19:00 — 7:00" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#616161;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="155" width="320" height="320" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4-algo" value="&lt;b&gt;Load Balancing: DepthFirst&lt;/b&gt;&lt;br&gt;Minimize running hosts&lt;br&gt;Cost optimization priority" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#616161;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="195" width="290" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4-logic" value="&lt;b&gt;Scaling Logic&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. minimum_hosts_pct = 10%&lt;br&gt;   → Keep 1 host ON (10% of 10)&lt;br&gt;2. Remaining hosts deallocated&lt;br&gt;3. If after-hours user connects,&lt;br&gt;   additional host powers on&lt;br&gt;4. Start VM on Connect enabled&lt;br&gt;5. Capacity threshold respected&lt;br&gt;   for automatic scale-out" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#616161;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="250" width="290" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="p4-hosts" value="&lt;b&gt;Host State&lt;/b&gt;&lt;br&gt;█ ░ ░ ░ ░ ░ ░ ░ ░ ░&lt;br&gt;1/10 ON — minimum standby" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#616161;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1055" y="400" width="290" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ PREREQUISITES BOX ══════ -->
+        <mxCell id="prereq-zone" value="&lt;b&gt;Prerequisites &amp; Deployment&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=11;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="30" y="510" width="1330" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="prereq1" value="&lt;b&gt;RBAC: Desktop Virtualization&lt;br&gt;Power On/Off Contributor&lt;/b&gt;&lt;br&gt;Scope: Resource Group&lt;br&gt;Assigned to: AVD Service Principal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="50" y="540" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="prereq2" value="&lt;b&gt;Terraform&lt;/b&gt;&lt;br&gt;azurerm_virtual_desktop_scaling_plan&lt;br&gt;dynamic schedule blocks&lt;br&gt;host_pool association" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="280" y="540" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="prereq3" value="&lt;b&gt;Bicep&lt;/b&gt;&lt;br&gt;scaling.bicep module&lt;br&gt;Full schedule parameters&lt;br&gt;→ scaling.json (ARM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="510" y="540" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="prereq4" value="&lt;b&gt;PowerShell&lt;/b&gt;&lt;br&gt;Deploy-AVDScaling.ps1&lt;br&gt;New-AzWvdScalingPlan&lt;br&gt;New-AzWvdScalingPlanSchedule" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="740" y="540" width="200" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="prereq5" value="&lt;b&gt;Ansible&lt;/b&gt;&lt;br&gt;avd-scaling role&lt;br&gt;azure_rm_resource (REST)&lt;br&gt;idempotent PUT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="970" y="540" width="200" height="65" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

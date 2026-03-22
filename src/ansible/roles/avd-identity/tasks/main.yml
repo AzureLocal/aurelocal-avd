@@ -1,0 +1,46 @@
+---
+# roles/avd-identity/tasks/main.yml
+# Configures RBAC role assignments and Entra ID login extension for AVD.
+
+- name: Assign Desktop Virtualization User role
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/applicationGroups/{{ avd_app_group_name }}"
+    assignee_object_id: "{{ avd_user_group_id }}"
+    role_definition_id: "/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b63a2e5ae1b"
+  when: avd_user_group_id is defined and avd_user_group_id | length > 0
+
+- name: Assign Virtual Machine User Login role (Entra-joined)
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}"
+    assignee_object_id: "{{ avd_user_group_id }}"
+    role_definition_id: "/providers/Microsoft.Authorization/roleDefinitions/fb879df8-f326-4884-b1cf-06f3ad86be52"
+  when:
+    - (avd_identity_strategy | default("ad_only")) != "ad_only"
+    - avd_user_group_id is defined and avd_user_group_id | length > 0
+
+- name: Assign Virtual Machine Administrator Login role
+  azure.azcollection.azure_rm_roleassignment:
+    scope: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}"
+    assignee_object_id: "{{ avd_admin_group_id }}"
+    role_definition_id: "/providers/Microsoft.Authorization/roleDefinitions/1c0163c0-47e6-4577-8991-ea5c82e286e4"
+  when:
+    - (avd_identity_strategy | default("ad_only")) != "ad_only"
+    - avd_admin_group_id is defined and avd_admin_group_id | length > 0
+
+- name: Deploy AADLoginForWindows extension on session hosts
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: HybridCompute
+    resource_type: machines/extensions
+    resource_name: "{{ item }}/AADLoginForWindows"
+    api_version: "2023-10-03-preview"
+    body:
+      location: "{{ azure_location }}"
+      properties:
+        publisher: "Microsoft.Azure.ActiveDirectory"
+        type: "AADLoginForWindows"
+        typeHandlerVersion: "2.0"
+        autoUpgradeMinorVersion: true
+        settings: "{{ {'mdmId': ''} if (avd_identity_strategy | default('ad_only')) == 'hybrid_join' else {} }}"
+  loop: "{{ avd_vm_names }}"
+  when: (avd_identity_strategy | default("ad_only")) != "ad_only"

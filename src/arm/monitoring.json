@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "11746418356241333200"
+    }
+  },
+  "parameters": {
+    "hostPoolName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the host pool (used for diagnostic setting names)"
+      }
+    },
+    "hostPoolId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the AVD host pool"
+      }
+    },
+    "workspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the AVD workspace"
+      }
+    },
+    "appGroupId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the AVD application group"
+      }
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the Log Analytics workspace"
+      }
+    },
+    "monitoringEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable diagnostic settings"
+      }
+    },
+    "diagnosticsLogCategories": {
+      "type": "array",
+      "defaultValue": [
+        "Checkpoint",
+        "Error",
+        "Management",
+        "Connection",
+        "HostRegistration",
+        "AgentHealthStatus"
+      ],
+      "metadata": {
+        "description": "Log categories to enable on the host pool"
+      }
+    },
+    "alertRulesEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable metric alert rules"
+      }
+    },
+    "alertActionGroupId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the action group for alert notifications (empty = no action)"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Resource tags"
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('monitoringEnabled')]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolId'), '/')))]",
+      "name": "[format('{0}-diag', parameters('hostPoolName'))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(parameters('diagnosticsLogCategories'))]",
+            "input": {
+              "category": "[parameters('diagnosticsLogCategories')[copyIndex('logs')]]",
+              "enabled": true
+            }
+          }
+        ],
+        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]"
+      }
+    },
+    {
+      "condition": "[parameters('monitoringEnabled')]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/workspaces', last(split(parameters('workspaceId'), '/')))]",
+      "name": "[format('{0}-diag', last(split(parameters('workspaceId'), '/')))]",
+      "properties": {
+        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+        "logs": [
+          {
+            "category": "Feed",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('monitoringEnabled')]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', last(split(parameters('appGroupId'), '/')))]",
+      "name": "[format('{0}-diag', last(split(parameters('appGroupId'), '/')))]",
+      "properties": {
+        "workspaceId": "[parameters('logAnalyticsWorkspaceId')]",
+        "logs": [
+          {
+            "category": "Checkpoint",
+            "enabled": true
+          },
+          {
+            "category": "Error",
+            "enabled": true
+          },
+          {
+            "category": "Management",
+            "enabled": true
+          }
+        ]
+      }
+    },
+    {
+      "condition": "[parameters('alertRulesEnabled')]",
+      "type": "Microsoft.Insights/metricAlerts",
+      "apiVersion": "2018-03-01",
+      "name": "[format('{0}-no-available-hosts', parameters('hostPoolName'))]",
+      "location": "global",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "description": "Alert when no session hosts are available.",
+        "severity": 1,
+        "enabled": true,
+        "scopes": [
+          "[parameters('hostPoolId')]"
+        ],
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT15M",
+        "criteria": {
+          "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+          "allOf": [
+            {
+              "name": "NoAvailableHosts",
+              "criterionType": "StaticThresholdCriterion",
+              "metricNamespace": "Microsoft.DesktopVirtualization/hostpools",
+              "metricName": "SessionHostHealthCheckSucceededCount",
+              "operator": "LessThan",
+              "threshold": 1,
+              "timeAggregation": "Average"
+            }
+          ]
+        },
+        "actions": "[if(not(empty(parameters('alertActionGroupId'))), createArray(createObject('actionGroupId', parameters('alertActionGroupId'))), createArray())]"
+      }
+    }
+  ]
+}

@@ -37,10 +37,17 @@ nav:
       - Overview: architecture/overview.md
       - Detailed Design: architecture/deep-design.md
       - FSLogix Integration: architecture/fslogix-integration.md
+      - Solution Architecture: architecture.md
   - Getting Started: getting-started.md
   - Guides:
       - AVD Deployment Guide: guides/avd-deployment-guide.md
       - RemoteApps Guide: guides/rdapps.md
+      - FSLogix Profile Containers: guides/fslogix.md
+      - Identity & RBAC: guides/identity.md
+      - Scaling Plans: guides/scaling.md
+      - Monitoring & Diagnostics: guides/monitoring.md
+      - Networking: guides/networking.md
+      - Validation Matrix: guides/validation-matrix.md
   - Scenarios: scenarios.md
   - Operations:
       - Cost Management: operations/cost-management.md

@@ -1,0 +1,70 @@
+---
+# roles/avd-monitoring/tasks/main.yml
+# Configures diagnostics settings for AVD resources and optional alert rules.
+
+- name: Build host pool resource ID
+  ansible.builtin.set_fact:
+    avd_host_pool_resource_id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/hostPools/{{ avd_host_pool_name }}"
+    avd_workspace_resource_id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.DesktopVirtualization/workspaces/{{ avd_workspace_name }}"
+    avd_law_resource_id: "/subscriptions/{{ azure_subscription_id }}/resourceGroups/{{ azure_resource_group }}/providers/Microsoft.OperationalInsights/workspaces/{{ avd_log_analytics_workspace_name }}"
+
+- name: Deploy diagnostic settings on host pool
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: hostPools/providers/diagnosticSettings
+    resource_name: "{{ avd_host_pool_name }}/microsoft.insights/{{ avd_host_pool_name }}-diag"
+    api_version: "2021-05-01-preview"
+    body:
+      properties:
+        workspaceId: "{{ avd_law_resource_id }}"
+        logs: "{{ avd_diagnostics_log_categories | default(['Checkpoint','Error','Management','Connection','HostRegistration','AgentHealthStatus']) | map('regex_replace', '^(.*)$', '{\"category\": \"\\1\", \"enabled\": true}') | map('from_json') | list }}"
+  when: avd_monitoring_enabled | default(true)
+
+- name: Deploy diagnostic settings on workspace
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: DesktopVirtualization
+    resource_type: workspaces/providers/diagnosticSettings
+    resource_name: "{{ avd_workspace_name }}/microsoft.insights/{{ avd_workspace_name }}-diag"
+    api_version: "2021-05-01-preview"
+    body:
+      properties:
+        workspaceId: "{{ avd_law_resource_id }}"
+        logs:
+          - category: "Feed"
+            enabled: true
+  when: avd_monitoring_enabled | default(true)
+
+- name: Deploy alert rule — no available session hosts
+  azure.azcollection.azure_rm_resource:
+    resource_group: "{{ azure_resource_group }}"
+    provider: Insights
+    resource_type: metricAlerts
+    resource_name: "{{ avd_host_pool_name }}-no-available-hosts"
+    api_version: "2018-03-01"
+    body:
+      location: "global"
+      tags:
+        environment: "{{ avd_environment_tag }}"
+        owner: "{{ avd_owner_tag }}"
+      properties:
+        description: "Alert when no session hosts are available."
+        severity: 1
+        enabled: true
+        scopes:
+          - "{{ avd_host_pool_resource_id }}"
+        evaluationFrequency: "PT5M"
+        windowSize: "PT15M"
+        criteria:
+          odata.type: "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+          allOf:
+            - name: "NoAvailableHosts"
+              metricNamespace: "Microsoft.DesktopVirtualization/hostpools"
+              metricName: "SessionHostHealthCheckSucceededCount"
+              operator: "LessThan"
+              threshold: 1
+              timeAggregation: "Average"
+  when:
+    - avd_monitoring_enabled | default(true)
+    - avd_alert_rules_enabled | default(false)

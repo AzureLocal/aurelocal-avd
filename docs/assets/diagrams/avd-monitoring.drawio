@@ -1,0 +1,120 @@
+<mxfile host="draw.io" modified="2026-03-18T00:00:00.000Z" agent="GitHub Copilot" version="24.0.0" type="device">
+  <diagram id="avd-monitoring" name="AVD Monitoring &amp; Diagnostics Architecture">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b&gt;AVD Monitoring &amp; Diagnostics — Data Flow Architecture&lt;/b&gt;" style="text;html=1;fontSize=18;fontColor=#333;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="10" width="700" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ DATA SOURCES (LEFT) ══════ -->
+        <mxCell id="zone-sources" value="&lt;b&gt;Telemetry Sources&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="320" height="500" as="geometry"/>
+        </mxCell>
+
+        <!-- Session Hosts -->
+        <mxCell id="sh-group" value="&lt;b&gt;Session Hosts (Arc VMs)&lt;/b&gt;&lt;br&gt;Azure Monitor Agent installed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="35" y="95" width="290" height="195" as="geometry"/>
+        </mxCell>
+        <mxCell id="perf" value="&lt;b&gt;Performance Counters&lt;/b&gt;&lt;br&gt;CPU %, Memory %, Disk I/O&lt;br&gt;Network throughput&lt;br&gt;User Input Delay (ms)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="125" width="260" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="evtlog" value="&lt;b&gt;Windows Event Logs&lt;/b&gt;&lt;br&gt;System, Application, Security&lt;br&gt;FSLogix operational log&lt;br&gt;RemoteDesktopServices log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="190" width="260" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="avdagent" value="&lt;b&gt;AVD Agent Health&lt;/b&gt;&lt;br&gt;Heartbeat, registration status&lt;br&gt;Side-by-side stack version" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="255" width="260" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- AVD Control Plane -->
+        <mxCell id="cp-group" value="&lt;b&gt;AVD Control Plane Resources&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E65100;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="35" y="310" width="290" height="235" as="geometry"/>
+        </mxCell>
+        <mxCell id="diag-hp" value="&lt;b&gt;Host Pool Diagnostics&lt;/b&gt;&lt;br&gt;Categories: Checkpoint, Error,&lt;br&gt;Management, Connection,&lt;br&gt;HostRegistration, AgentHealthStatus&lt;br&gt;&lt;i&gt;→ WVDConnections, WVDErrors,&lt;br&gt;  WVDCheckpoints, WVDManagement,&lt;br&gt;  WVDAgentHealthStatus&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="340" width="260" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="diag-ws" value="&lt;b&gt;Workspace Diagnostics&lt;/b&gt;&lt;br&gt;Feed activity, management ops" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="445" width="260" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="diag-ag" value="&lt;b&gt;App Group Diagnostics&lt;/b&gt;&lt;br&gt;Assignment, connection errors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="490" width="260" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ LOG ANALYTICS (CENTER) ══════ -->
+        <mxCell id="zone-law" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#0078D4;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="410" y="60" width="280" height="500" as="geometry"/>
+        </mxCell>
+        <mxCell id="law-title" value="&lt;b&gt;Log Analytics Workspace&lt;/b&gt;&lt;br&gt;law-avd-prod&lt;br&gt;Retention: 30-90 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0078D4;strokeColor=#005A9E;fontColor=#FFFFFF;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="425" y="75" width="250" height="55" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="table-conn" value="&lt;b&gt;WVDConnections&lt;/b&gt;&lt;br&gt;UserName, SessionHostName&lt;br&gt;State, ClientOS, ClientType&lt;br&gt;CorrelationId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="145" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="table-err" value="&lt;b&gt;WVDErrors&lt;/b&gt;&lt;br&gt;CodeSymbolic, ErrorMessage&lt;br&gt;Source, ServiceError&lt;br&gt;SessionHostName" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="215" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="table-health" value="&lt;b&gt;WVDAgentHealthStatus&lt;/b&gt;&lt;br&gt;SessionHostName, LastHeartBeat&lt;br&gt;AllowNewSessions, UpdateState&lt;br&gt;HealthCheckResult" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="285" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="table-perf" value="&lt;b&gt;Perf / InsightsMetrics&lt;/b&gt;&lt;br&gt;CPU, Memory, Disk, Network&lt;br&gt;User Input Delay, RTT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="355" width="240" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="table-chk" value="&lt;b&gt;WVDCheckpoints&lt;/b&gt;&lt;br&gt;WVDManagement | WVDFeeds" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#0078D4;fontSize=9;align=left;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="415" width="240" height="35" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="kql-box" value="&lt;b&gt;KQL Query Engine&lt;/b&gt;&lt;br&gt;Real-time + scheduled queries" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=#0D47A1;fontColor=#FFFFFF;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="430" y="465" width="240" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ CONSUMERS (RIGHT) ══════ -->
+        <mxCell id="zone-consumers" value="&lt;b&gt;Monitoring Consumers&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;fontSize=12;verticalAlign=top;fontStyle=1;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="760" y="60" width="320" height="500" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="insights" value="&lt;b&gt;AVD Insights Workbook&lt;/b&gt;&lt;br&gt;Pre-built Azure Workbook&lt;br&gt;├─ Connection reliability %&lt;br&gt;├─ Round-trip time (ms)&lt;br&gt;├─ Active sessions timeline&lt;br&gt;├─ Session host health grid&lt;br&gt;├─ User experience metrics&lt;br&gt;└─ Top errors by category&lt;br&gt;&lt;br&gt;&lt;i&gt;Deployed by Deploy-AVDMonitoring.ps1&lt;br&gt;or monitoring.bicep / monitoring.tf&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="775" y="95" width="290" height="150" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="alerts" value="&lt;b&gt;Metric Alert Rules&lt;/b&gt;&lt;br&gt;├─ No Available Hosts (Sev 1)&lt;br&gt;│   Trigger: HealthCheck &lt; 1 for 15m&lt;br&gt;├─ High Session Count (Sev 2)&lt;br&gt;│   Trigger: ActiveSessions &gt; 80%&lt;br&gt;├─ Connection Failures (Sev 2)&lt;br&gt;│   Trigger: Failed &gt; 5 in 15m&lt;br&gt;└─ Action Group → Email / Teams / PagerDuty" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="775" y="260" width="290" height="115" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="custom-kql" value="&lt;b&gt;Custom KQL Dashboards&lt;/b&gt;&lt;br&gt;├─ Connection activity (24h timechart)&lt;br&gt;├─ Top errors by CodeSymbolic&lt;br&gt;├─ Session host health summary&lt;br&gt;└─ User session duration analysis" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="775" y="390" width="290" height="75" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="defender" value="&lt;b&gt;Microsoft Defender (Optional)&lt;/b&gt;&lt;br&gt;Threat detection on VMs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;strokeDashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry x="775" y="480" width="290" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ══════ CONNECTIONS ══════ -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" parent="1" source="perf" target="table-perf">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1l" value="AMA" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=2;" edge="1" parent="1" source="diag-hp" target="table-conn">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2l" value="Diag Settings" style="edgeLabel;html=1;fontSize=8;" vertex="1" connectable="0" parent="e2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1" source="kql-box" target="insights">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=2;" edge="1" parent="1" source="kql-box" target="alerts">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0078D4;strokeWidth=1;" edge="1" parent="1" source="kql-box" target="custom-kql">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

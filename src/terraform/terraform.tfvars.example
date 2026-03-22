@@ -13,7 +13,6 @@ app_group_name               = "ag-avd-desktops"
 workspace_name               = "ws-avd-prod"
 key_vault_name               = "kv-avd-prod-001"
 log_analytics_workspace_name = "law-avd-prod"
-log_analytics_retention_days = 30
 
 # ── Session Hosts ─────────────────────────────────────────────────────────────
 
@@ -24,7 +23,6 @@ vm_count       = 2
 vm_size        = "Standard_D4s_v3"
 
 image_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/galleryImages/win11-multisession-23h2"
-storage_path_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/storageContainers/sp-vmstore-01"
 
 vnet_id     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-azurelocal/providers/Microsoft.AzureStackHCI/virtualNetworks/vnet-azurelocal-01"
 subnet_name = "default"
@@ -33,18 +31,36 @@ domain_fqdn      = "iic.local"
 domain_join_user = "svc-domainjoin@iic.local"
 ou_path          = "OU=AVD,OU=Computers,DC=iic,DC=local"
 
-# ── RBAC ──────────────────────────────────────────────────────────────────────
+# ── Identity & RBAC ──────────────────────────────────────────────────────────
 
-desktop_virtualization_user_group_id = "00000000-0000-0000-0000-000000000000"
-vm_user_login_group_id               = "00000000-0000-0000-0000-000000000000"
-vm_admin_login_group_id              = "00000000-0000-0000-0000-000000000000"
-start_vm_on_connect_principal_id     = "00000000-0000-0000-0000-000000000000"
+identity_strategy  = "hybrid_join"
+avd_user_group_id  = "00000000-0000-0000-0000-000000000000"
+avd_admin_group_id = "00000000-0000-0000-0000-000000000000"
 
 # ── FSLogix ───────────────────────────────────────────────────────────────────
 
-fslogix_enabled            = true
-fslogix_profile_share_path = "\\\\sofs-cluster\\FSLogixProfiles"
-fslogix_size_in_mbs        = 30720
+fslogix_enabled        = true
+fslogix_share_topology = "single"
+fslogix_single_vhd_path = "\\\\fs-01.iic.local\\FSLogix\\Profiles"
+fslogix_size_in_mb     = 30000
+fslogix_vhd_type       = "VHDX"
+fslogix_flip_flop      = false
+
+# ── Scaling ───────────────────────────────────────────────────────────────────
+
+scaling_enabled   = true
+scaling_time_zone = "Eastern Standard Time"
+
+# ── Monitoring ────────────────────────────────────────────────────────────────
+
+monitoring_enabled = true
+defender_enabled   = false
+alert_rules_enabled = false
+
+# ── Networking ────────────────────────────────────────────────────────────────
+
+nsg_enabled                = true
+private_endpoints_enabled  = false
 
 # ── Tags ──────────────────────────────────────────────────────────────────────
 
