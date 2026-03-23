@@ -42,17 +42,49 @@ jobs:
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
           OPTION_ID=""
           if echo "$LABELS" | grep -q '"solution/sofs"'; then
-            OPTION_ID="a33c6c71"
+            OPTION_ID="441d7b73"
           elif echo "$LABELS" | grep -q '"solution/avd"'; then
-            OPTION_ID="502138a1"
+            OPTION_ID="88c2cad1"
           elif echo "$LABELS" | grep -q '"solution/loadtools"'; then
-            OPTION_ID="822e566b"
+            OPTION_ID="e681af20"
           elif echo "$LABELS" | grep -q '"solution/vmconvert"'; then
-            OPTION_ID="4c6202b4"
+            OPTION_ID="24cfc8b7"
           elif echo "$LABELS" | grep -q '"solution/docs-site"'; then
-            OPTION_ID="21b55444"
+            OPTION_ID="409662e1"
           elif echo "$LABELS" | grep -q '"solution/workspace"'; then
-            OPTION_ID="4cec6642"
+            OPTION_ID="65042935"
+          elif echo "$LABELS" | grep -q '"solution/toolkit"'; then
+            OPTION_ID="5a5921eb"
+          elif echo "$LABELS" | grep -q '"solution/aks"'; then
+            OPTION_ID="b982b3f9"
+          elif echo "$LABELS" | grep -q '"solution/sql-ha"'; then
+            OPTION_ID="4b317a86"
+          elif echo "$LABELS" | grep -q '"solution/iot"'; then
+            OPTION_ID="a8348e7b"
+          elif echo "$LABELS" | grep -q '"solution/vmware-migration"'; then
+            OPTION_ID="38fc53af"
+          elif echo "$LABELS" | grep -q '"solution/monitoring"'; then
+            OPTION_ID="293a0462"
+          elif echo "$LABELS" | grep -q '"solution/bcdr"'; then
+            OPTION_ID="7b2cf8f7"
+          elif echo "$LABELS" | grep -q '"solution/cost"'; then
+            OPTION_ID="4b39412e"
+          elif echo "$LABELS" | grep -q '"solution/governance"'; then
+            OPTION_ID="2534a020"
+          elif echo "$LABELS" | grep -q '"solution/hydration"'; then
+            OPTION_ID="6aef96cb"
+          elif echo "$LABELS" | grep -q '"solution/custom-images"'; then
+            OPTION_ID="2d4dca21"
+          elif echo "$LABELS" | grep -q '"solution/app-services"'; then
+            OPTION_ID="9b88133a"
+          elif echo "$LABELS" | grep -q '"solution/sql-mi"'; then
+            OPTION_ID="7fce49ac"
+          elif echo "$LABELS" | grep -q '"solution/ml-ai"'; then
+            OPTION_ID="23c5f7a9"
+          elif echo "$LABELS" | grep -q '"solution/vms"'; then
+            OPTION_ID="61b679bd"
+          elif echo "$LABELS" | grep -q '"solution/disconnected"'; then
+            OPTION_ID="5633c889"
           fi
           if [ -n "$OPTION_ID" ]; then
             gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" \
