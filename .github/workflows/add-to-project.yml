@@ -9,6 +9,8 @@ on:
 jobs:
   add-to-project:
     runs-on: ubuntu-latest
+    outputs:
+      item_id: ${{ steps.add.outputs.itemId }}
     steps:
       - uses: actions/add-to-project@v1.0.2
         id: add
@@ -19,26 +21,17 @@ jobs:
   set-fields:
     needs: add-to-project
     runs-on: ubuntu-latest
-    if: always() && github.event_name == 'issues'
+    if: github.event_name == 'issues' && needs.add-to-project.result == 'success' && needs.add-to-project.outputs.item_id != ''
     env:
       GH_TOKEN: ${{ secrets.ADD_TO_PROJECT_PAT }}
       PROJECT_ID: "PVT_kwDOCxeiOM4BR2KZ"
       SOLUTION_FIELD: "PVTSSF_lADOCxeiOM4BR2KZzg_jXuY"
       PRIORITY_FIELD: "PVTSSF_lADOCxeiOM4BR2KZzg_jXvs"
       CATEGORY_FIELD: "PVTSSF_lADOCxeiOM4BR2KZzg_jXxA"
+      ITEM_ID: ${{ needs.add-to-project.outputs.item_id }}
     steps:
-      - name: Get project item ID
-        id: find-item
-        run: |
-          ITEM_ID=$(gh project item-list 3 --owner AzureLocal --format json --limit 200 \
-            | jq -r --arg url "${{ github.event.issue.html_url }}" \
-              '.items[] | select(.content.url == $url) | .id')
-          echo "item_id=$ITEM_ID" >> "$GITHUB_OUTPUT"
-
       - name: Set Solution field
-        if: steps.find-item.outputs.item_id != ''
         run: |
-          ITEM_ID="${{ steps.find-item.outputs.item_id }}"
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
           OPTION_ID=""
           if echo "$LABELS" | grep -q '"solution/sofs"'; then
@@ -92,9 +85,7 @@ jobs:
           fi
 
       - name: Set Priority field
-        if: steps.find-item.outputs.item_id != ''
         run: |
-          ITEM_ID="${{ steps.find-item.outputs.item_id }}"
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
           OPTION_ID=""
           if echo "$LABELS" | grep -q '"priority/critical"'; then
@@ -112,9 +103,7 @@ jobs:
           fi
 
       - name: Set Category field
-        if: steps.find-item.outputs.item_id != ''
         run: |
-          ITEM_ID="${{ steps.find-item.outputs.item_id }}"
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
           OPTION_ID=""
           if echo "$LABELS" | grep -q '"type/feature"'; then
