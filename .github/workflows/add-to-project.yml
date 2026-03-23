@@ -29,7 +29,14 @@ jobs:
       PRIORITY_FIELD: "PVTSSF_lADOCxeiOM4BR2KZzg_jXvs"
       CATEGORY_FIELD: "PVTSSF_lADOCxeiOM4BR2KZzg_jXxA"
       ITEM_ID: ${{ needs.add-to-project.outputs.item_id }}
+      ID_FIELD: "PVTF_lADOCxeiOM4BR2KZzhADImQ"
     steps:
+      - name: Set ID field
+        run: |
+          NUMBER=${{ github.event.issue.number || github.event.pull_request.number }}
+          gh project item-edit --project-id "$PROJECT_ID" --id "$ITEM_ID" \
+            --field-id "$ID_FIELD" --text "AVD-$NUMBER"
+
       - name: Set Solution field
         run: |
           LABELS='${{ toJson(github.event.issue.labels.*.name) }}'
